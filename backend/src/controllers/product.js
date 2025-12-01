@@ -13,6 +13,9 @@ import {
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseProductFilterParams } from '../utils/parseProductFilterParams.js';
+import { parseSortParams } from '../utils/ParseSortPArams.js';
 
 const collectImagesFromRequest = async (req) => {
   let images = [];
@@ -43,12 +46,22 @@ const collectImagesFromRequest = async (req) => {
 
 export const getAllProductsController = async (req, res, next) => {
   try {
-    const products = await getAllProducts();
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filter = parseProductFilterParams(req.query);
+
+    const result = await getAllProducts({
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter,
+    });
 
     res.json({
       status: 200,
       message: 'Successfully found products!',
-      data: products,
+      ...result, // data, count, page, perPage, totalPages, hasNextPage, hasPrevPage
     });
   } catch (err) {
     next(err);
