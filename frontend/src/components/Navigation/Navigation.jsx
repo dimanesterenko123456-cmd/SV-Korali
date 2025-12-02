@@ -26,9 +26,9 @@ const Navigation = () => {
       </div>
 
       <div className={css.rightGroup}>
-        <button type="button" className={css.langButton}>
+        {/* <button type="button" className={css.langButton}>
           UA/EN
-        </button>
+        </button> */}
 
         <NavLink to="/auth" className={css.iconButton} aria-label="Profile">
           <FiUser className={css.icon} />
