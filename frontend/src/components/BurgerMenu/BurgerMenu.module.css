@@ -1,0 +1,30 @@
+.button {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #d0d0d0;
+  background-color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.button:hover {
+  background-color: #f5f5f5;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 18px;
+}
+
+.lines span {
+  display: block;
+  height: 2px;
+  border-radius: 999px;
+  background-color: #333333;
+}

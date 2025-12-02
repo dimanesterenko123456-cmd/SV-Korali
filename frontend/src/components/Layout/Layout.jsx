@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import Loading from "../Loading/Loading";
+import Loader from "../Loader/Loader";
 
 import css from "./Layout.module.css";
 
@@ -12,7 +12,7 @@ const Layout = () => {
     <div className={css.container}>
       <Header />
       <main className={css.main}>
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Loader />}>
           <Outlet />
         </Suspense>
       </main>
