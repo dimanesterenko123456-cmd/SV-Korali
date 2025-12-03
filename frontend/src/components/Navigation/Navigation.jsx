@@ -30,7 +30,11 @@ const Navigation = () => {
           UA/EN
         </button> */}
 
-        <NavLink to="/auth" className={css.iconButton} aria-label="Profile">
+        <NavLink
+          to="/auth/:authType"
+          className={css.iconButton}
+          aria-label="Profile"
+        >
           <FiUser className={css.icon} />
         </NavLink>
 

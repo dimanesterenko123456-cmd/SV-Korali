@@ -2,12 +2,12 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 import {
-  selectIsLoggedIn,
   selectAuthRefreshing,
-} from "../redux/selectors/authSelectors";
-import Loader from "../components/Loader/Loader";
+  selectIsLoggedIn,
+} from "../../redux/selectors/authSelectors";
+import Loader from "../../components/Loader/Loader";
 
-const PrivateRoute = ({ redirectTo = "/auth" }) => {
+const PrivateRoute = ({ redirectTo = "/auth/login" }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isRefreshing = useSelector(selectAuthRefreshing);
 

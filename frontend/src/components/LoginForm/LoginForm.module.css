@@ -1,0 +1,152 @@
+.formContainer {
+  padding: 48px 32px;
+  margin: 91px auto;
+  border-radius: 32px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  max-width: 362px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .formContainer {
+    max-width: 522px;
+    margin: 262px auto;
+  }
+}
+
+@media (min-width: 1440px) {
+  .formContainer {
+    max-width: 420px;
+    margin: 176px auto 156px auto;
+  }
+}
+
+.title {
+  font-weight: 600;
+  font-size: 32px;
+  text-align: center;
+  color: black;
+}
+
+.label {
+  font-weight: 400;
+  font-size: 12px;
+  color: black;
+}
+.mbsmall {
+  margin-bottom: 4px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  padding: 8px;
+  border: 1px solid gray;
+  border-radius: 8px;
+  font-weight: 400;
+  font-size: 16px;
+  width: 100%;
+  height: 41px;
+  background-color: white;
+}
+
+.input::placeholder {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 155%;
+  color: var(--gray-3);
+}
+.input_mb {
+  margin-bottom: 16px;
+}
+.error {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--red);
+  transform: translateY(100%);
+}
+
+.button {
+  padding: 8px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  width: 100%;
+  height: 36px;
+  outline: none;
+  transition: background-color 200ms ease-in-out;
+  margin-top: 27px;
+}
+.button:focus,
+.button:hover {
+  background-color: white;
+}
+.button:active {
+  box-shadow: 0 0 0 6px rgba(78, 70, 180, 0.12), 0 0 0 2px var(--white);
+  outline: 3px solid white;
+}
+.button:disabled {
+  background-color: white;
+  cursor: not-allowed;
+  opacity: 0.3;
+  border: 3px solid white;
+}
+.button:disabled:active {
+  box-shadow: none;
+  outline: none;
+}
+.fieldGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.registerwrapp {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  gap: 4px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 155%;
+  text-align: center;
+  color: black;
+}
+.mb {
+  margin-bottom: 16px;
+}
+.registerwrapp_link {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.toggleIcon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.passwordWrapper {
+  position: relative;
+}
