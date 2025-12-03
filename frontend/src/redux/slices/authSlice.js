@@ -1,10 +1,11 @@
 // src/redux/slices/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  refreshSession,
+  loginUserThunk,
+  logoutUserThunk,
+  refreshUserThunk,
+  registerUserThunk,
+  fetchCurrentUserThunk,
 } from "../operations/authOperations";
 
 const tokenFromStorage =
@@ -12,83 +13,111 @@ const tokenFromStorage =
 
 const initialState = {
   accessToken: tokenFromStorage || null,
-  isLoggedIn: Boolean(tokenFromStorage),
-  isLoading: false,
+  user: null,
   isRefreshing: false,
+  isLoading: false,
   error: null,
 };
 
 const authReducer = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    // register
+  extraReducers: (builder) =>
     builder
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      // ручне оновлення токена, якщо десь захочеш диспатчити
+      .addCase("auth/updateToken", (state, action) => {
+        state.accessToken = action.payload.accessToken;
       })
-      .addCase(registerUser.fulfilled, (state) => {
-        state.isLoading = false;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload || action.error.message;
-      });
 
-    // login
-    builder
-      .addCase(loginUser.pending, (state) => {
+      // LOGOUT
+      .addCase(logoutUserThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.accessToken = action.payload?.accessToken || null;
-        state.isLoggedIn = Boolean(state.accessToken);
+      .addCase(logoutUserThunk.fulfilled, () => {
+        return {
+          accessToken: null,
+          user: null,
+          isRefreshing: false,
+          isLoading: false,
+          error: null,
+        };
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(logoutUserThunk.rejected, (state, { payload }) => {
+        state.error = payload;
+        return {
+          accessToken: null,
+          user: null,
+          isRefreshing: false,
+          isLoading: false,
+          error: payload,
+        };
+      })
+
+      // REFRESH
+      .addCase(refreshUserThunk.pending, (state) => {
+        state.isRefreshing = true;
+        state.isLoading = true;
+      })
+      .addCase(refreshUserThunk.fulfilled, (state, { payload }) => {
+        state.isRefreshing = false;
+        state.isLoading = false;
+        if (payload?.accessToken) {
+          state.accessToken = payload.accessToken;
+        }
+      })
+      .addCase(refreshUserThunk.rejected, (state, { payload }) => {
+        state.isRefreshing = false;
         state.isLoading = false;
         state.accessToken = null;
-        state.isLoggedIn = false;
-        state.error = action.payload || action.error.message;
-      });
+        state.user = null;
+        state.error = payload;
+      })
 
-    // logout
-    builder
-      .addCase(logoutUser.pending, (state) => {
+      // REGISTER
+      .addCase(registerUserThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(logoutUser.fulfilled, () => ({
-        ...initialState,
-        accessToken: null,
-        isLoggedIn: false,
-      }))
-      .addCase(logoutUser.rejected, (state, action) => {
+      .addCase(registerUserThunk.fulfilled, (state) => {
         state.isLoading = false;
-        state.error = action.payload || action.error.message;
-      });
+        state.error = null;
+      })
+      .addCase(registerUserThunk.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
+      })
 
-    // refresh
-    builder
-      .addCase(refreshSession.pending, (state) => {
+      // LOGIN
+      .addCase(loginUserThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginUserThunk.fulfilled, (state, { payload }) => {
+        state.accessToken = payload.accessToken;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(loginUserThunk.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.accessToken = null;
+        state.error = payload;
+      })
+
+      // FETCH CURRENT USER
+      .addCase(fetchCurrentUserThunk.pending, (state) => {
         state.isRefreshing = true;
         state.error = null;
       })
-      .addCase(refreshSession.fulfilled, (state, action) => {
+      .addCase(fetchCurrentUserThunk.fulfilled, (state, { payload }) => {
         state.isRefreshing = false;
-        state.accessToken = action.payload?.accessToken || null;
-        state.isLoggedIn = Boolean(state.accessToken);
+        state.user = payload;
       })
-      .addCase(refreshSession.rejected, (state, action) => {
+      .addCase(fetchCurrentUserThunk.rejected, (state, { payload }) => {
         state.isRefreshing = false;
-        state.accessToken = null;
-        state.isLoggedIn = false;
-        state.error = action.payload || action.error.message;
-      });
-  },
+        state.user = null;
+        state.error = payload;
+      }),
 });
 
 export default authReducer.reducer;
