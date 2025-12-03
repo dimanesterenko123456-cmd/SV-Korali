@@ -8,18 +8,10 @@ const getErrorMessage = (error) =>
   error.message ||
   "Something went wrong";
 
-export const debugThunk = createAsyncThunk(
-  "auth/debug",
-  async (_, thunkAPI) => {
-    console.log("🔥 DEBUG THUNK RUN", new Date().toISOString());
-    return Date.now();
-  }
-);
 // REGISTER
 export const registerUserThunk = createAsyncThunk(
   "auth/registerUser",
   async (credentials, thunkApi) => {
-    console.log("👉 registerUserThunk CALLED with:", credentials);
     try {
       const response = await API.post("/auth/register", credentials);
       // бек: { status, message, data: user }
@@ -34,7 +26,6 @@ export const registerUserThunk = createAsyncThunk(
 export const loginUserThunk = createAsyncThunk(
   "auth/loginUser",
   async (credentials, thunkApi) => {
-    console.log("👉 loginUserThunk CALLED with:", credentials);
     try {
       const response = await API.post("/auth/login", credentials);
       // бек: { status, message, data: { accessToken } }

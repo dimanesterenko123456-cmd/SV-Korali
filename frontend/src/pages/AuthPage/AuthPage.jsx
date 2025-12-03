@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import css from "./AuthPage.module.css";
 import RegestrationForm from "../../components/RegestrationForm/RegestrationForm";
 import LoginForm from "../../components/LoginForm/LoginForm";
-import DebugRedux from "../../components/DebugRedux/DebugRedux";
 
 const AuthPage = () => {
   const { authType } = useParams();
@@ -19,7 +18,6 @@ const AuthPage = () => {
   return (
     <div className={css.container}>
       {authType === "register" ? <RegestrationForm /> : <LoginForm />}
-      <DebugRedux />
     </div>
   );
 };

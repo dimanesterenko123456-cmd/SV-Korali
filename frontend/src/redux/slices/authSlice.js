@@ -6,7 +6,6 @@ import {
   refreshUserThunk,
   registerUserThunk,
   fetchCurrentUserThunk,
-  debugThunk,
 } from "../operations/authOperations";
 
 const tokenFromStorage =
@@ -118,9 +117,6 @@ const authReducer = createSlice({
         state.isRefreshing = false;
         state.user = null;
         state.error = payload;
-      })
-      .addCase(debugThunk.fulfilled, (state, { payload }) => {
-        state.lastDebug = payload;
       }),
 });
 
