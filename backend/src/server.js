@@ -7,6 +7,7 @@ import { getEnvVar } from './utils/getEnvVar.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import router from './router/index.js';
+import { corsOptions } from './corsOptions.js';
 
 const PORT = Number(getEnvVar('PORT', '3000'));
 
@@ -19,7 +20,7 @@ export const startServer = () => {
       limit: '200kb',
     }),
   );
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(cookieParser());
   app.use(
     pino({
