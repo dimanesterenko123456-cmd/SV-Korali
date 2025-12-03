@@ -42,6 +42,14 @@ export const loginUserController = async (req, res) => {
   });
 };
 
+export const getCurrentUserController = async (req, res) => {
+  res.json({
+    status: 200,
+    message: 'Successfully fetched current user!',
+    data: req.user,
+  });
+};
+
 export const logoutUserController = async (req, res) => {
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
