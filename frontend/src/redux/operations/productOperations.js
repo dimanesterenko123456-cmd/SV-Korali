@@ -1,6 +1,6 @@
 // src/redux/operations/productsOperations.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { API } from "../../axiosConfig/api";
+import { API, setAuthHeader } from "../../axiosConfig/api";
 
 const handleError = (error, thunkAPI) => {
   const message =
@@ -11,13 +11,12 @@ const handleError = (error, thunkAPI) => {
   return thunkAPI.rejectWithValue(message);
 };
 
-// params: { page, perPage, sortBy, sortOrder, category, minPrice, maxPrice, inStock, search }
-export const fetchProducts = createAsyncThunk(
+// GET /products
+export const fetchProductsThunk = createAsyncThunk(
   "products/fetchAll",
   async (params = {}, thunkAPI) => {
     try {
       const { data } = await API.get("/products", { params });
-      // data: { status, message, data, count, page, perPage, totalPages, hasNextPage, hasPrevPage }
       return data;
     } catch (error) {
       return handleError(error, thunkAPI);
@@ -25,12 +24,12 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
-export const fetchProductById = createAsyncThunk(
+// GET /products/:id
+export const fetchProductByIdThunk = createAsyncThunk(
   "products/fetchById",
   async (id, thunkAPI) => {
     try {
       const { data } = await API.get(`/products/${id}`);
-      // data: { status, message, data: product }
       return data;
     } catch (error) {
       return handleError(error, thunkAPI);
@@ -38,27 +37,68 @@ export const fetchProductById = createAsyncThunk(
   }
 );
 
-// Admin: create
-export const createProduct = createAsyncThunk(
+// POST /products (admin)
+export const createProductThunk = createAsyncThunk(
   "products/create",
   async (payload, thunkAPI) => {
     try {
-      const { data } = await API.post("/products", payload);
-      // data: { status, message, data: product }
+      const state = thunkAPI.getState();
+      const token = state.auth.accessToken;
+
+      if (token) {
+        setAuthHeader(token);
+      }
+
+      let body = payload;
+      if (!(payload instanceof FormData)) {
+        body = new FormData();
+        Object.entries(payload).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            body.append(key, value);
+          }
+        });
+      }
+
+      const { data } = await API.post("/products", body, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       return data;
     } catch (error) {
+      console.log(
+        "Create product error response:",
+        error?.response?.data || error.message
+      );
       return handleError(error, thunkAPI);
     }
   }
 );
 
-// Admin: update
-export const updateProduct = createAsyncThunk(
+// PATCH /products/:id (admin)
+export const updateProductThunk = createAsyncThunk(
   "products/update",
   async ({ id, payload }, thunkAPI) => {
     try {
-      const { data } = await API.patch(`/products/${id}`, payload);
-      // data: { status, message, data: product }
+      const state = thunkAPI.getState();
+      const token = state.auth.accessToken;
+      if (token) {
+        setAuthHeader(token);
+      }
+
+      let body = payload;
+      if (!(payload instanceof FormData)) {
+        body = new FormData();
+        Object.entries(payload).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            body.append(key, value);
+          }
+        });
+      }
+
+      const { data } = await API.patch(`/products/${id}`, body, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       return data;
     } catch (error) {
       return handleError(error, thunkAPI);
@@ -66,11 +106,17 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
-// Admin: delete
-export const deleteProduct = createAsyncThunk(
+// DELETE /products/:id (admin)
+export const deleteProductThunk = createAsyncThunk(
   "products/delete",
   async (id, thunkAPI) => {
     try {
+      const state = thunkAPI.getState();
+      const token = state.auth.accessToken;
+      if (token) {
+        setAuthHeader(token);
+      }
+
       await API.delete(`/products/${id}`);
       return { id };
     } catch (error) {
