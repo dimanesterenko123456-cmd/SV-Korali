@@ -24,9 +24,11 @@ const collectImagesFromRequest = async (req) => {
     images = req.body.images.filter(Boolean);
   } else if (req.body.images) {
     images = [req.body.images];
+  } else if (req.body.image) {
+    images = [req.body.image];
   }
 
-  const useCloudinary = getEnvVar('ENABLE_CLOUDINARY', 'true') === 'true';
+  const useCloudinary = getEnvVar('ENABLE_CLOUDINARY') === 'true';
 
   const upload = async (file) =>
     useCloudinary
@@ -112,6 +114,7 @@ export const createProductController = async (req, res, next) => {
 
     if (images.length) {
       payload.images = images;
+      payload.image = images[0];
     }
 
     const product = await createProduct(payload);
@@ -172,6 +175,7 @@ export const patchProductController = async (req, res, next) => {
 
     if (images.length) {
       payload.images = images;
+      payload.image = images[0];
     }
 
     if (Object.keys(payload).length === 0) {

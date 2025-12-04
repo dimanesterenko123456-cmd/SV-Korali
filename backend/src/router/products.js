@@ -18,6 +18,7 @@ import {
   updateProductSchema,
 } from '../validation/product.js';
 import { validateBody } from '../middlewares/validateBody.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
@@ -33,6 +34,7 @@ router.post(
   '/',
   authenticate,
   requireAdmin,
+  upload.single('image'),
   validateBody(createProductSchema),
   ctrlWrapper(createProductController),
 );
@@ -41,6 +43,7 @@ router.patch(
   '/:productId',
   authenticate,
   requireAdmin,
+  upload.single('image'),
   isValidId('productId'),
   validateBody(updateProductSchema),
   ctrlWrapper(patchProductController),
