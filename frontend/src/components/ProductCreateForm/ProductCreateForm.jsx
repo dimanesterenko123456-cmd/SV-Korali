@@ -118,7 +118,7 @@ const ProductCreateForm = () => {
               <div className={css.fieldRow}>
                 <div className={css.fieldGroup}>
                   <label htmlFor="price" className={css.label}>
-                    Ціна (₴)
+                    Ціна ($)
                   </label>
                   <Field
                     id="price"
