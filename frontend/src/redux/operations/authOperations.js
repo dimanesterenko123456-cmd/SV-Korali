@@ -14,7 +14,7 @@ export const registerUserThunk = createAsyncThunk(
   async (credentials, thunkApi) => {
     try {
       const response = await API.post("/auth/register", credentials);
-      // бек: { status, message, data: user }
+
       return response.data.data; // user
     } catch (error) {
       return thunkApi.rejectWithValue(getErrorMessage(error));
@@ -28,7 +28,6 @@ export const loginUserThunk = createAsyncThunk(
   async (credentials, thunkApi) => {
     try {
       const response = await API.post("/auth/login", credentials);
-      // бек: { status, message, data: { accessToken } }
       const data = response.data.data;
       const accessToken = data.accessToken;
 
@@ -36,7 +35,6 @@ export const loginUserThunk = createAsyncThunk(
         setAuthHeader(accessToken);
       }
 
-      // у slice ми очікуємо payload.accessToken
       return { accessToken };
     } catch (error) {
       return thunkApi.rejectWithValue(getErrorMessage(error));

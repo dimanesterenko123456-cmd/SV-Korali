@@ -1,11 +1,11 @@
 // src/redux/slices/productsSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  fetchProducts,
-  fetchProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
+  createProductThunk,
+  deleteProductThunk,
+  fetchProductByIdThunk,
+  fetchProductsThunk,
+  updateProductThunk,
 } from "../operations/productOperations";
 
 const initialState = {
@@ -32,11 +32,11 @@ const productsReducer = createSlice({
   extraReducers: (builder) => {
     // fetchProducts
     builder
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(fetchProductsThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(fetchProductsThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.items = action.payload.data || [];
         state.count = action.payload.count || 0;
@@ -46,23 +46,23 @@ const productsReducer = createSlice({
         state.hasNextPage = action.payload.hasNextPage || false;
         state.hasPrevPage = action.payload.hasPrevPage || false;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchProductsThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || action.error.message;
       });
 
     // fetchProductById
     builder
-      .addCase(fetchProductById.pending, (state) => {
+      .addCase(fetchProductByIdThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
         state.currentProduct = null;
       })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
+      .addCase(fetchProductByIdThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.currentProduct = action.payload.data || null;
       })
-      .addCase(fetchProductById.rejected, (state, action) => {
+      .addCase(fetchProductByIdThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.currentProduct = null;
         state.error = action.payload || action.error.message;
@@ -70,11 +70,11 @@ const productsReducer = createSlice({
 
     // createProduct
     builder
-      .addCase(createProduct.pending, (state) => {
+      .addCase(createProductThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(createProduct.fulfilled, (state, action) => {
+      .addCase(createProductThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         const product = action.payload.data;
         if (product) {
@@ -82,18 +82,18 @@ const productsReducer = createSlice({
           state.count += 1;
         }
       })
-      .addCase(createProduct.rejected, (state, action) => {
+      .addCase(createProductThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || action.error.message;
       });
 
     // updateProduct
     builder
-      .addCase(updateProduct.pending, (state) => {
+      .addCase(updateProductThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(updateProduct.fulfilled, (state, action) => {
+      .addCase(updateProductThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         const updated = action.payload.data;
         if (!updated) return;
@@ -107,18 +107,18 @@ const productsReducer = createSlice({
           state.currentProduct = updated;
         }
       })
-      .addCase(updateProduct.rejected, (state, action) => {
+      .addCase(updateProductThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || action.error.message;
       });
 
     // deleteProduct
     builder
-      .addCase(deleteProduct.pending, (state) => {
+      .addCase(deleteProductThunk.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(deleteProduct.fulfilled, (state, action) => {
+      .addCase(deleteProductThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         const { id } = action.payload;
         state.items = state.items.filter((p) => p._id !== id);
@@ -127,7 +127,7 @@ const productsReducer = createSlice({
           state.currentProduct = null;
         }
       })
-      .addCase(deleteProduct.rejected, (state, action) => {
+      .addCase(deleteProductThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || action.error.message;
       });

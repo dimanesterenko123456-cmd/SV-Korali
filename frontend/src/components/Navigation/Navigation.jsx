@@ -1,6 +1,6 @@
 // src/components/Navigation/Navigation.jsx
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiSearch, FiUser, FiLogOut } from "react-icons/fi";
+import { FiSearch, FiUser, FiLogOut, FiPlusSquare } from "react-icons/fi";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,13 +8,19 @@ import Logo from "../Logo/Logo";
 import BurgerMenu from "../BurgerMenu/BurgerMenu";
 import css from "./Navigation.module.css";
 import { logoutUserThunk } from "../../redux/operations/authOperations";
+import {
+  selectAccessToken,
+  selectUserRole,
+} from "../../redux/selectors/authSelectors";
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const accessToken = useSelector((state) => state.auth.accessToken);
+  const accessToken = useSelector(selectAccessToken);
+  const userRole = useSelector(selectUserRole);
   const isLoggedIn = Boolean(accessToken);
+  const isAdmin = isLoggedIn && userRole === "admin";
 
   const handleBurgerClick = () => {
     console.log("Open sidebar menu");
@@ -55,6 +61,16 @@ const Navigation = () => {
         >
           <FiUser className={css.icon} />
         </NavLink>
+
+        {isAdmin && (
+          <NavLink
+            to="/admin/add-product"
+            className={`${css.iconButton} ${css.adminButton}`}
+            aria-label="Add or edit products"
+          >
+            <FiPlusSquare className={css.icon} />
+          </NavLink>
+        )}
 
         <NavLink to="/orders" className={css.iconButton} aria-label="Orders">
           <HiOutlineShoppingBag className={css.icon} />

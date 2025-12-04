@@ -69,6 +69,10 @@
   font-size: 18px;
 }
 
+.adminButton {
+  border-color: #111827;
+}
+
 @media (min-width: 768px) {
   .nav {
     column-gap: 24px;

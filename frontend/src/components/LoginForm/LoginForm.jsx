@@ -20,7 +20,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log("📨 handleSubmit login CALLED with:", values);
     try {
       await dispatch(loginUserThunk(values)).unwrap();
       await dispatch(fetchCurrentUserThunk()).unwrap();
