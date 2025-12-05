@@ -24,7 +24,7 @@ const CatalogItem = ({ product }) => {
 
       <div className={css.actions}>
         <span className={css.price}>
-          {product?.price != null ? `${product.price} ₴` : "—"}
+          {product?.price != null ? `${product.price} $` : "—"}
         </span>
 
         <button type="button" className={css.addBtn}>
