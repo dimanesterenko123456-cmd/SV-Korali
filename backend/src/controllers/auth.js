@@ -12,6 +12,21 @@ import {
 } from '../services/auth.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
+const isProd = process.env.NODE_ENV === 'production';
+
+const cookieOptions = {
+  httpOnly: true,
+  expires: new Date(Date.now() + ONE_DAY),
+  sameSite: isProd ? 'none' : 'lax',
+  secure: isProd,
+  path: '/',
+};
+
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, cookieOptions);
+  res.cookie('sessionId', session._id, cookieOptions);
+};
+
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
   res.status(201).json({
@@ -24,14 +39,7 @@ export const registerUserController = async (req, res) => {
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
+  setupSession(res, session);
 
   res.json({
     status: 200,
@@ -55,21 +63,10 @@ export const logoutUserController = async (req, res) => {
     await logoutUser(req.cookies.sessionId);
   }
 
-  res.clearCookie('sessionId');
-  res.clearCookie('refreshToken');
+  res.clearCookie('sessionId', cookieOptions);
+  res.clearCookie('refreshToken', cookieOptions);
 
   res.status(204).send();
-};
-
-const setupSession = (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + ONE_DAY),
-  });
 };
 
 export const refreshUserSessionController = async (req, res) => {

@@ -1,13 +1,19 @@
+// src/middlewares/upload.js
 import multer from 'multer';
+import fs from 'node:fs';
 import { TEMP_UPLOAD_DIR } from '../constans/index.js';
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, TEMP_UPLOAD_DIR);
+  destination: (req, file, cb) => {
+    fs.mkdir(TEMP_UPLOAD_DIR, { recursive: true }, (err) => {
+      cb(err, TEMP_UPLOAD_DIR);
+    });
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     const uniqueSuffix = Date.now();
-    cb(null, `${uniqueSuffix}_${file.originalname}`);
+
+    const safeName = file.originalname.replace(/\s+/g, '_');
+    cb(null, `${uniqueSuffix}_${safeName}`);
   },
 });
 

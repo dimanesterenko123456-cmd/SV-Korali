@@ -20,6 +20,7 @@ export const startServer = () => {
       limit: '200kb',
     }),
   );
+  app.set('trust proxy', 1);
   app.use(cors(corsOptions));
   app.use(cookieParser());
   app.use(
