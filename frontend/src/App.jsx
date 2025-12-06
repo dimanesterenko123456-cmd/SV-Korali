@@ -11,8 +11,36 @@ import "./App.css";
 import RestrictedRoute from "./routes/RestrictedRoute/RestrictedRoute";
 import PrivateRoute from "./routes/PrivateRoute/PrivateRoute";
 import CartPage from "./pages/CartPage/CartPage";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  fetchCurrentUserThunk,
+  refreshUserThunk,
+} from "./redux/operations/authOperations";
+import Loader from "./components/Loader/Loader";
+import { selectAuthRefreshing } from "./redux/selectors/authSelectors";
 
 function App() {
+  const dispatch = useDispatch();
+  const isRefreshing = useSelector(selectAuthRefreshing);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        await dispatch(refreshUserThunk()).unwrap();
+
+        await dispatch(fetchCurrentUserThunk()).unwrap();
+      } catch (e) {
+        console.error("Error during auth initialization:", e);
+      }
+    };
+
+    initAuth();
+  }, [dispatch]);
+
+  if (isRefreshing) {
+    return <Loader />;
+  }
   return (
     <Router>
       <Routes>
