@@ -11,20 +11,16 @@ export const API = axios.create({
 
 export const setAuthHeader = (accessToken) => {
   if (!accessToken) {
-    console.warn("setAuthHeader called with empty token:", accessToken);
     return;
   }
 
   API.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   localStorage.setItem("accessToken", accessToken);
-
-  console.log(" setAuthHeader: ", API.defaults.headers.common.Authorization);
 };
 
 export const clearAuthHeader = () => {
   delete API.defaults.headers.common.Authorization;
   localStorage.removeItem("accessToken");
-  console.log("clearAuthHeader");
 };
 
 // додаємо токен з localStorage у кожен запит

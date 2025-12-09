@@ -1,12 +1,12 @@
 import ProductDetail from "../ProductDetail/ProductDetail";
 import css from "./CatalogItem.module.css";
 
-const CatalogItem = ({ product }) => {
+const CatalogItem = ({ product, index = 0 }) => {
   const mainImage =
     product?.image || (Array.isArray(product?.images) ? product.images[0] : "");
 
   return (
-    <li className={css.card}>
+    <li className={css.card} style={{ "--i": index }}>
       <div className={css.imageWrap}>
         {mainImage ? (
           <img

@@ -20,8 +20,8 @@ const CatalogProducts = ({ products = [], pagination, onPageChange }) => {
   return (
     <div className={css.wrapper}>
       <ul className={css.list}>
-        {products.map((product) => (
-          <CatalogItem key={product._id} product={product} />
+        {products.map((product, index) => (
+          <CatalogItem key={product._id} product={product} index={index} />
         ))}
       </ul>
 

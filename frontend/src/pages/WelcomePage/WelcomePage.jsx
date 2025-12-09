@@ -16,6 +16,7 @@ import {
 } from "../../redux/selectors/productSelectors";
 import { fetchProductsThunk } from "../../redux/operations/productOperations";
 import CatalogProducts from "../../components/CatalogProducts/CatalogProducts";
+import SearchBox from "../../components/SearchBox/SearchBox";
 
 const WelcomePage = () => {
   const dispatch = useDispatch();
@@ -38,37 +39,42 @@ const WelcomePage = () => {
   };
 
   return (
-    <div className={css.container}>
-      <div className={css.head}>
-        <p className={css.subtitle}>Обирай, додавай у кошик, замовляй.</p>
+    <section className={css.page}>
+      {/* decorative columns (tablet+) */}
+      <span className={css.ornamentLeft} aria-hidden="true" />
+      <span className={css.ornamentRight} aria-hidden="true" />
+
+      {/* hero area */}
+      <div className={css.hero}>
+        <div className={css.searchWrap}>
+          <SearchBox />
+        </div>
       </div>
 
-      {isLoading && (
-        <div className={css.loaderWrap}>
-          <Loader />
-        </div>
-      )}
+      {/* main white card */}
+      <div className={css.catalogCard}>
+        {isLoading && (
+          <div className={css.loaderWrap}>
+            <Loader />
+          </div>
+        )}
 
-      {!isLoading && error && (
-        <div className={css.error}>
-          {typeof error === "string" ? error : "Помилка завантаження товарів"}
-        </div>
-      )}
+        {!isLoading && error && (
+          <div className={css.error}>
+            {typeof error === "string" ? error : "Помилка завантаження товарів"}
+          </div>
+        )}
 
-      {!isLoading && !error && (
-        <CatalogProducts
-          products={products}
-          pagination={{
-            page,
-            perPage,
-            totalPages,
-            hasNext,
-            hasPrev,
-          }}
-          onPageChange={handlePageChange}
-        />
-      )}
-    </div>
+        {!isLoading && !error && (
+          <CatalogProducts
+            products={products}
+            pagination={{ page, totalPages, hasNext, hasPrev }}
+            onPageChange={handlePageChange}
+            variant="welcome"
+          />
+        )}
+      </div>
+    </section>
   );
 };
 

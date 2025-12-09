@@ -1,7 +1,24 @@
 /* src/components/Header/Header.module.css */
 
 .header {
-  padding-top: 16px;
-  padding-bottom: 16px;
-  background-color: transparent;
+  width: 100%;
+  padding: 10px 0 12px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 393px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 768px) {
+  .header {
+    max-width: 900px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .header {
+    max-width: 1440px;
+    width: 100%;
+  }
 }

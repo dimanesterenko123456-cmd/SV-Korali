@@ -1,64 +1,44 @@
+/* src/components/CatalogProducts/CatalogProduct.module.css */
+
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  width: 100%;
+  margin: 0 auto;
+
+  /* ключове — обмежуємо ширину списку */
+  max-width: 820px;
 }
 
+/* мобайл лишається як є */
 .list {
+  display: grid;
+  gap: 12px;
   list-style: none;
   padding: 0;
   margin: 0;
-
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.empty {
-  font-size: 14px;
-  opacity: 0.7;
 }
 
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.pageBtn {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.pageBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.pageInfo {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
+/* Tablet */
 @media (min-width: 768px) {
-  .list {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+  .wrapper {
+    max-width: 900px;
   }
 
-  .pageBtn {
-    font-size: 13px;
+  .list {
+    gap: 14px;
   }
 }
 
+/* Desktop */
 @media (min-width: 1440px) {
-  .list {
-    grid-template-columns: repeat(4, 1fr);
+  .wrapper {
+    max-width: 980px; /* щоб не розтягувалось на весь Layout */
   }
 }

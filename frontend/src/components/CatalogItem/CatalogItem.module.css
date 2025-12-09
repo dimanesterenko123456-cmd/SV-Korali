@@ -1,58 +1,137 @@
+/* src/components/CatalogItem/CatalogItem.module.css */
+
 .card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 12px;
+  align-items: center;
+
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 10px 12px;
+
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+
+  opacity: 0;
+  transform: translateY(10px);
+  animation: itemEnter 320ms ease forwards;
+  will-change: transform, opacity;
 }
 
+@keyframes itemEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* фото зліва — компактніше */
 .imageWrap {
-  border-radius: 12px;
+  width: 96px;
+  height: 120px;
+  border-radius: 14px;
   overflow: hidden;
-  background: #f5f5f5;
-  aspect-ratio: 3 / 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #f3f3f3;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
+/* якщо нема фото — бордовий блок */
 .imagePlaceholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #f2f2f2, #fafafa);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6b0f0f, #3f0707);
+  opacity: 0.95;
 }
 
 .actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 82px;
 }
 
+/* ціна */
 .price {
-  font-size: 13px;
-  font-weight: 600;
+  background: #f1f1f1;
+  padding: 5px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
 }
 
+/* кнопка "В кошик" */
 .addBtn {
-  padding: 6px 10px;
-  border-radius: 10px;
-  border: none;
-  background: #1f2937;
-  color: #fff;
-  font-size: 11px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: 0.2s ease;
 }
 
 .addBtn:hover {
-  opacity: 0.9;
+  background: #f7f7f7;
+  transform: translateY(-1px);
+}
+
+.addBtn:active {
+  transform: translateY(0);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .card {
+    grid-template-columns: 110px 1fr auto;
+    padding: 12px 14px;
+    gap: 14px;
+    border-radius: 20px;
+  }
+
+  .imageWrap {
+    width: 110px;
+    height: 138px;
+    border-radius: 16px;
+  }
+
+  .imagePlaceholder {
+    border-radius: 16px;
+  }
+
+  .actions {
+    min-width: 90px;
+    gap: 9px;
+  }
+
+  .price {
+    font-size: 12.5px;
+  }
+
+  .addBtn {
+    height: 34px;
+    font-size: 12.5px;
+  }
+}
+
+/* Desktop (опціонально трохи повітря, але без "розтягу") */
+@media (min-width: 1440px) {
+  .card {
+    padding: 13px 16px;
+  }
 }
