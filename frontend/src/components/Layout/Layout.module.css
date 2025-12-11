@@ -30,7 +30,7 @@
   background-image: url("../../assets/Bruki22.svg");
   background-repeat: repeat-y;
   background-position: center top;
-  background-size: 60px 100px;
+  background-size: 300px 500px;
 
   filter: invert(14%) sepia(92%) saturate(6172%) hue-rotate(-6deg)
     brightness(93%) contrast(100%);
