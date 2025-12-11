@@ -1,7 +1,19 @@
-import css from "./CatalogProduct.module.css";
+// src/components/CatalogProducts/CatalogProducts.jsx
 import CatalogItem from "../CatalogItem/CatalogItem";
-const CatalogProducts = ({ products = [], pagination, onPageChange }) => {
-  const { page, totalPages, hasPrev, hasNext } = pagination || {};
+import css from "./CatalogProduct.module.css";
+
+const CatalogProducts = ({
+  products = [],
+  pagination,
+  onPageChange,
+  variant = "list",
+}) => {
+  const {
+    page = 1,
+    totalPages = 1,
+    hasPrev = false,
+    hasNext = false,
+  } = pagination || {};
 
   const handlePrev = () => {
     if (!hasPrev) return;
@@ -14,12 +26,14 @@ const CatalogProducts = ({ products = [], pagination, onPageChange }) => {
   };
 
   if (!products.length) {
-    return <p className={css.empty}>Товари не знайдено.</p>;
+    return <p className={css.empty}>No products found.</p>;
   }
 
+  const isWelcome = variant === "welcome";
+
   return (
-    <div className={css.wrapper}>
-      <ul className={css.list}>
+    <div className={isWelcome ? css.panelWelcome : css.panelDefault}>
+      <ul className={isWelcome ? css.grid : css.list}>
         {products.map((product) => (
           <CatalogItem key={product._id} product={product} />
         ))}
@@ -32,7 +46,7 @@ const CatalogProducts = ({ products = [], pagination, onPageChange }) => {
           onClick={handlePrev}
           disabled={!hasPrev}
         >
-          Назад
+          Prev
         </button>
 
         <span className={css.pageInfo}>
@@ -45,7 +59,7 @@ const CatalogProducts = ({ products = [], pagination, onPageChange }) => {
           onClick={handleNext}
           disabled={!hasNext}
         >
-          Далі
+          Next
         </button>
       </div>
     </div>

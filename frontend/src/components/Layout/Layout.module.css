@@ -1,8 +1,11 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+}
+
 .container {
   margin-left: auto;
   margin-right: auto;
-  padding: 0 16px;
-  background-color: var(--background);
   max-width: 393px;
   width: 100%;
   box-sizing: border-box;
@@ -13,21 +16,57 @@
 
 .main {
   flex: 1;
-  background-color: gray;
 }
 
+.ornament {
+  position: absolute;
+  top: 67px;
+  bottom: 15px;
+
+  width: 72px;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image: url("../../assets/Bruki22.svg");
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: 300px 500px;
+
+  filter: invert(14%) sepia(92%) saturate(6172%) hue-rotate(-6deg)
+    brightness(93%) contrast(100%);
+
+  display: none;
+}
+
+/* ліво/право */
+.ornamentLeft {
+  left: 0;
+}
+
+.ornamentRight {
+  right: 0;
+  transform: scaleX(-1);
+}
 @media (min-width: 768px) {
   .container {
-    padding: 0 16px;
-    max-width: 768px;
+    max-width: 900px;
     width: 100%;
   }
 }
 
 @media (min-width: 1440px) {
   .container {
-    padding: 0 64px;
-    max-width: 3000px;
+    max-width: 1440px;
     width: 100%;
+  }
+  .ornamentLeft {
+    left: 32px;
+  }
+
+  .ornamentRight {
+    right: 32px;
+  }
+  .ornament {
+    display: block;
   }
 }

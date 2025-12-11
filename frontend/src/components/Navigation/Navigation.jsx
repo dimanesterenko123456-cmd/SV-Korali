@@ -39,10 +39,6 @@ const Navigation = () => {
     <nav className={css.nav}>
       <div className={css.leftGroup}>
         <BurgerMenu onClick={handleBurgerClick} />
-
-        <button type="button" className={css.iconButton} aria-label="Search">
-          <FiSearch className={css.icon} />
-        </button>
       </div>
 
       <div className={css.center}>

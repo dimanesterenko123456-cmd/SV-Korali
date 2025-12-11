@@ -1,14 +1,29 @@
 .wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 8px 26px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
 }
 
 .link {
-  font-size: 28px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #111111;
   text-decoration: none;
-  font-weight: 500;
+  color: #111;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  display: block;
+}
+
+/* tablet */
+@media (min-width: 768px) {
+  .wrapper {
+    padding: 10px 34px;
+  }
+
+  .link {
+    font-size: 22px;
+  }
 }
