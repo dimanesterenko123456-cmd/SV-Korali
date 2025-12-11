@@ -2,46 +2,44 @@
 
 .page {
   position: relative;
-  padding: 16px 0 28px;
-  border-radius: 18px;
-  overflow: hidden;
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* HERO */
 .hero {
-  display: grid;
-  gap: 12px;
-  justify-items: center;
-  margin: 8px 0 16px;
-}
-
-.brandPill {
-  background: #ffffff;
-  border-radius: 999px;
-  padding: 10px 26px;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
 }
 
 .searchWrap {
   width: 100%;
-  max-width: 320px;
+  max-width: 900px;
 }
 
-/* MAIN CARD */
+/* велика біла картка під пошуком */
 .catalogCard {
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 14px 12px 18px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  max-width: 320px;
-  min-height: 360px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
+.catalogCard > * {
+  /* внутрішній контейнер з продуктами */
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 36px;
+  padding: 24px 18px 26px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* лоадер і помилка всередині білої картки */
 .loaderWrap {
   display: flex;
   justify-content: center;
@@ -49,86 +47,21 @@
 }
 
 .error {
-  padding: 12px;
-  border-radius: 10px;
-  background: rgba(255, 0, 0, 0.06);
-  font-size: 13px;
+  padding: 32px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #b00020;
 }
 
-/* ORNAMENTS - hidden on mobile */
-.ornamentLeft,
-.ornamentRight {
-  display: none;
-}
-
-/* TABLET */
+/* tablet */
 @media (min-width: 768px) {
-  .page {
-    padding: 22px 0 36px;
-    border-radius: 26px;
-  }
-
-  .hero {
-    gap: 14px;
-    margin-bottom: 22px;
-  }
-
-  .brandPill {
-    font-size: 22px;
-    padding: 12px 34px;
-  }
-
-  .searchWrap {
-    max-width: 420px;
-  }
-
-  .catalogCard {
-    padding: 22px 20px 26px;
-    max-width: 420px;
+  .catalogCard > * {
+    padding: 28px 28px 30px;
+    border-radius: 40px;
   }
 
   .ornamentLeft,
   .ornamentRight {
-    display: block;
-    position: absolute;
-    top: 90px; /* приблизно як у макеті */
-    width: 86px;
-    height: 420px;
-    background-repeat: repeat-y;
-    background-size: contain;
-    opacity: 0.95;
-    pointer-events: none;
-  }
-
-  /* ВАЖЛИВО:
-     підстав свій файл орнаменту:
-     наприклад /src/assets/ornament.png або .svg
-  */
-  .ornamentLeft {
-    left: 10px;
-    background-image: url("../../assets/ornament.png");
-  }
-
-  .ornamentRight {
-    right: 10px;
-    transform: scaleX(-1);
-    background-image: url("../../assets/ornament.png");
-  }
-}
-
-/* DESKTOP */
-@media (min-width: 1440px) {
-  .ornamentLeft,
-  .ornamentRight {
-    width: 110px;
-    height: 520px;
-    top: 100px;
-  }
-
-  .searchWrap {
-    max-width: 520px;
-  }
-  .catalogCard {
-    max-width: 520px;
+    opacity: 1;
   }
 }

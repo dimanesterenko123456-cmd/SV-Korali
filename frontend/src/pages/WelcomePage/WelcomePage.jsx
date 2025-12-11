@@ -40,10 +40,6 @@ const WelcomePage = () => {
 
   return (
     <section className={css.page}>
-      {/* decorative columns (tablet+) */}
-      <span className={css.ornamentLeft} aria-hidden="true" />
-      <span className={css.ornamentRight} aria-hidden="true" />
-
       {/* hero area */}
       <div className={css.hero}>
         <div className={css.searchWrap}>

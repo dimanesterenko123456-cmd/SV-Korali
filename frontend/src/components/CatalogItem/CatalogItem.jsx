@@ -1,12 +1,19 @@
+// src/components/CatalogItem/CatalogItem.jsx
 import ProductDetail from "../ProductDetail/ProductDetail";
 import css from "./CatalogItem.module.css";
 
-const CatalogItem = ({ product, index = 0 }) => {
+const CatalogItem = ({ product }) => {
   const mainImage =
-    product?.image || (Array.isArray(product?.images) ? product.images[0] : "");
+    product?.image ||
+    (Array.isArray(product?.images) && product.images.length > 0
+      ? product.images[0]
+      : "");
+
+  const price =
+    product?.price != null && product.price !== "" ? `${product.price} $` : "—";
 
   return (
-    <li className={css.card} style={{ "--i": index }}>
+    <li className={css.card}>
       <div className={css.imageWrap}>
         {mainImage ? (
           <img
@@ -20,16 +27,15 @@ const CatalogItem = ({ product, index = 0 }) => {
         )}
       </div>
 
-      <ProductDetail product={product} />
+      <div className={css.content}>
+        <ProductDetail product={product} />
 
-      <div className={css.actions}>
-        <span className={css.price}>
-          {product?.price != null ? `${product.price} $` : "—"}
-        </span>
-
-        <button type="button" className={css.addBtn}>
-          В кошик
-        </button>
+        <div className={css.actions}>
+          <span className={css.price}>{price}</span>
+          <button type="button" className={css.cartBtn}>
+            Cart
+          </button>
+        </div>
       </div>
     </li>
   );

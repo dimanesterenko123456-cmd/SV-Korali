@@ -1,44 +1,88 @@
 /* src/components/CatalogProducts/CatalogProduct.module.css */
 
-.wrapper {
+/* контейнер для іншої сторінки, якщо треба */
+.panelDefault {
   width: 100%;
-  margin: 0 auto;
-
-  /* ключове — обмежуємо ширину списку */
-  max-width: 820px;
 }
 
-/* мобайл лишається як є */
-.list {
-  display: grid;
-  gap: 12px;
+/* контейнер для Welcome (білу картку ми вже даємо з WelcomePage, 
+   тому тут лише внутрішній layout) */
+.panelWelcome {
+  width: 100%;
+}
+
+/* grid для карток, як на макеті 4×2 */
+.grid {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
 }
 
+/* fallback list-режим */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* pagination */
 .pagination {
+  margin-top: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-top: 16px;
 }
 
-/* Tablet */
+.pageBtn {
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: #f7f7f7;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pageInfo {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.empty {
+  text-align: center;
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+/* tablet: 3 колонки */
 @media (min-width: 768px) {
-  .wrapper {
-    max-width: 900px;
-  }
-
-  .list {
-    gap: 14px;
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 18px;
   }
 }
 
-/* Desktop */
+/* desktop: 4 колонки як на макеті */
 @media (min-width: 1440px) {
-  .wrapper {
-    max-width: 980px; /* щоб не розтягувалось на весь Layout */
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 26px 20px;
   }
 }
