@@ -1,3 +1,4 @@
+/* src/components/Layout/Layout.module.css */
 .page {
   position: relative;
   min-height: 100vh;
@@ -6,7 +7,7 @@
 .container {
   margin-left: auto;
   margin-right: auto;
-  max-width: 393px;
+
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -49,14 +50,12 @@
 }
 @media (min-width: 768px) {
   .container {
-    max-width: 900px;
     width: 100%;
   }
 }
 
 @media (min-width: 1440px) {
   .container {
-    max-width: 1440px;
     width: 100%;
   }
   .ornamentLeft {

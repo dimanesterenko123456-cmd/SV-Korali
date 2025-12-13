@@ -7,6 +7,8 @@ const OrderPage = lazy(() => import("./pages/OrderPage/OrderPage"));
 const AddProductPage = lazy(() =>
   import("./pages/AddProductPage/AddProductPage")
 );
+const CatalogPage = lazy(() => import("./pages/CatalogPage/CatalogPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage/AboutPage"));
 import "./App.css";
 import RestrictedRoute from "./routes/RestrictedRoute/RestrictedRoute";
 import PrivateRoute from "./routes/PrivateRoute/PrivateRoute";
@@ -46,7 +48,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<WelcomePage />} />
-
+          <Route path="catalog" element={<CatalogPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="cart" element={<CartPage />} />
           <Route element={<RestrictedRoute redirectTo="/" />}>
             <Route path="auth/:authType" element={<AuthPage />} />
 

@@ -22,10 +22,6 @@ const Navigation = () => {
   const isLoggedIn = Boolean(accessToken);
   const isAdmin = isLoggedIn && userRole === "admin";
 
-  const handleBurgerClick = () => {
-    console.log("Open sidebar menu");
-  };
-
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk()).unwrap();
@@ -39,18 +35,11 @@ const Navigation = () => {
     <nav className={css.nav}>
       {/* LEFT: burger + links */}
       <div className={css.left}>
-        <button
-          type="button"
-          className={css.burgerButton}
-          onClick={handleBurgerClick}
-          aria-label="Open menu"
-        >
-          <BurgerMenu />
-        </button>
+        <BurgerMenu />
 
         <div className={css.navLinks}>
           <NavLink
-            to="/"
+            to="/catalog"
             end
             className={({ isActive }) =>
               isActive ? `${css.navLink} ${css.navLinkActive}` : css.navLink
@@ -87,7 +76,7 @@ const Navigation = () => {
           </NavLink>
         )}
 
-        <NavLink to="/orders" className={css.iconButton} aria-label="Orders">
+        <NavLink to="/cart" className={css.iconButton} aria-label="Orders">
           <HiOutlineShoppingBag className={css.icon} />
         </NavLink>
 

@@ -1,0 +1,97 @@
+.card {
+  background: #f9fafb; /* gray-50 */
+  border-radius: 16px; /* rounded-2xl */
+  padding: 16px;
+}
+
+/* sticky тільки на desktop */
+@media (min-width: 1024px) {
+  .card {
+    position: sticky;
+    top: 96px;
+    padding: 24px;
+  }
+}
+
+.title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 18px;
+}
+
+.group {
+  display: grid;
+  gap: 18px;
+}
+
+.blockTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.items {
+  display: grid;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.row input {
+  width: 16px;
+  height: 16px;
+  accent-color: #c53030;
+}
+
+.row span {
+  font-size: 14px;
+  color: #374151;
+}
+
+.sep {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 18px;
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.applyBtn {
+  width: 100%;
+  background: #c53030;
+  color: #fff;
+  border: none;
+  height: 44px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.applyBtn:hover {
+  background: #9b2c2c;
+}
+
+.clearBtn {
+  width: 100%;
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  height: 44px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.clearBtn:hover {
+  background: #f9fafb;
+}

@@ -8,7 +8,6 @@ import {
   selectProductsLoading,
 } from "../../redux/selectors/productSelectors";
 import { fetchProductsThunk } from "../../redux/operations/productOperations";
-import Footer from "../../components/Footer/Footer";
 
 const WelcomePage = () => {
   const dispatch = useDispatch();
