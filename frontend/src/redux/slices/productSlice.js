@@ -19,6 +19,7 @@ const initialState = {
   hasPrevPage: false,
   isLoading: false,
   error: null,
+  currentRequestId: undefined,
 };
 
 const productsReducer = createSlice({
@@ -32,11 +33,14 @@ const productsReducer = createSlice({
   extraReducers: (builder) => {
     // fetchProducts
     builder
-      .addCase(fetchProductsThunk.pending, (state) => {
+      .addCase(fetchProductsThunk.pending, (state, action) => {
         state.isLoading = true;
         state.error = null;
+        state.currentRequestId = action.meta.requestId;
       })
       .addCase(fetchProductsThunk.fulfilled, (state, action) => {
+        if (state.currentRequestId !== action.meta.requestId) return;
+
         state.isLoading = false;
         state.items = action.payload.data || [];
         state.count = action.payload.count || 0;
