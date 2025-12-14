@@ -1,48 +1,194 @@
-.nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr; /* ключ */
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-}
+/* src/components/Navigation/Navigation.module.css */
 
-.leftGroup {
+.nav {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  justify-self: start;
+  justify-content: space-between;
+  gap: 16px;
 }
+
+/* LEFT: burger + links */
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+}
+
+.burgerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px; /* більше бургер */
+  height: 40px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: #ffffff;
+
+  padding: 0;
+  cursor: pointer;
+
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease,
+    border-color 0.2s ease;
+}
+
+.burgerButton:hover {
+  background: #f3f4f6;
+  border-color: rgba(148, 163, 184, 0.9);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+  transform: translateY(-1px);
+}
+
+.burgerButton:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.12);
+}
+
+/* текстові лінки біля бургера */
+
+.navLinks {
+  display: none; /* mobile-first: сховані, далі включимо */
+  align-items: center;
+  gap: 20px;
+}
+
+.navLink {
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  padding-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #b91c1c;
+  transition: width 0.22s ease;
+}
+
+.navLink:hover {
+  color: #111827;
+}
+
+.navLinkActive {
+  color: #111827;
+}
+
+.navLinkActive::after {
+  width: 100%;
+}
+
+/* CENTER: logo fixed in the middle of header */
 
 .center {
-  justify-self: center; /* лого тримається центру */
-  display: flex;
-  align-items: center;
-}
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 
-.rightGroup {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-self: end; /* притискаємо вправо */
-}
-
-/* кнопки іконок якщо треба */
-.iconButton {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  pointer-events: none; /* щоб не перекривати кліки по зонах зліва/справа */
 }
 
-/* tablet */
-@media (min-width: 768px) {
+.center > * {
+  pointer-events: auto; /* але сам логотип клікабельний */
+}
+
+/* RIGHT: icons */
+
+.actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.iconButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: #ffffff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease,
+    border-color 0.2s ease;
+}
+
+.iconButton:hover {
+  background: #f3f4f6;
+  border-color: rgba(148, 163, 184, 0.8);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  transform: translateY(-1px);
+}
+
+.iconButton:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.icon {
+  font-size: 16px;
+  color: #4b5563;
+}
+
+.adminButton {
+  border-color: rgba(185, 28, 28, 0.35);
+}
+
+.adminButton .icon {
+  color: #b91c1c;
+}
+
+/* MOBILE-FIRST */
+
+@media (max-width: 767px) {
+  .nav {
+    gap: 10px;
+  }
+
+  .actions {
+    gap: 8px;
+  }
+
   .iconButton {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* TABLET + DESKTOP */
+
+@media (min-width: 768px) {
+  .navLinks {
+    display: flex;
+  }
+}
+
+@media (min-width: 1440px) {
+  .nav {
+    gap: 24px;
   }
 }

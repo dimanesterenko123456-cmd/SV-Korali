@@ -1,4 +1,6 @@
 @import "modern-normalize/modern-normalize.css";
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap");
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -17,7 +19,8 @@
   box-sizing: border-box;
 }
 body {
-  font-family: var(--font-family);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+    sans-serif;
 }
 html {
   scrollbar-gutter: stable;

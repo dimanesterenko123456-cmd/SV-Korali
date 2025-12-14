@@ -7,8 +7,9 @@ import {
   selectAccessToken,
   selectAuthRefreshing,
   selectUserRole,
-} from "../../redux/selectors/authSelectors";
-import ProductCreateForm from "../../components/ProductCreateForm/ProductCreateForm";
+} from "../../../redux/selectors/authSelectors";
+import ProductCreateForm from "../../../components/ProductCreateForm/ProductCreateForm";
+import Loader from "../../../components/Loader/Loader";
 
 const AddProductPage = () => {
   const accessToken = useSelector(selectAccessToken);
@@ -16,7 +17,7 @@ const AddProductPage = () => {
   const role = useSelector(selectUserRole);
 
   if (isRefreshing) {
-    return <Loading />;
+    return <Loader />;
   }
 
   if (!accessToken) {
@@ -31,10 +32,11 @@ const AddProductPage = () => {
     <section className={css.page}>
       <div className={css.card}>
         <header className={css.header}>
+          <p className={css.badge}>Admin · Catalog</p>
           <h1 className={css.title}>Додати товар</h1>
           <p className={css.subtitle}>
             Заповніть інформацію про товар та додайте фото, щоб опублікувати
-            його в каталозі.
+            його в каталозі SV.Korali.
           </p>
         </header>
 

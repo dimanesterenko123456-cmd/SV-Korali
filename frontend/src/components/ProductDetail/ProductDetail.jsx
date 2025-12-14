@@ -6,19 +6,19 @@ const ProductDetail = ({ product }) => {
   const inStock =
     product?.inStock ?? (product?.countInStock > 0 ? true : false);
 
+  const categoryText = category
+    ? category.charAt(0).toUpperCase() + category.slice(1)
+    : "";
+
   return (
     <div className={css.info}>
       <h3 className={css.name} title={name}>
         {name}
       </h3>
 
-      <div className={css.meta}>
-        {category && <span className={css.category}>{category}</span>}
+      {categoryText && <p className={css.category}>{categoryText}</p>}
 
-        <span className={`${css.stock} ${inStock ? css.ok : css.no}`}>
-          {inStock ? "В наявності" : "Немає"}
-        </span>
-      </div>
+      {!inStock && <span className={css.outOfStock}>Немає</span>}
     </div>
   );
 };

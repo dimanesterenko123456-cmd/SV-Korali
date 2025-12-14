@@ -1,0 +1,151 @@
+.section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* desktop: два стовпці */
+@media (min-width: 1024px) {
+  .section {
+    grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+}
+
+.mainCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px 20px 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cardSubtitle {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.select {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 10px;
+  font-size: 12px;
+  background-color: #f9fafb;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 140px;
+  padding: 8px 4px 0;
+}
+
+.barWrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.bar {
+  width: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f97373, #dc2626);
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.footerStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.statValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.statMuted {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sideCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.sideTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.sideValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #b91c1c;
+  margin-bottom: 2px;
+}
+
+.sideNote {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background-color: #f3f4f6;
+  overflow: hidden;
+}
+
+.progressFill {
+  width: 68%;
+  height: 100%;
+  background: linear-gradient(90deg, #f97373, #dc2626);
+}

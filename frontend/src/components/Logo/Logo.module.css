@@ -1,29 +1,50 @@
+/* src/components/Logo/Logo.module.css */
+
 .wrapper {
-  background: #ffffff;
-  border-radius: 999px;
-  padding: 8px 26px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
 }
 
 .link {
-  text-decoration: none;
-  color: #111;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 26px 7px;
+  border-radius: 999px;
+  background: #ffffff;
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+
+  font-family: "Playfair Display", "Times New Roman", serif;
   font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  display: block;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #111827;
+  text-decoration: none;
+
+  transition: box-shadow 0.2s ease, transform 0.15s ease, border-color 0.2s ease,
+    background 0.2s ease;
 }
 
-/* tablet */
-@media (min-width: 768px) {
-  .wrapper {
-    padding: 10px 34px;
-  }
+.link:hover {
+  background: #fdfdfd;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
 
+.link:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* slightly smaller on mobile */
+
+@media (max-width: 767px) {
   .link {
-    font-size: 22px;
+    padding: 5px 18px 6px;
+    font-size: 15px;
+    letter-spacing: 0.14em;
   }
 }

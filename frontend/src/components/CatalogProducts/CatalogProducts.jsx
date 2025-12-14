@@ -31,6 +31,9 @@ const CatalogProducts = ({
 
   const isWelcome = variant === "welcome";
 
+  // масив сторінок 1..totalPages
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <div className={isWelcome ? css.panelWelcome : css.panelDefault}>
       <ul className={isWelcome ? css.grid : css.list}>
@@ -42,24 +45,39 @@ const CatalogProducts = ({
       <div className={css.pagination}>
         <button
           type="button"
-          className={css.pageBtn}
+          className={css.pageArrow}
           onClick={handlePrev}
           disabled={!hasPrev}
         >
-          Prev
+          «
         </button>
 
-        <span className={css.pageInfo}>
-          {page} / {totalPages}
-        </span>
+        <div className={css.pageNumbers}>
+          {pages.map((p) => {
+            const isActive = p === page;
+            return (
+              <button
+                key={p}
+                type="button"
+                className={`${css.pageNumber} ${
+                  isActive ? css.pageNumberActive : ""
+                }`}
+                onClick={() => onPageChange(p)}
+                disabled={isActive}
+              >
+                {p}
+              </button>
+            );
+          })}
+        </div>
 
         <button
           type="button"
-          className={css.pageBtn}
+          className={css.pageArrow}
           onClick={handleNext}
           disabled={!hasNext}
         >
-          Next
+          »
         </button>
       </div>
     </div>

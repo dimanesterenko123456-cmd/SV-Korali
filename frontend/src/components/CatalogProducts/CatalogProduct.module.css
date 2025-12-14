@@ -1,88 +1,80 @@
-/* src/components/CatalogProducts/CatalogProduct.module.css */
-
-/* контейнер для іншої сторінки, якщо треба */
-.panelDefault {
-  width: 100%;
-}
-
-/* контейнер для Welcome (білу картку ми вже даємо з WelcomePage, 
-   тому тут лише внутрішній layout) */
 .panelWelcome {
   width: 100%;
 }
 
-/* grid для карток, як на макеті 4×2 */
 .grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 16px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
-/* fallback list-режим */
+/* md: 2 cols */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+/* lg: 3 cols */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* list variant */
+.panelDefault {
+  width: 100%;
+}
+
 .list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* pagination */
-.pagination {
-  margin-top: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.pageBtn {
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #ffffff;
-  padding: 6px 14px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.pageBtn:hover:not(:disabled) {
-  background: #f7f7f7;
-}
-
-.pageBtn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.pageInfo {
-  font-size: 13px;
-  font-weight: 500;
+  display: grid;
+  gap: 16px;
 }
 
 .empty {
-  text-align: center;
+  padding: 18px;
+  color: #6b7280;
   font-size: 14px;
-  padding: 24px 0;
 }
 
-/* tablet: 3 колонки */
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px 18px;
-  }
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
 }
 
-/* desktop: 4 колонки як на макеті */
-@media (min-width: 1440px) {
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 26px 20px;
-  }
+.pageArrow,
+.pageNumber {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.pageArrow:hover,
+.pageNumber:hover {
+  background: #f9fafb;
+}
+
+.pageNumberActive {
+  background: #c53030;
+  color: #fff;
+  border-color: #c53030;
+}
+
+.pageArrow:disabled,
+.pageNumber:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pageNumbers {
+  display: flex;
+  gap: 8px;
 }

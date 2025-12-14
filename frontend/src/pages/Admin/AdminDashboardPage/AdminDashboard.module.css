@@ -1,0 +1,58 @@
+.page {
+  padding: 24px 16px 40px;
+}
+
+.header {
+  max-width: 1150px;
+  margin: 0 auto 20px;
+  text-align: left;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.breadcrumb span {
+  color: #4b5563;
+}
+
+.title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 28px;
+  line-height: 1.1;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  max-width: 640px;
+}
+
+.content {
+  max-width: 1150px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* desktop */
+@media (min-width: 1024px) {
+  .page {
+    padding: 32px 40px 48px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  .content {
+    gap: 28px;
+  }
+}

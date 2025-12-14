@@ -1,0 +1,84 @@
+/* ---------------- FOOTER ---------------- */
+
+.footer {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.footerTop {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footerBrand {
+  max-width: 320px;
+}
+
+.footerLogo {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.footerText {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.footerColumns {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.footerHeading {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.footerColumns ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.footerBottom {
+  margin-top: 18px;
+  border-top: 1px solid #1f2937;
+  padding-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.footerLegal {
+  display: flex;
+  gap: 12px;
+}
+@media (min-width: 768px) {
+  .footer {
+    padding: 28px 28px 22px;
+  }
+
+  .footerTop {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+@media (min-width: 1440px) {
+  .footer {
+    padding: 28px 28px 22px;
+  }
+
+  .footerTop {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

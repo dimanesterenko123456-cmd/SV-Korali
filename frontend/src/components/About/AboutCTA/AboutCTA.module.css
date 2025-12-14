@@ -1,0 +1,71 @@
+.section {
+  padding: 80px 0;
+  background: linear-gradient(90deg, #c53030 0%, #9b2c2c 100%);
+  color: #fff;
+}
+
+.container {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.text {
+  margin: 18px auto 0;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 28px;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primary {
+  padding: 14px 22px;
+  border-radius: 10px;
+  border: none;
+  background: #fff;
+  color: #c53030;
+  font-weight: 700;
+}
+
+.primary:hover {
+  filter: brightness(0.98);
+}
+
+.secondary {
+  padding: 14px 22px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+}
+
+.secondary:hover {
+  background: #fff;
+  color: #c53030;
+}
+
+@media (max-width: 520px) {
+  .title {
+    font-size: 36px;
+  }
+  .text {
+    font-size: 16px;
+  }
+}

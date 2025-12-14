@@ -22,10 +22,6 @@ const Navigation = () => {
   const isLoggedIn = Boolean(accessToken);
   const isAdmin = isLoggedIn && userRole === "admin";
 
-  const handleBurgerClick = () => {
-    console.log("Open sidebar menu");
-  };
-
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk()).unwrap();
@@ -37,30 +33,42 @@ const Navigation = () => {
 
   return (
     <nav className={css.nav}>
-      <div className={css.leftGroup}>
-        <BurgerMenu onClick={handleBurgerClick} />
+      {/* LEFT: burger + links */}
+      <div className={css.left}>
+        <BurgerMenu />
+
+        <div className={css.navLinks}>
+          <NavLink
+            to="/catalog"
+            end
+            className={({ isActive }) =>
+              isActive ? `${css.navLink} ${css.navLinkActive}` : css.navLink
+            }
+          >
+            Catalog
+          </NavLink>
+
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive ? `${css.navLink} ${css.navLinkActive}` : css.navLink
+            }
+          >
+            About
+          </NavLink>
+        </div>
       </div>
 
+      {/* CENTER: fixed logo */}
       <div className={css.center}>
         <Logo />
       </div>
 
-      <div className={css.rightGroup}>
-        {/* <button type="button" className={css.langButton}>
-          UA/EN
-        </button> */}
-
-        <NavLink
-          to="/auth/login" // відкриваємо форму логіну
-          className={css.iconButton}
-          aria-label="Profile"
-        >
-          <FiUser className={css.icon} />
-        </NavLink>
-
+      {/* RIGHT: admin, cart, profile, logout */}
+      <div className={css.actions}>
         {isAdmin && (
           <NavLink
-            to="/admin/add-product"
+            to="/admin"
             className={`${css.iconButton} ${css.adminButton}`}
             aria-label="Add or edit products"
           >
@@ -68,8 +76,16 @@ const Navigation = () => {
           </NavLink>
         )}
 
-        <NavLink to="/orders" className={css.iconButton} aria-label="Orders">
+        <NavLink to="/cart" className={css.iconButton} aria-label="Orders">
           <HiOutlineShoppingBag className={css.icon} />
+        </NavLink>
+
+        <NavLink
+          to="/auth/login"
+          className={css.iconButton}
+          aria-label="Profile"
+        >
+          <FiUser className={css.icon} />
         </NavLink>
 
         {isLoggedIn && (

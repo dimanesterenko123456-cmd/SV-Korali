@@ -1,3 +1,4 @@
+// src/routes/PrivateRoute/PrivateRoute.jsx
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
@@ -7,7 +8,7 @@ import {
 } from "../../redux/selectors/authSelectors";
 import Loader from "../../components/Loader/Loader";
 
-const PrivateRoute = ({ redirectTo = "/auth/login" }) => {
+const PrivateRoute = ({ redirectTo = "/auth/login", children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isRefreshing = useSelector(selectAuthRefreshing);
 
@@ -17,6 +18,10 @@ const PrivateRoute = ({ redirectTo = "/auth/login" }) => {
 
   if (!isLoggedIn && !isRefreshing) {
     return <Navigate to={redirectTo} replace />;
+  }
+
+  if (children) {
+    return <>{children}</>;
   }
 
   return <Outlet />;

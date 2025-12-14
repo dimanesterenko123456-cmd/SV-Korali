@@ -1,0 +1,91 @@
+.toolbar {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+/* md: як в HTML "justify-between" */
+@media (min-width: 768px) {
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}
+
+.showing {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.count {
+  font-weight: 600;
+  color: #111827;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .controls {
+    justify-content: flex-end;
+  }
+}
+
+.select {
+  height: 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0 14px;
+  background: #fff;
+  font-size: 14px;
+  color: #374151;
+}
+
+.select:focus {
+  border-color: #c53030;
+  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.15);
+}
+
+.viewToggle {
+  display: inline-flex;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.viewBtn {
+  width: 44px;
+  height: 40px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  border: none;
+}
+
+.viewBtn:hover {
+  background: #f9fafb;
+}
+
+.viewBtnActive {
+  background: #c53030;
+  color: #fff;
+}
+
+.searchWrap {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .searchWrap {
+    width: 240px;
+  }
+}
