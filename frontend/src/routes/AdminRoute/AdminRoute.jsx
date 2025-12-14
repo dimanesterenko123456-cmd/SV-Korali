@@ -1,14 +1,15 @@
-// src/routes/PrivateRoute/PrivateRoute.jsx
+// src/routes/AdminRoute/AdminRoute.jsx
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-
 import {
-  selectAuthRefreshing,
+  selectUserRole,
   selectIsLoggedIn,
+  selectAuthRefreshing,
 } from "../../redux/selectors/authSelectors";
 import Loader from "../../components/Loader/Loader";
 
-const PrivateRoute = ({ redirectTo = "/auth/login", children }) => {
+const AdminRoute = ({ redirectTo = "/", children }) => {
+  const role = useSelector(selectUserRole);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isRefreshing = useSelector(selectAuthRefreshing);
 
@@ -16,7 +17,7 @@ const PrivateRoute = ({ redirectTo = "/auth/login", children }) => {
     return <Loader />;
   }
 
-  if (!isLoggedIn && !isRefreshing) {
+  if (!isLoggedIn || role !== "admin") {
     return <Navigate to={redirectTo} replace />;
   }
 
@@ -27,4 +28,4 @@ const PrivateRoute = ({ redirectTo = "/auth/login", children }) => {
   return <Outlet />;
 };
 
-export default PrivateRoute;
+export default AdminRoute;

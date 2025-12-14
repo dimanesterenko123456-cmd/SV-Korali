@@ -68,7 +68,7 @@ const Navigation = () => {
       <div className={css.actions}>
         {isAdmin && (
           <NavLink
-            to="/admin/add-product"
+            to="/admin"
             className={`${css.iconButton} ${css.adminButton}`}
             aria-label="Add or edit products"
           >

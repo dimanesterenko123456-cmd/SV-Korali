@@ -8,6 +8,7 @@ import {
   selectProductsLoading,
 } from "../../redux/selectors/productSelectors";
 import { fetchProductsThunk } from "../../redux/operations/productOperations";
+import Loader from "../../components/Loader/Loader";
 
 const WelcomePage = () => {
   const dispatch = useDispatch();
@@ -68,7 +69,12 @@ const WelcomePage = () => {
         <div className={css.heroImage}>
           <div className={css.heroImageInner}>
             {/* TODO: replace with real image */}
-            <div className={css.heroImagePlaceholder}>Hero image</div>
+            <div className={css.heroImagePlaceholder}>
+              <img
+                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/0e82f14940-ac7845b89357a66fa82e.png"
+                alt="Hero image"
+              />
+            </div>
           </div>
 
           <div className={css.heroBadge}>
@@ -91,7 +97,9 @@ const WelcomePage = () => {
         </p>
 
         {isLoading && (
-          <div className={css.featuredLoader}>Loading products…</div>
+          <div className={css.featuredLoader}>
+            <Loader />
+          </div>
         )}
 
         {!isLoading && error && (
@@ -211,7 +219,12 @@ const WelcomePage = () => {
 
         <div className={css.heritageImageWrap}>
           {/* TODO: replace with real photo */}
-          <div className={css.heritageImagePlaceholder}>Heritage image</div>
+          <div className={css.heritageImagePlaceholder}>
+            <image
+              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7f9deb7d07-a976c3a50a3a1e38c218.png"
+              alt="Heritage image"
+            />
+          </div>
         </div>
       </section>
 

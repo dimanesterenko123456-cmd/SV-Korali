@@ -1,0 +1,100 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--admin-coral-600, #c53030);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.brandText {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #9ca3af;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.icon {
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.link:hover {
+  background: rgba(31, 41, 55, 0.9);
+  color: #f9fafb;
+  transform: translateY(-1px);
+}
+
+.linkActive {
+  background: var(--admin-coral-600, #c53030);
+  color: #fff;
+}
+
+.userBlock {
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-weight: 500;
+}
+
+.userEmail {
+  font-size: 11px;
+  color: #9ca3af;
+}

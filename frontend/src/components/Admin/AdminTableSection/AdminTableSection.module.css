@@ -1,0 +1,115 @@
+.section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* desktop: дві колонки */
+@media (min-width: 1024px) {
+  .section {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr);
+  }
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px 18px 14px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.badge {
+  min-width: 26px;
+  height: 22px;
+  border-radius: 999px;
+  padding: 0 8px;
+  background-color: #f3f4ff;
+  color: #4f46e5;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  font-size: 13px;
+  padding: 8px 4px;
+}
+
+.th {
+  text-align: left;
+  font-weight: 600;
+  color: #9ca3af;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.thRight {
+  text-align: right;
+  font-weight: 600;
+  color: #9ca3af;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tdPrimary {
+  color: #111827;
+  font-weight: 500;
+}
+
+.td {
+  color: #6b7280;
+}
+
+.tdRight {
+  text-align: right;
+  color: #111827;
+  font-weight: 500;
+}
+
+.tdStatus {
+  padding-top: 6px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.statusPaid {
+  background-color: #ecfdf3;
+  color: #15803d;
+}
+
+.statusShipped {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.statusPending {
+  background-color: #fef3c7;
+  color: #92400e;
+}

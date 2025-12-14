@@ -113,12 +113,15 @@
 
 .heroImage {
   position: relative;
-  max-width: 360px;
+  max-width: 900px;
+  height: 584px;
   justify-self: center;
 }
 
 .heroImageInner {
   border-radius: 26px;
+  max-width: 900px;
+  height: 584px;
   overflow: hidden;
   background: radial-gradient(circle at top, #ffede1, #ffcbb5 55%, #f7a489);
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.18);

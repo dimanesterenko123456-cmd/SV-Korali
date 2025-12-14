@@ -7,9 +7,9 @@ import {
   selectAccessToken,
   selectAuthRefreshing,
   selectUserRole,
-} from "../../redux/selectors/authSelectors";
-import ProductCreateForm from "../../components/ProductCreateForm/ProductCreateForm";
-import Loader from "../../components/Loader/Loader";
+} from "../../../redux/selectors/authSelectors";
+import ProductCreateForm from "../../../components/ProductCreateForm/ProductCreateForm";
+import Loader from "../../../components/Loader/Loader";
 
 const AddProductPage = () => {
   const accessToken = useSelector(selectAccessToken);
