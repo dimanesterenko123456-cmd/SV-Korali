@@ -1,5 +1,5 @@
 import { FaBars, FaBell, FaQuestionCircle } from "react-icons/fa";
-import css from "./AdminTopbar.module.css";
+import css from "./AdminTopBar.module.css";
 
 const AdminTopbar = () => {
   return (
