@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa";
 
 import { GiHeartNecklace } from "react-icons/gi";
-import css from "./AdminSidebar.module.css";
+import css from "./AdminSideBar.module.css";
 
 const AdminSidebar = () => {
   return (
