@@ -1,7 +1,11 @@
 import ProductDetail from "../ProductDetail/ProductDetail";
 import css from "./CatalogItem.module.css";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/slices/cartSlice";
 
 const CatalogItem = ({ product }) => {
+  const dispatch = useDispatch();
+
   const mainImage =
     product?.image ||
     (Array.isArray(product?.images) && product.images.length > 0
@@ -84,8 +88,12 @@ const CatalogItem = ({ product }) => {
           )}
         </div>
 
-        <button type="button" className={css.cartBtn}>
-          Add to Cart
+        <button
+          type="button"
+          className={css.cartBtn}
+          onClick={() => dispatch(addToCart(product))}
+        >
+          Add to cart
         </button>
       </div>
     </li>

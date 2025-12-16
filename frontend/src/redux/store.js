@@ -14,6 +14,7 @@ import storage from "redux-persist/lib/storage";
 import { setAuthHeader } from "../axiosConfig/api";
 import authReducer from "./slices/authSlice.js";
 import productsReducer from "./slices/productSlice.js";
+import cartReducer from "./slices/cartSlice.js";
 
 const persistedToken =
   typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
@@ -24,6 +25,7 @@ if (persistedToken) {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  cart: cartReducer,
   products: productsReducer,
 });
 

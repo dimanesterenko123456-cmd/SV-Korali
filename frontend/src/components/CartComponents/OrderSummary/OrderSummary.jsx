@@ -16,6 +16,7 @@ const OrderSummary = ({
   onPromoChange,
   onApplyPromo,
   onCheckout,
+  isProcessing = false,
 }) => {
   return (
     <div className={css.card}>
@@ -61,8 +62,13 @@ const OrderSummary = ({
         </div>
       </div>
 
-      <button type="button" className={css.checkout} onClick={onCheckout}>
-        Proceed to Checkout
+      <button
+        type="button"
+        className={css.checkout}
+        onClick={onCheckout}
+        disabled={isProcessing}
+      >
+        {isProcessing ? "Redirecting..." : "Proceed to Checkout"}
       </button>
 
       <div className={css.flags}>
