@@ -7,6 +7,17 @@ import CartItems from "../../components/CartComponents/CartItems/CartItems";
 import OrderSummary from "../../components/CartComponents/OrderSummary/OrderSummary";
 import Recommended from "../../components/CartComponents/Recommendation/Recommended";
 
+import {
+  clearCart,
+  decreaseQuantity,
+  increaseQuantity,
+  removeFromCart,
+} from "../../redux/slices/cartSlice";
+import {
+  selectCartCount,
+  selectCartItems,
+} from "../../redux/selectors/cartSelectors";
+
 // ✅ helpers
 const toNumber = (v) => {
   const n = Number(v);
@@ -17,20 +28,8 @@ const qtyOf = (item) => item?.quantity ?? item?.qty ?? item?.count ?? 1;
 
 const CartPage = () => {
   const dispatch = useDispatch();
-
-  /**
-   * ✅ ТУТ ЄДИНЕ МІСЦЕ, ДЕ ТИ ПІДКЛЮЧАЄШ СВОЇ СЕЛЕКТОРИ
-   * Заміняй на твої:
-   *  - selectCartItems
-   *  - selectCartCount
-   *  - selectRecommendedProducts (опційно)
-   */
-  const items =
-    useSelector((state) => state.cart?.items || state.cart?.cartItems || []) ||
-    [];
-  const itemsCount =
-    useSelector((state) => state.cart?.count || state.cart?.itemsCount) ??
-    items.length;
+  const items = useSelector(selectCartItems);
+  const itemsCount = useSelector(selectCartCount);
 
   // recommended: можеш замінити на свої дані
   const recommended =
@@ -59,25 +58,13 @@ const CartPage = () => {
    * - cartRemove(id)
    * - cartClear()
    */
-  const onIncrease = (id) => {
-    // dispatch(cartIncrease(id));
-    console.log("increase", id);
-  };
+  const onIncrease = (id) => dispatch(increaseQuantity(id));
 
-  const onDecrease = (id) => {
-    // dispatch(cartDecrease(id));
-    console.log("decrease", id);
-  };
+  const onDecrease = (id) => dispatch(decreaseQuantity(id));
 
-  const onRemove = (id) => {
-    // dispatch(cartRemove(id));
-    console.log("remove", id);
-  };
+  const onRemove = (id) => dispatch(removeFromCart(id));
 
-  const onClear = () => {
-    // dispatch(cartClear());
-    console.log("clear");
-  };
+  const onClear = () => dispatch(clearCart());
 
   const onApplyPromo = () => {
     console.log("apply promo", promo);

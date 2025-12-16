@@ -12,6 +12,7 @@ import {
   selectAccessToken,
   selectUserRole,
 } from "../../redux/selectors/authSelectors";
+import { selectCartCount } from "../../redux/selectors/cartSelectors";
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const Navigation = () => {
 
   const accessToken = useSelector(selectAccessToken);
   const userRole = useSelector(selectUserRole);
+  const cartCount = useSelector(selectCartCount);
   const isLoggedIn = Boolean(accessToken);
   const isAdmin = isLoggedIn && userRole === "admin";
 
@@ -35,7 +37,7 @@ const Navigation = () => {
     <nav className={css.nav}>
       {/* LEFT: burger + links */}
       <div className={css.left}>
-        <BurgerMenu />
+        {/* <BurgerMenu /> */}
 
         <div className={css.navLinks}>
           <NavLink
@@ -76,8 +78,13 @@ const Navigation = () => {
           </NavLink>
         )}
 
-        <NavLink to="/cart" className={css.iconButton} aria-label="Orders">
+        <NavLink
+          to="/cart"
+          className={`${css.iconButton} ${css.cartButton}`}
+          aria-label="Orders"
+        >
           <HiOutlineShoppingBag className={css.icon} />
+          {cartCount > 0 && <span className={css.cartBadge}>{cartCount}</span>}
         </NavLink>
 
         <NavLink
