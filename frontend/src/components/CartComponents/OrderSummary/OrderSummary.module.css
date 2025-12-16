@@ -131,6 +131,14 @@
 .checkout:hover {
   background: #9b2c2c;
 }
+.checkout:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.checkout:disabled:hover {
+  background: #c53030;
+}
 
 .flags {
   display: flex;

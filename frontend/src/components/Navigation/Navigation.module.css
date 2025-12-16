@@ -161,6 +161,10 @@
 .adminButton .icon {
   color: #b91c1c;
 }
+.cartButton {
+  position: relative;
+  isolation: isolate;
+}
 
 .cartBadge {
   position: absolute;
