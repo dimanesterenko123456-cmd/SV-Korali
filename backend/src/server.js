@@ -8,11 +8,18 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import router from './router/index.js';
 import { corsOptions } from './corsOptions.js';
+import { handleStripeWebhookController } from './controllers/payments.js';
 
 const PORT = Number(getEnvVar('PORT', '3000'));
 
 export const startServer = () => {
   const app = express();
+
+  app.post(
+    '/payments/webhook',
+    express.raw({ type: 'application/json' }),
+    handleStripeWebhookController,
+  );
 
   app.use(
     express.json({
