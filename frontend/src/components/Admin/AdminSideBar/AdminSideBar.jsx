@@ -24,7 +24,7 @@ const AdminSidebar = () => {
       </div>
 
       <nav className={css.nav}>
-        <NavLink
+        {/* <NavLink
           to="/admin"
           end
           className={({ isActive }) =>
@@ -33,7 +33,7 @@ const AdminSidebar = () => {
         >
           <FaHome className={css.icon} />
           <span>Dashboard</span>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink
           to="/admin/products"
@@ -54,17 +54,8 @@ const AdminSidebar = () => {
           <FaRegPlusSquare className={css.icon} />
           <span>Add new</span>
         </NavLink>
-        {/* <NavLink
-          to="/admin/orders"
-          className={({ isActive }) =>
-            `${css.link} ${isActive ? css.linkActive : ""}`
-          }
-        >
-          <FaShoppingCart className={css.icon} />
-          <span>Orders</span>
-        </NavLink> */}
 
-        <NavLink
+        {/* <NavLink
           to="/admin/customers"
           className={({ isActive }) =>
             `${css.link} ${isActive ? css.linkActive : ""}`
@@ -72,9 +63,9 @@ const AdminSidebar = () => {
         >
           <FaUsers className={css.icon} />
           <span>Customers</span>
-        </NavLink>
+        </NavLink> */}
 
-        <NavLink
+        {/* <NavLink
           to="/admin/analytics"
           className={({ isActive }) =>
             `${css.link} ${isActive ? css.linkActive : ""}`
@@ -82,9 +73,9 @@ const AdminSidebar = () => {
         >
           <FaChartBar className={css.icon} />
           <span>Analytics</span>
-        </NavLink>
+        </NavLink> */}
 
-        <NavLink
+        {/* <NavLink
           to="/admin/collections"
           className={({ isActive }) =>
             `${css.link} ${isActive ? css.linkActive : ""}`
@@ -92,17 +83,17 @@ const AdminSidebar = () => {
         >
           <FaTags className={css.icon} />
           <span>Collections</span>
-        </NavLink>
+        </NavLink> */}
 
-        <NavLink
+        {/* <NavLink
           to="/admin/settings"
           className={({ isActive }) =>
             `${css.link} ${isActive ? css.linkActive : ""}`
           }
-        >
-          <FaCog className={css.icon} />
+        > */}
+        {/* <FaCog className={css.icon} />
           <span>Settings</span>
-        </NavLink>
+        </NavLink> */}
       </nav>
 
       <div className={css.userBlock}>

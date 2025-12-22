@@ -25,6 +25,9 @@ const AdminTopbar = () => {
         <button type="button" className={css.iconBtn} aria-label="Help">
           <FaQuestionCircle />
         </button>
+        <a className={css.breadcrumbLink} href="/">
+          Home
+        </a>{" "}
       </div>
     </header>
   );

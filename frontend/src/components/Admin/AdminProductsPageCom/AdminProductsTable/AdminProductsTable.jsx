@@ -1,4 +1,3 @@
-// src/components/Admin/AdminProductsTable/AdminProductsTable.jsx
 import {
   FiSearch,
   FiEye,
@@ -19,28 +18,20 @@ const getMainImage = (product) => {
   return null;
 };
 
+// ✅ бекенд: тільки countInStock
 const getStockInfo = (product) => {
-  const count =
-    typeof product?.countInStock === "number"
-      ? product.countInStock
-      : typeof product?.stock === "number"
-      ? product.stock
-      : 0;
+  const count = Number(product?.countInStock) || 0;
 
-  if (count <= 0) {
-    return { label: "Out of stock", variant: "out" };
-  }
-  if (count <= 5) {
-    return { label: `${count} in stock`, variant: "low" };
-  }
+  if (count <= 0) return { label: "Out of stock", variant: "out" };
+  if (count <= 5) return { label: `${count} in stock`, variant: "low" };
   return { label: `${count} in stock`, variant: "ok" };
 };
 
+// ✅ status беремо з inStock, якщо нема — рахуємо від countInStock
 const getStatusInfo = (product) => {
+  const count = Number(product?.countInStock) || 0;
   const isActive =
-    typeof product?.isActive === "boolean"
-      ? product.isActive
-      : product?.inStock ?? true;
+    typeof product?.inStock === "boolean" ? product.inStock : count > 0;
 
   return isActive
     ? { label: "Active", variant: "active" }
