@@ -104,7 +104,7 @@
 .pageArrow,
 .pageNumber {
   flex: 0 0 auto;
-
+  cursor: pointer;
   width: 40px;
   height: 40px;
   border-radius: 12px;
@@ -122,8 +122,12 @@
 
 .pageNumberActive {
   background: #c53030;
-  color: #fff;
+
   border-color: #c53030;
+}
+
+.pageNumberActive:hover {
+  background: #c53030;
 }
 
 .pageArrow:disabled,

@@ -240,3 +240,66 @@
 .clearBtn:hover {
   background: #f9fafb;
 }
+.priceInputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.priceField {
+  display: grid;
+  gap: 6px;
+}
+
+.priceFieldLabel {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.priceControl {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency {
+  position: absolute;
+  left: 10px;
+  color: #9ca3af;
+  font-weight: 700;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.priceInput {
+  width: 100%;
+  height: 38px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0 10px 0 22px;
+  background: #fff;
+  font-size: 13px;
+  color: #111827;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.priceInput:focus {
+  outline: none;
+  border-color: #c53030;
+  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.12);
+}
+
+/* прибрати стрілочки в number для більш “чистого” вигляду */
+.priceInput::-webkit-outer-spin-button,
+.priceInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (max-width: 360px) {
+  .priceInputs {
+    grid-template-columns: 1fr;
+  }
+}

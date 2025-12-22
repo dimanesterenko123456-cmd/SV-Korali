@@ -1,10 +1,17 @@
 import ProductDetail from "../ProductDetail/ProductDetail";
 import css from "./CatalogItem.module.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { selectAccessToken } from "../../redux/selectors/authSelectors";
 
 const CatalogItem = ({ product }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const accessToken = useSelector(selectAccessToken);
+  const isLoggedIn = Boolean(accessToken);
 
   const mainImage =
     product?.image ||
@@ -25,34 +32,23 @@ const CatalogItem = ({ product }) => {
     product?.rating ?? product?.avgRating ?? product?.averageRating ?? 0
   );
   const showRating = Number.isFinite(ratingValue) && ratingValue > 0;
-
   const rounded = Math.round(ratingValue);
+
+  const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      navigate("/auth/login", {
+        state: { from: location.pathname + location.search },
+        replace: false,
+      });
+      return;
+    }
+
+    dispatch(addToCart(product));
+  };
 
   return (
     <li className={css.card}>
       <div className={css.imageWrap}>
-        <button
-          type="button"
-          className={css.wishBtn}
-          aria-label="Add to wishlist"
-        >
-          <svg
-            className={css.wishIcon}
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 21s-7.2-4.6-9.6-8.6C.5 9 2.3 5.8 5.7 5.2c1.9-.3 3.7.5 4.7 2 1-1.5 2.8-2.3 4.7-2 3.4.6 5.2 3.8 3.3 7.2C19.2 16.4 12 21 12 21z"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-
         {mainImage ? (
           <img
             src={mainImage}
@@ -88,11 +84,7 @@ const CatalogItem = ({ product }) => {
           )}
         </div>
 
-        <button
-          type="button"
-          className={css.cartBtn}
-          onClick={() => dispatch(addToCart(product))}
-        >
+        <button type="button" className={css.cartBtn} onClick={handleAddToCart}>
           Add to cart
         </button>
       </div>

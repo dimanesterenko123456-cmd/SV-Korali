@@ -82,25 +82,6 @@ const OrderSummary = ({
           <span>Free Shipping</span>
         </div>
       </div>
-
-      <div className={css.payments}>
-        <p className={css.payText}>We accept:</p>
-
-        <div className={css.payRow}>
-          <span className={css.payBox}>
-            <FaCcVisa />
-          </span>
-          <span className={css.payBox}>
-            <FaCcMastercard />
-          </span>
-          <span className={css.payBox}>
-            <FaCcAmex />
-          </span>
-          <span className={css.payBox}>
-            <FaPaypal />
-          </span>
-        </div>
-      </div>
     </div>
   );
 };

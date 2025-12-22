@@ -1,6 +1,18 @@
+import { useEffect, useState } from "react";
 import css from "./CatalogFilters.module.css";
 
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+const toSafeInt = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
+
+const stripLeadingZeros = (str) => {
+  if (str === "") return "";
+  const cleaned = str.replace(/^0+(?=\d)/, "");
+  return cleaned === "" ? "0" : cleaned;
+};
 
 const CatalogFilters = ({
   filtersDraft,
@@ -24,22 +36,89 @@ const CatalogFilters = ({
     currentMax
   );
 
-  const handleMinChange = (e) => {
-    const nextMin = clamp(Number(e.target.value), minLimit, currentMax);
-    onDraftChange("priceMin", nextMin);
+  // ✅ Текстовий стан інпутів (щоб не було 0 попереду)
+  const [minText, setMinText] = useState(String(currentMin));
+  const [maxText, setMaxText] = useState(String(currentMax));
+
+  // коли значення змінюються ззовні (слайдер/clear/apply) — синхронізуємо текст
+  useEffect(() => {
+    setMinText(String(currentMin));
+  }, [currentMin]);
+
+  useEffect(() => {
+    setMaxText(String(currentMax));
+  }, [currentMax]);
+
+  const applyMinNumber = (num) => {
+    const v = clamp(num, minLimit, currentMax);
+    onDraftChange("priceMin", v);
   };
 
-  const handleMaxChange = (e) => {
-    const raw = clamp(Number(e.target.value), minLimit, maxLimit);
+  const applyMaxNumber = (num) => {
+    const raw = clamp(num, minLimit, maxLimit);
 
-    // ✅ якщо користувач поставив на максимум — це "без обмеження"
+    // якщо max == maxLimit => "Any" (null)
     const nextMax = raw >= maxLimit ? null : raw;
-
     const nextMaxValue = nextMax === null ? maxLimit : nextMax;
+
     const nextMin = Math.min(currentMin, nextMaxValue);
 
     onDraftChange("priceMin", nextMin);
     onDraftChange("priceMax", nextMax);
+  };
+
+  const onMinInputChange = (e) => {
+    // дозволяємо тільки цифри
+    let v = e.target.value.replace(/[^\d]/g, "");
+    v = stripLeadingZeros(v);
+    setMinText(v);
+
+    // якщо є число — одразу застосовуємо (без blur)
+    if (v !== "") applyMinNumber(toSafeInt(v));
+  };
+
+  const onMaxInputChange = (e) => {
+    let v = e.target.value.replace(/[^\d]/g, "");
+    v = stripLeadingZeros(v);
+    setMaxText(v);
+
+    if (v !== "") applyMaxNumber(toSafeInt(v));
+    // якщо пусто — візуально пусто, а реальний стейт зробимо onBlur
+  };
+
+  const onMinBlur = () => {
+    if (minText === "") {
+      setMinText("0");
+      applyMinNumber(0);
+      return;
+    }
+    applyMinNumber(toSafeInt(minText));
+    setMinText(String(clamp(toSafeInt(minText), minLimit, currentMax)));
+  };
+
+  const onMaxBlur = () => {
+    if (maxText === "") {
+      // пустий max = Any
+      setMaxText(String(maxLimit));
+      applyMaxNumber(maxLimit);
+      return;
+    }
+    const num = toSafeInt(maxText);
+    applyMaxNumber(num);
+
+    // показуємо вже “піджатий” варіант
+    const normalized = clamp(num, minLimit, maxLimit);
+    setMaxText(String(normalized));
+  };
+
+  const setMinFromRange = (val) => {
+    const v = clamp(Number(val), minLimit, currentMax);
+    onDraftChange("priceMin", v);
+  };
+
+  const setMaxFromRange = (val) => {
+    const raw = clamp(Number(val), minLimit, maxLimit);
+    applyMaxNumber(raw);
   };
 
   return (
@@ -107,12 +186,42 @@ const CatalogFilters = ({
       <div className={`${css.block} ${css.borderTop}`}>
         <p className={css.label}>Price Range</p>
 
-        <div className={css.rangeHead}>
-          <span className={css.rangeValue}>${currentMin}</span>
-          <span className={css.rangeDash}>—</span>
-          <span className={css.rangeValue}>${currentMax}</span>
+        {/* інпути */}
+        <div className={css.priceInputs}>
+          <label className={css.priceField}>
+            <span className={css.priceFieldLabel}>Min</span>
+            <div className={css.priceControl}>
+              <span className={css.currency}>$</span>
+              <input
+                className={css.priceInput}
+                type="text"
+                inputMode="numeric"
+                value={minText}
+                onChange={onMinInputChange}
+                onBlur={onMinBlur}
+                placeholder="0"
+              />
+            </div>
+          </label>
+
+          <label className={css.priceField}>
+            <span className={css.priceFieldLabel}>Max</span>
+            <div className={css.priceControl}>
+              <span className={css.currency}>$</span>
+              <input
+                className={css.priceInput}
+                type="text"
+                inputMode="numeric"
+                value={maxText}
+                onChange={onMaxInputChange}
+                onBlur={onMaxBlur}
+                placeholder={String(maxLimit)}
+              />
+            </div>
+          </label>
         </div>
 
+        {/* слайдери */}
         <div className={css.rangeWrap}>
           <label className={css.rangeRow}>
             <span className={css.rangeLabel}>Min</span>
@@ -123,7 +232,7 @@ const CatalogFilters = ({
               max={currentMax}
               step={5}
               value={currentMin}
-              onChange={handleMinChange}
+              onChange={(e) => setMinFromRange(e.target.value)}
             />
           </label>
 
@@ -136,12 +245,12 @@ const CatalogFilters = ({
               max={maxLimit}
               step={5}
               value={currentMax}
-              onChange={handleMaxChange}
+              onChange={(e) => setMaxFromRange(e.target.value)}
             />
           </label>
         </div>
 
-        <p className={css.rangeHint}>Tip: move Max to the end for “Any”</p>
+        <p className={css.rangeHint}>Tip: set Max to the end for “Any”</p>
       </div>
 
       <div className={`${css.block} ${css.borderTop}`}>

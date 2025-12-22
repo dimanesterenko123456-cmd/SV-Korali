@@ -12,14 +12,7 @@ const CartItems = ({
   return (
     <div className={css.wrap}>
       <div className={css.list}>
-        {!items.length && (
-          <div className={css.empty}>
-            Cart is empty.{" "}
-            <Link className={css.emptyLink} to="/catalog">
-              Continue shopping →
-            </Link>
-          </div>
-        )}
+        {!items.length && <div className={css.empty}>Cart is empty. </div>}
 
         {items.map((item) => (
           <CartItemCard
