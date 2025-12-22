@@ -4,14 +4,6 @@ const CatalogHero = () => {
   return (
     <section className={css.hero}>
       <div className={css.container}>
-        <nav className={css.breadcrumbs}>
-          <a className={css.breadcrumbLink} href="/">
-            Home
-          </a>
-          <span className={css.sep}>›</span>
-          <span className={css.breadcrumbCurrent}>Shop Collection</span>
-        </nav>
-
         <h1 className={css.title}>Shop Collection</h1>
 
         <p className={css.subtitle}>

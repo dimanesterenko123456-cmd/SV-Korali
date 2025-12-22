@@ -2,10 +2,19 @@
   width: 100%;
   background: #ffffff;
   color: #111827;
+
+  /* відступ від Header */
+  padding-top: 24px;
+}
+
+@media (min-width: 1440px) {
+  .page {
+    padding-top: 32px;
+  }
 }
 
 .main {
-  padding: 24px 0 56px;
+  padding: 20px 0 56px;
   background: #ffffff;
 }
 
@@ -22,24 +31,113 @@
   gap: 18px;
 }
 
-/* lg: sidebar + content */
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .container {
     padding: 0 24px;
   }
   .layout {
-    grid-template-columns: 256px 1fr;
-    gap: 32px;
-    align-items: start;
+    gap: 20px;
   }
 }
 
+@media (min-width: 1440px) {
+  .container {
+    padding: 0 56px;
+  }
+}
+
+/* Sidebar тільки на desktop */
 .sidebar {
+  display: none;
   min-width: 0;
 }
 
 .content {
   min-width: 0;
+}
+
+/* lg: sidebar + content */
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .sidebar {
+    display: block;
+  }
+}
+
+/* ------- Mobile Filters Bar ------- */
+
+.mobileFiltersBar {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 6px;
+}
+
+@media (min-width: 1024px) {
+  .mobileFiltersBar {
+    display: none;
+  }
+}
+
+.filtersToggleBtn {
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: #ffffff;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+
+  font-weight: 700;
+  font-size: 14px;
+  color: #111827;
+}
+
+.filtersToggleBtn:hover {
+  background: #f9fafb;
+}
+
+.filtersHint {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.chev {
+  display: inline-block;
+  transition: transform 0.18s ease;
+  color: #6b7280;
+}
+
+.chevUp {
+  transform: rotate(180deg);
+}
+
+/* панель фільтрів (розкриття) */
+.mobileFiltersPanel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.25s ease;
+  scroll-margin-top: 96px; /* щоб після скролу не прилипало під header */
+}
+
+.mobileFiltersPanelOpen {
+  max-height: 1200px; /* достатньо для всього контенту */
+  margin-bottom: 10px;
+}
+
+@media (min-width: 1024px) {
+  .mobileFiltersPanel {
+    display: none;
+  }
 }
 
 .loader {

@@ -1,6 +1,54 @@
-.panelWelcome {
+/* src/components/CatalogProducts/CatalogProduct.module.css */
+
+/* страховка від переповнення */
+.panelWelcome,
+.panelDefault {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
+
+/* box-sizing локально для всіх елементів всередині */
+.panelWelcome *,
+.panelWelcome *::before,
+.panelWelcome *::after,
+.panelDefault *,
+.panelDefault *::before,
+.panelDefault *::after {
+  box-sizing: border-box;
+}
+
+/* reset для UL (саме це часто робить “виїзд” за контейнер) */
+.grid,
+.list {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  /* якщо десь є зайва ширина — не даємо їй розпирати */
+  overflow-x: hidden;
+}
+
+/* щоб li не розпирали грід */
+.grid > li,
+.list > li {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* images всередині карток */
+.panelWelcome img,
+.panelDefault img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ========== GRID (welcome) ========== */
 
 .grid {
   display: grid;
@@ -23,10 +71,7 @@
   }
 }
 
-/* list variant */
-.panelDefault {
-  width: 100%;
-}
+/* ========== LIST variant ========== */
 
 .list {
   display: grid;
@@ -39,20 +84,33 @@
   font-size: 14px;
 }
 
+/* ========== PAGINATION ========== */
+
 .pagination {
+  width: 100%;
+  max-width: 100%;
+
   display: flex;
+  align-items: center;
   justify-content: center;
+
   gap: 8px;
   margin-top: 28px;
+
+  /* не дозволяємо розпирати по ширині */
+  min-width: 0;
 }
 
 .pageArrow,
 .pageNumber {
+  flex: 0 0 auto;
+
   width: 40px;
   height: 40px;
   border-radius: 12px;
   border: 1px solid #d1d5db;
   background: #fff;
+
   color: #6b7280;
   font-weight: 600;
 }
@@ -74,7 +132,21 @@
   cursor: not-allowed;
 }
 
+/* НА МОБІЛЦІ pageNumbers НЕ розпирають контейнер — а скроляться */
 .pageNumbers {
   display: flex;
   gap: 8px;
+
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  padding: 2px 0;
+}
+
+.pageNumbers::-webkit-scrollbar {
+  display: none;
 }

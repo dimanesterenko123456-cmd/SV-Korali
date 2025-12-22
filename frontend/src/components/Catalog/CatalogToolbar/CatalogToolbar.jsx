@@ -1,4 +1,3 @@
-import { FiGrid, FiList } from "react-icons/fi";
 import SearchBox from "../../SearchBox/SearchBox";
 import css from "./CatalogToolbar.module.css";
 
@@ -7,8 +6,12 @@ const CatalogToolbar = ({
   sort,
   onSortChange,
 
+  searchValue,
   onSearchChange,
   onSearchSubmit,
+
+  onSearchSelect,
+  suggestions = [],
 }) => {
   return (
     <div className={css.toolbar}>
@@ -25,7 +28,13 @@ const CatalogToolbar = ({
         </select>
 
         <div className={css.searchWrap}>
-          <SearchBox onChange={onSearchChange} onSubmit={onSearchSubmit} />
+          <SearchBox
+            value={searchValue}
+            onChange={onSearchChange}
+            onSubmit={onSearchSubmit}
+            onSelect={onSearchSelect}
+            suggestions={suggestions}
+          />
         </div>
       </div>
     </div>

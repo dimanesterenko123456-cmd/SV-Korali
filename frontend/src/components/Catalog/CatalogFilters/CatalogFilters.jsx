@@ -1,8 +1,35 @@
 import css from "./CatalogFilters.module.css";
 
-const CatalogFilters = ({ filtersDraft, onDraftChange, onApply, onClear }) => {
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+const CatalogFilters = ({
+  filtersDraft,
+  onDraftChange,
+  onApply,
+  onClear,
+  variant = "desktop",
+}) => {
+  const minLimit = 0;
+  const maxLimit = 2000;
+
+  const handleMinChange = (e) => {
+    const nextMin = clamp(Number(e.target.value), minLimit, maxLimit);
+    const nextMax = Math.max(nextMin, filtersDraft.priceMax);
+    onDraftChange("priceMin", nextMin);
+    onDraftChange("priceMax", nextMax);
+  };
+
+  const handleMaxChange = (e) => {
+    const nextMax = clamp(Number(e.target.value), minLimit, maxLimit);
+    const nextMin = Math.min(filtersDraft.priceMin, nextMax);
+    onDraftChange("priceMin", nextMin);
+    onDraftChange("priceMax", nextMax);
+  };
+
   return (
-    <div className={css.card}>
+    <div
+      className={`${css.card} ${variant === "mobile" ? css.cardMobile : ""}`}
+    >
       <h3 className={css.title}>Filters</h3>
 
       <div className={css.block}>
@@ -64,45 +91,37 @@ const CatalogFilters = ({ filtersDraft, onDraftChange, onApply, onClear }) => {
       <div className={`${css.block} ${css.borderTop}`}>
         <p className={css.label}>Price Range</p>
 
-        <div className={css.group}>
-          <label className={css.row}>
+        <div className={css.rangeHead}>
+          <span className={css.rangeValue}>${filtersDraft.priceMin}</span>
+          <span className={css.rangeDash}>—</span>
+          <span className={css.rangeValue}>${filtersDraft.priceMax}</span>
+        </div>
+
+        <div className={css.rangeWrap}>
+          <label className={css.rangeRow}>
+            <span className={css.rangeLabel}>Min</span>
             <input
-              type="radio"
-              name="priceRange"
-              checked={filtersDraft.priceRange === "any"}
-              onChange={() => onDraftChange("priceRange", "any")}
+              className={css.range}
+              type="range"
+              min={minLimit}
+              max={maxLimit}
+              step={5}
+              value={filtersDraft.priceMin}
+              onChange={handleMinChange}
             />
-            <span>Any</span>
           </label>
 
-          <label className={css.row}>
+          <label className={css.rangeRow}>
+            <span className={css.rangeLabel}>Max</span>
             <input
-              type="radio"
-              name="priceRange"
-              checked={filtersDraft.priceRange === "under_50"}
-              onChange={() => onDraftChange("priceRange", "under_50")}
+              className={css.range}
+              type="range"
+              min={minLimit}
+              max={maxLimit}
+              step={5}
+              value={filtersDraft.priceMax}
+              onChange={handleMaxChange}
             />
-            <span>Under $50</span>
-          </label>
-
-          <label className={css.row}>
-            <input
-              type="radio"
-              name="priceRange"
-              checked={filtersDraft.priceRange === "50_150"}
-              onChange={() => onDraftChange("priceRange", "50_150")}
-            />
-            <span>$50 – $150</span>
-          </label>
-
-          <label className={css.row}>
-            <input
-              type="radio"
-              name="priceRange"
-              checked={filtersDraft.priceRange === "over_150"}
-              onChange={() => onDraftChange("priceRange", "over_150")}
-            />
-            <span>Over $150</span>
           </label>
         </div>
       </div>
