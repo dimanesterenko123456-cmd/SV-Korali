@@ -10,3 +10,4 @@ export const selectProductsHasPrev = (state) => state.products.hasPrevPage;
 export const selectCurrentProduct = (state) => state.products.currentProduct;
 export const selectProductsLoading = (state) => state.products.isLoading;
 export const selectProductsError = (state) => state.products.error;
+export const selectProductsMaxPrice = (state) => state.products.maxPrice;

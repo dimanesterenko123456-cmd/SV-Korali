@@ -11,10 +11,15 @@ import {
   selectProductsHasNext,
   selectProductsHasPrev,
   selectProductsLoading,
+  selectProductsMaxPrice,
   selectProductsPage,
   selectProductsTotalPages,
 } from "../../redux/selectors/productSelectors";
-import { fetchProductsThunk } from "../../redux/operations/productOperations";
+
+import {
+  fetchMaxProductPriceThunk,
+  fetchProductsThunk,
+} from "../../redux/operations/productOperations";
 
 import CatalogHero from "../../components/Catalog/CatalogHero/CatalogHero";
 import CatalogFilters from "../../components/Catalog/CatalogFilters/CatalogFilters";
@@ -33,13 +38,18 @@ const CatalogPage = () => {
   const isLoading = useSelector(selectProductsLoading);
   const error = useSelector(selectProductsError);
 
+  const maxPriceFromStore = useSelector(selectProductsMaxPrice);
+  const maxLimit =
+    maxPriceFromStore > 0 ? Math.ceil(maxPriceFromStore / 5) * 5 : 300;
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("popular");
 
+  // ✅ priceMax: null => "до максимуму"
   const [filtersDraft, setFiltersDraft] = useState({
     category: "",
     priceMin: 0,
-    priceMax: 300,
+    priceMax: null, // ✅
     inStockOnly: false,
   });
 
@@ -49,13 +59,16 @@ const CatalogPage = () => {
   const mobileFiltersRef = useRef(null);
 
   const suggestions = useMemo(() => {
-    // Рекомендації під пошук — з назв товарів
     return (products || []).map((p) => p?.name).filter(Boolean);
   }, [products]);
 
+  useEffect(() => {
+    dispatch(fetchMaxProductPriceThunk());
+  }, [dispatch]);
+
   const buildParams = useCallback(
     ({ page: p, sortOverride, filtersOverride, searchOverride }) => {
-      const params = { page: p, perPage: 12 };
+      const params = { page: p, perPage: 9 };
 
       const q = (searchOverride ?? search).trim();
       if (q) params.search = q;
@@ -65,9 +78,19 @@ const CatalogPage = () => {
       if (f.category) params.category = f.category;
       if (f.inStockOnly) params.inStock = true;
 
-      // price range (slider)
-      if (typeof f.priceMin === "number") params.minPrice = f.priceMin;
-      if (typeof f.priceMax === "number") params.maxPrice = f.priceMax;
+      // ✅ minPrice шлемо лише якщо > 0
+      if (Number.isFinite(f.priceMin) && f.priceMin > 0) {
+        params.minPrice = f.priceMin;
+      }
+
+      // ✅ maxPrice шлемо лише якщо є реальне обмеження (не null і менше maxLimit)
+      if (
+        f.priceMax !== null &&
+        Number.isFinite(f.priceMax) &&
+        f.priceMax < maxLimit
+      ) {
+        params.maxPrice = f.priceMax;
+      }
 
       const s = sortOverride || sort;
       switch (s) {
@@ -89,7 +112,7 @@ const CatalogPage = () => {
 
       return params;
     },
-    [filters, sort, search]
+    [filters, sort, search, maxLimit]
   );
 
   const fetchWithParams = useCallback(
@@ -142,8 +165,6 @@ const CatalogPage = () => {
   const handleApplyFilters = () => {
     setFilters(filtersDraft);
     fetchWithParams(1, { filters: filtersDraft });
-
-    // На мобілці після Apply можна сховати панель
     setMobileFiltersOpen(false);
   };
 
@@ -151,9 +172,10 @@ const CatalogPage = () => {
     const cleared = {
       category: "",
       priceMin: 0,
-      priceMax: 300,
+      priceMax: null, // ✅
       inStockOnly: false,
     };
+
     setFiltersDraft(cleared);
     setFilters(cleared);
     setSearch("");
@@ -165,7 +187,6 @@ const CatalogPage = () => {
   const toggleMobileFilters = () => {
     setMobileFiltersOpen((prev) => !prev);
 
-    // скрол до блоку фільтрів
     requestAnimationFrame(() => {
       mobileFiltersRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -186,6 +207,8 @@ const CatalogPage = () => {
             {/* DESKTOP SIDEBAR */}
             <aside className={css.sidebar}>
               <CatalogFilters
+                namePrefix="desktop"
+                maxPriceLimit={maxLimit}
                 filtersDraft={filtersDraft}
                 onDraftChange={handleFiltersDraftChange}
                 onApply={handleApplyFilters}
@@ -205,7 +228,7 @@ const CatalogPage = () => {
                 suggestions={suggestions}
               />
 
-              {/* MOBILE FILTERS TOGGLE (тільки моб/планшет) */}
+              {/* MOBILE FILTERS TOGGLE */}
               <div className={css.mobileFiltersBar}>
                 <button
                   type="button"
@@ -237,6 +260,8 @@ const CatalogPage = () => {
                 }`}
               >
                 <CatalogFilters
+                  namePrefix="mobile"
+                  maxPriceLimit={maxLimit}
                   filtersDraft={filtersDraft}
                   onDraftChange={handleFiltersDraftChange}
                   onApply={handleApplyFilters}

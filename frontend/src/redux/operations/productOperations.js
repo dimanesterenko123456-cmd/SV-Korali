@@ -124,3 +124,31 @@ export const deleteProductThunk = createAsyncThunk(
     }
   }
 );
+export const fetchMaxProductPriceThunk = createAsyncThunk(
+  "products/fetchMaxPrice",
+  async (_, thunkAPI) => {
+    try {
+      const params = {
+        page: 1,
+        perPage: 1,
+        sortBy: "price",
+        sortOrder: "desc",
+      };
+
+      const { data } = await API.get("/products", { params });
+
+      const items =
+        data?.products ||
+        data?.data?.products ||
+        data?.data ||
+        data?.items ||
+        [];
+
+      const maxPrice = Number(items?.[0]?.price);
+
+      return Number.isFinite(maxPrice) ? maxPrice : 0;
+    } catch (error) {
+      return handleError(error, thunkAPI);
+    }
+  }
+);
