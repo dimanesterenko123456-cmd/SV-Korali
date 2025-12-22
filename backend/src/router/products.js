@@ -22,6 +22,11 @@ import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
+const uploadProductImages = upload.fields([
+  { name: 'image', maxCount: 8 },
+  { name: 'images', maxCount: 8 },
+]);
+
 router.get('/', ctrlWrapper(getAllProductsController));
 
 router.get(
@@ -34,7 +39,7 @@ router.post(
   '/',
   authenticate,
   requireAdmin,
-  upload.single('image'),
+  uploadProductImages,
   validateBody(createProductSchema),
   ctrlWrapper(createProductController),
 );
@@ -43,7 +48,7 @@ router.patch(
   '/:productId',
   authenticate,
   requireAdmin,
-  upload.single('image'),
+  uploadProductImages,
   isValidId('productId'),
   validateBody(updateProductSchema),
   ctrlWrapper(patchProductController),

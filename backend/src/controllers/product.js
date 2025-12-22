@@ -35,7 +35,19 @@ const collectImagesFromRequest = async (req) => {
       ? await saveFileToCloudinary(file)
       : await saveFileToUploadDir(file);
 
-  if (Array.isArray(req.files) && req.files.length > 0) {
+  if (req.files && !Array.isArray(req.files)) {
+    const groupedFiles = Object.values(req.files).reduce((acc, value) => {
+      if (Array.isArray(value)) {
+        acc.push(...value);
+      }
+      return acc;
+    }, []);
+
+    if (groupedFiles.length > 0) {
+      const uploaded = await Promise.all(groupedFiles.map(upload));
+      images = [...images, ...uploaded];
+    }
+  } else if (Array.isArray(req.files) && req.files.length > 0) {
     const uploaded = await Promise.all(req.files.map(upload));
     images = [...images, ...uploaded];
   } else if (req.file) {
