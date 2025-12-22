@@ -1,10 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import css from "./CheckoutSuccess.module.css";
 
 const CheckoutSuccess = () => {
-  const location = useLocation();
-  const sessionId = new URLSearchParams(location.search).get("session_id");
-
   return (
     <section className={css.section}>
       <div className={css.card}>
@@ -13,10 +10,6 @@ const CheckoutSuccess = () => {
           Thank you for your purchase! A confirmation has been sent to your
           email.
         </p>
-
-        {sessionId ? (
-          <p className={css.helper}>Stripe session ID: {sessionId}</p>
-        ) : null}
 
         <div className={css.actions}>
           <Link to="/orders" className={css.buttonPrimary}>
