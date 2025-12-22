@@ -8,20 +8,36 @@ const CatalogFilters = ({
   onApply,
   onClear,
   variant = "desktop",
+  namePrefix = "filters",
+  maxPriceLimit = 300,
 }) => {
   const minLimit = 0;
-  const maxLimit = 2000;
+  const maxLimit =
+    Number.isFinite(maxPriceLimit) && maxPriceLimit > 0 ? maxPriceLimit : 300;
+
+  const currentMax =
+    filtersDraft.priceMax === null ? maxLimit : Number(filtersDraft.priceMax);
+
+  const currentMin = clamp(
+    Number(filtersDraft.priceMin ?? 0),
+    minLimit,
+    currentMax
+  );
 
   const handleMinChange = (e) => {
-    const nextMin = clamp(Number(e.target.value), minLimit, maxLimit);
-    const nextMax = Math.max(nextMin, filtersDraft.priceMax);
+    const nextMin = clamp(Number(e.target.value), minLimit, currentMax);
     onDraftChange("priceMin", nextMin);
-    onDraftChange("priceMax", nextMax);
   };
 
   const handleMaxChange = (e) => {
-    const nextMax = clamp(Number(e.target.value), minLimit, maxLimit);
-    const nextMin = Math.min(filtersDraft.priceMin, nextMax);
+    const raw = clamp(Number(e.target.value), minLimit, maxLimit);
+
+    // ✅ якщо користувач поставив на максимум — це "без обмеження"
+    const nextMax = raw >= maxLimit ? null : raw;
+
+    const nextMaxValue = nextMax === null ? maxLimit : nextMax;
+    const nextMin = Math.min(currentMin, nextMaxValue);
+
     onDraftChange("priceMin", nextMin);
     onDraftChange("priceMax", nextMax);
   };
@@ -39,7 +55,7 @@ const CatalogFilters = ({
           <label className={css.row}>
             <input
               type="radio"
-              name="category"
+              name={`${namePrefix}-category`}
               checked={filtersDraft.category === ""}
               onChange={() => onDraftChange("category", "")}
             />
@@ -49,7 +65,7 @@ const CatalogFilters = ({
           <label className={css.row}>
             <input
               type="radio"
-              name="category"
+              name={`${namePrefix}-category`}
               checked={filtersDraft.category === "necklace"}
               onChange={() => onDraftChange("category", "necklace")}
             />
@@ -59,7 +75,7 @@ const CatalogFilters = ({
           <label className={css.row}>
             <input
               type="radio"
-              name="category"
+              name={`${namePrefix}-category`}
               checked={filtersDraft.category === "bracelet"}
               onChange={() => onDraftChange("category", "bracelet")}
             />
@@ -69,7 +85,7 @@ const CatalogFilters = ({
           <label className={css.row}>
             <input
               type="radio"
-              name="category"
+              name={`${namePrefix}-category`}
               checked={filtersDraft.category === "earrings"}
               onChange={() => onDraftChange("category", "earrings")}
             />
@@ -79,7 +95,7 @@ const CatalogFilters = ({
           <label className={css.row}>
             <input
               type="radio"
-              name="category"
+              name={`${namePrefix}-category`}
               checked={filtersDraft.category === "other"}
               onChange={() => onDraftChange("category", "other")}
             />
@@ -92,9 +108,9 @@ const CatalogFilters = ({
         <p className={css.label}>Price Range</p>
 
         <div className={css.rangeHead}>
-          <span className={css.rangeValue}>${filtersDraft.priceMin}</span>
+          <span className={css.rangeValue}>${currentMin}</span>
           <span className={css.rangeDash}>—</span>
-          <span className={css.rangeValue}>${filtersDraft.priceMax}</span>
+          <span className={css.rangeValue}>${currentMax}</span>
         </div>
 
         <div className={css.rangeWrap}>
@@ -104,9 +120,9 @@ const CatalogFilters = ({
               className={css.range}
               type="range"
               min={minLimit}
-              max={maxLimit}
+              max={currentMax}
               step={5}
-              value={filtersDraft.priceMin}
+              value={currentMin}
               onChange={handleMinChange}
             />
           </label>
@@ -119,11 +135,13 @@ const CatalogFilters = ({
               min={minLimit}
               max={maxLimit}
               step={5}
-              value={filtersDraft.priceMax}
+              value={currentMax}
               onChange={handleMaxChange}
             />
           </label>
         </div>
+
+        <p className={css.rangeHint}>Tip: move Max to the end for “Any”</p>
       </div>
 
       <div className={`${css.block} ${css.borderTop}`}>
@@ -132,7 +150,7 @@ const CatalogFilters = ({
         <label className={css.row}>
           <input
             type="checkbox"
-            checked={filtersDraft.inStockOnly}
+            checked={Boolean(filtersDraft.inStockOnly)}
             onChange={(e) => onDraftChange("inStockOnly", e.target.checked)}
           />
           <span>In stock only</span>

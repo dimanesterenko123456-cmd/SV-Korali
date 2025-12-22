@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createProductThunk,
   deleteProductThunk,
+  fetchMaxProductPriceThunk,
   fetchProductByIdThunk,
   fetchProductsThunk,
   updateProductThunk,
@@ -20,6 +21,9 @@ const initialState = {
   isLoading: false,
   error: null,
   currentRequestId: undefined,
+  maxPrice: 0,
+  maxPriceLoading: false,
+  maxPriceError: null,
 };
 
 const productsReducer = createSlice({
@@ -134,6 +138,19 @@ const productsReducer = createSlice({
       .addCase(deleteProductThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || action.error.message;
+      });
+    builder
+      .addCase(fetchMaxProductPriceThunk.pending, (state) => {
+        state.maxPriceLoading = true;
+        state.maxPriceError = null;
+      })
+      .addCase(fetchMaxProductPriceThunk.fulfilled, (state, action) => {
+        state.maxPriceLoading = false;
+        state.maxPrice = action.payload;
+      })
+      .addCase(fetchMaxProductPriceThunk.rejected, (state, action) => {
+        state.maxPriceLoading = false;
+        state.maxPriceError = action.payload || "Failed to load max price";
       });
   },
 });

@@ -52,18 +52,17 @@
   gap: 10px;
 }
 
+/* ✅ cursor fix */
 .row {
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
   user-select: none;
+  cursor: pointer;
 }
 
-.row input {
-  width: 16px;
-  height: 16px;
-  accent-color: #c53030;
+.row * {
+  cursor: pointer;
 }
 
 .row span {
@@ -71,7 +70,89 @@
   color: #374151;
 }
 
-/* ---- Price range slider ---- */
+.row:hover span {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* ✅ custom RADIO (видно checked) */
+.row input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(148, 163, 184, 0.9);
+  background: #fff;
+
+  display: grid;
+  place-items: center;
+
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.row input[type="radio"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c53030;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.row input[type="radio"]:checked {
+  border-color: #c53030;
+}
+
+.row input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+/* ✅ custom CHECKBOX */
+.row input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 16px;
+  height: 16px;
+  border-radius: 6px;
+  border: 2px solid rgba(148, 163, 184, 0.9);
+  background: #fff;
+
+  display: grid;
+  place-items: center;
+
+  transition: border-color 0.15s ease, background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.row input[type="checkbox"]::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+  background: #ffffff;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
+}
+
+.row input[type="checkbox"]:checked {
+  background: #c53030;
+  border-color: #c53030;
+}
+
+.row input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.row input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.14);
+}
+
+/* ---- Price range ---- */
 
 .rangeHead {
   display: flex;
@@ -115,6 +196,14 @@
   width: 100%;
   accent-color: #c53030;
 }
+
+.rangeHint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ---- Actions ---- */
 
 .actions {
   display: grid;
