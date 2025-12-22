@@ -6,7 +6,7 @@ import CartHeader from "../../components/CartComponents/CartHeader/CartHeader";
 import CartItems from "../../components/CartComponents/CartItems/CartItems";
 import OrderSummary from "../../components/CartComponents/OrderSummary/OrderSummary";
 import Recommended from "../../components/CartComponents/Recommendation/Recommended";
-
+import { createCheckoutSession } from "../../services/payments";
 import {
   clearCart,
   decreaseQuantity,
@@ -49,15 +49,9 @@ const CartPage = () => {
 
   // promo
   const [promo, setPromo] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
 
-  /**
-   * ✅ ТУТ ЄДИНЕ МІСЦЕ, ДЕ ТИ ПІДКЛЮЧАЄШ СВОЮ ЛОГІКУ/ACTIONS
-   * Підстав dispatch(...) на свої thunks/actions:
-   * - cartIncrease(id)
-   * - cartDecrease(id)
-   * - cartRemove(id)
-   * - cartClear()
-   */
   const onIncrease = (id) => dispatch(increaseQuantity(id));
 
   const onDecrease = (id) => dispatch(decreaseQuantity(id));
@@ -70,10 +64,38 @@ const CartPage = () => {
     console.log("apply promo", promo);
   };
 
-  const onCheckout = () => {
-    console.log("checkout");
-  };
+  const onCheckout = async () => {
+    if (isProcessing) return;
 
+    setCheckoutError("");
+
+    if (!items.length) {
+      setCheckoutError("Ваш кошик порожній.");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const session = await createCheckoutSession(items);
+
+      if (session?.url) {
+        window.location.href = session.url;
+        return;
+      }
+
+      setCheckoutError("Не вдалося розпочати оплату. Спробуйте ще раз.");
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Не вдалося створити сесію оплати.";
+
+      setCheckoutError(message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   return (
     <section className={css.page}>
       <CartHeader count={itemsCount} />
@@ -100,6 +122,8 @@ const CartPage = () => {
               onPromoChange={setPromo}
               onApplyPromo={onApplyPromo}
               onCheckout={onCheckout}
+              isProcessing={isProcessing}
+              errorMessage={checkoutError}
             />
           </aside>
         </div>

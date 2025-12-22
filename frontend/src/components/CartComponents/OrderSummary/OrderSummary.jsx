@@ -17,6 +17,7 @@ const OrderSummary = ({
   onApplyPromo,
   onCheckout,
   isProcessing = false,
+  errorMessage = "",
 }) => {
   return (
     <div className={css.card}>
@@ -70,7 +71,7 @@ const OrderSummary = ({
       >
         {isProcessing ? "Redirecting..." : "Proceed to Checkout"}
       </button>
-
+      {errorMessage ? <p className={css.error}>{errorMessage}</p> : null}
       <div className={css.flags}>
         <div className={css.flag}>
           <FiShield className={css.green} />
