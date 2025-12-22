@@ -1,3 +1,7 @@
+.wrap {
+  min-width: 0;
+}
+
 .list {
   display: grid;
   gap: 16px;
@@ -14,38 +18,87 @@
 
 .emptyLink {
   color: #c53030;
-  font-weight: 600;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
 }
 
+.emptyLink:hover {
+  color: #9b2c2c;
+  text-decoration: underline;
+}
+
+/* ✅ FOOTER: mobile-first stack */
 .footer {
-  margin-top: 24px;
-  padding-top: 18px;
+  margin-top: 22px;
+  padding-top: 16px;
   border-top: 1px solid #e5e7eb;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
+/* ✅ Link як кнопка */
 .continue {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 44px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(197, 48, 48, 0.35);
+  background: #fff;
+
   color: #c53030;
-  font-weight: 600;
+  font-weight: 700;
+  cursor: pointer;
+
+  text-decoration: none; /* ✅ прибрали “червону лінію” */
 }
 
 .continue:hover {
+  border-color: rgba(197, 48, 48, 0.55);
+  background: #fff5f5;
   color: #9b2c2c;
 }
 
+/* ✅ Clear як secondary button */
 .clear {
-  background: transparent;
-  border: none;
+  width: 100%;
+  height: 44px;
+
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+
   color: #4b5563;
-  font-weight: 600;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .clear:hover {
+  background: #f3f4f6;
   color: #c53030;
+}
+
+/* ✅ Tablet/desktop: в ряд */
+@media (min-width: 520px) {
+  .footer {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .continue {
+    justify-content: flex-start;
+    width: auto;
+    padding: 0 14px;
+  }
+
+  .clear {
+    width: auto;
+    padding: 0 14px;
+  }
 }

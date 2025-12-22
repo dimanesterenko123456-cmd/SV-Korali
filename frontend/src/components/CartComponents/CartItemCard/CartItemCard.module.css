@@ -4,13 +4,14 @@
   padding: 16px;
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
   border: 1px solid #f3f4f6;
+  max-width: 100%;
 }
 
-/* mobile-first: stack */
 .row {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .imgWrap {
@@ -26,6 +27,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .imgPh {
@@ -50,8 +52,9 @@
 .top {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .title {
@@ -85,30 +88,40 @@
   border: none;
   background: transparent;
   color: #9ca3af;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  flex: 0 0 auto;
 }
 
 .trash:hover {
   color: #c53030;
 }
 
+/* ✅ ФІКС: дозволяємо перенос і даємо ціні нормальне місце */
 .bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  min-width: 0;
+
+  flex-wrap: wrap; /* ✅ */
 }
 
 .qty {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+
+  flex: 1 1 240px; /* ✅ може стискатися і переноситись */
 }
 
 .qtyLabel {
   color: #4b5563;
+  white-space: nowrap;
 }
 
 .qtyBox {
@@ -117,6 +130,8 @@
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   overflow: hidden;
+  flex: 0 0 auto;
+  background: #fff;
 }
 
 .qtyBtn {
@@ -124,6 +139,10 @@
   background: transparent;
   border: none;
   color: #4b5563;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qtyBtn:hover {
@@ -131,27 +150,69 @@
 }
 
 .qtyValue {
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-left: 1px solid #e5e7eb;
   border-right: 1px solid #e5e7eb;
   color: #111827;
+  font-weight: 700;
+  min-width: 34px;
+  text-align: center;
 }
 
 .price {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   color: #111827;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
+/* ✅ На мобілці ціну переносимо вниз, щоб не злипалась з qty */
+@media (max-width: 520px) {
+  .price {
+    width: 100%;
+    text-align: right;
+    margin-left: 0;
+  }
+
+  .bottom {
+    gap: 10px;
+  }
+
+  .qty {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+}
+
+/* дуже маленькі екрани: stack */
+@media (max-width: 360px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .imgWrap {
+    width: 100%;
+    height: 180px;
+  }
+}
+
+/* tablet */
 @media (min-width: 768px) {
   .card {
-    padding: 24px;
+    padding: 22px;
   }
+
   .imgWrap {
     width: 128px;
     height: 128px;
   }
+
   .title {
     font-size: 20px;
+  }
+
+  .price {
+    font-size: 22px;
   }
 }
