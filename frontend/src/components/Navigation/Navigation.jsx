@@ -1,6 +1,6 @@
 // src/components/Navigation/Navigation.jsx
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiSearch, FiUser, FiLogOut, FiPlusSquare } from "react-icons/fi";
+import { FiUser, FiLogOut, FiPlusSquare } from "react-icons/fi";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,6 +21,7 @@ const Navigation = () => {
   const accessToken = useSelector(selectAccessToken);
   const userRole = useSelector(selectUserRole);
   const cartCount = useSelector(selectCartCount);
+
   const isLoggedIn = Boolean(accessToken);
   const isAdmin = isLoggedIn && userRole === "admin";
 
@@ -35,9 +36,15 @@ const Navigation = () => {
 
   return (
     <nav className={css.nav}>
-      {/* LEFT: burger + links */}
+      {/* LEFT */}
       <div className={css.left}>
-        {/* <BurgerMenu /> */}
+        <BurgerMenu
+          isLoggedIn={isLoggedIn}
+          isAdmin={isAdmin}
+          cartCount={cartCount}
+          onLogout={handleLogout}
+          buttonClassName={css.burgerButton}
+        />
 
         <div className={css.navLinks}>
           <NavLink
@@ -61,12 +68,12 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/* CENTER: fixed logo */}
+      {/* CENTER */}
       <div className={css.center}>
         <Logo />
       </div>
 
-      {/* RIGHT: admin, cart, profile, logout */}
+      {/* RIGHT */}
       <div className={css.actions}>
         {isAdmin && (
           <NavLink
@@ -89,7 +96,7 @@ const Navigation = () => {
 
         <NavLink
           to="/auth/login"
-          className={css.iconButton}
+          className={`${css.iconButton} ${css.profileButton}`}
           aria-label="Profile"
         >
           <FiUser className={css.icon} />
@@ -98,7 +105,7 @@ const Navigation = () => {
         {isLoggedIn && (
           <button
             type="button"
-            className={css.iconButton}
+            className={`${css.iconButton} ${css.logoutButton}`}
             aria-label="Logout"
             onClick={handleLogout}
           >

@@ -1,10 +1,9 @@
 .toolbar {
   display: grid;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
-/* md: як в HTML "justify-between" */
 @media (min-width: 768px) {
   .toolbar {
     display: flex;
@@ -15,12 +14,13 @@
 }
 
 .showing {
-  font-size: 14px;
+  font-size: 13px;
   color: #6b7280;
+  margin: 0;
 }
 
 .count {
-  font-weight: 600;
+  font-weight: 700;
   color: #111827;
 }
 
@@ -42,42 +42,17 @@
   height: 40px;
   border: 1px solid #d1d5db;
   border-radius: 12px;
-  padding: 0 14px;
+  padding: 0 12px;
   background: #fff;
-  font-size: 14px;
+  font-size: 13px;
   color: #374151;
+  min-width: 200px;
 }
 
 .select:focus {
+  outline: none;
   border-color: #c53030;
-  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.15);
-}
-
-.viewToggle {
-  display: inline-flex;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.viewBtn {
-  width: 44px;
-  height: 40px;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6b7280;
-  border: none;
-}
-
-.viewBtn:hover {
-  background: #f9fafb;
-}
-
-.viewBtnActive {
-  background: #c53030;
-  color: #fff;
+  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.12);
 }
 
 .searchWrap {
@@ -86,6 +61,6 @@
 
 @media (min-width: 768px) {
   .searchWrap {
-    width: 240px;
+    width: 240px; /* компактніше */
   }
 }

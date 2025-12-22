@@ -1,3 +1,5 @@
+/* src/pages/WelcomePage/WelcomePage.module.css */
+
 .page {
   display: flex;
   flex-direction: column;
@@ -44,13 +46,14 @@
   font-size: 14px;
   line-height: 1.5;
   color: #5f5a61;
-  max-width: 420px;
+  max-width: none; /* прибрали max ширину */
 }
 
 .heroActions {
   display: flex;
   gap: 12px;
   margin-top: 4px;
+  flex-wrap: wrap;
 }
 
 .primaryBtn,
@@ -111,32 +114,35 @@
   color: #807a83;
 }
 
+/* ---- HERO IMAGE (ADAPTIVE) ---- */
+
 .heroImage {
   position: relative;
-  max-width: 900px;
-  height: 584px;
-  justify-self: center;
+  width: 100%;
+  justify-self: stretch;
 }
 
 .heroImageInner {
   border-radius: 26px;
-  max-width: 900px;
-  height: 584px;
   overflow: hidden;
   background: radial-gradient(circle at top, #ffede1, #ffcbb5 55%, #f7a489);
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.18);
+
+  width: 100%;
+  aspect-ratio: 16 / 10; /* адаптивна висота */
 }
 
 .heroImagePlaceholder {
-  height: 260px;
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 13px;
+}
+
+.heroImagePlaceholder img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .heroBadge {
@@ -197,7 +203,7 @@
 .sectionSubtitle {
   font-size: 13px;
   color: #5f5a61;
-  max-width: 520px;
+  max-width: none; /* прибрали max ширину */
 }
 
 .featuredLoader {
@@ -286,6 +292,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .productPrice {
@@ -304,6 +311,7 @@
   background: #ffffff;
   cursor: pointer;
   transition: background 0.2s ease;
+  flex-shrink: 0;
 }
 
 .cardBtn:hover {
@@ -393,14 +401,18 @@
   background: #f2e3d8;
 }
 
+/* адаптивна картинка */
 .heritageImagePlaceholder {
-  height: 240px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #85635b;
-  font-size: 13px;
-  font-weight: 600;
+}
+
+.heritageImagePlaceholder img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 /* ---------------- TESTIMONIALS ---------------- */
@@ -469,8 +481,8 @@
     font-size: 15px;
   }
 
-  .heroImagePlaceholder {
-    height: 320px;
+  .heroImageInner {
+    aspect-ratio: 4 / 3; /* на планшеті трохи “вища” картинка */
   }
 
   .featured {
@@ -484,10 +496,11 @@
   .heritage {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     padding: 34px 32px 38px;
+    align-items: center;
   }
 
   .heritageImagePlaceholder {
-    height: 280px;
+    aspect-ratio: 16 / 11;
   }
 
   .testimonials {
@@ -502,6 +515,10 @@
 @media (min-width: 1440px) {
   .hero {
     padding: 48px 60px;
+  }
+
+  .heroImageInner {
+    aspect-ratio: 16 / 11;
   }
 
   .featured,

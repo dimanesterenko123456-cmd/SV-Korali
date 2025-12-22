@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import css from "./WelcomePage.module.css";
 import {
@@ -12,16 +13,39 @@ import Loader from "../../components/Loader/Loader";
 
 const WelcomePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const products = useSelector(selectProducts);
   const isLoading = useSelector(selectProductsLoading);
   const error = useSelector(selectProductsError);
 
   useEffect(() => {
-    // first page, 6 items — for "Featured collections"
     dispatch(fetchProductsThunk({ page: 1, perPage: 6 }));
   }, [dispatch]);
 
   const featured = products.slice(0, 3);
+
+  const scrollToId = (id) => {
+    const el = document.getElementById(id);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleShopCollection = () => {
+    navigate("/catalog");
+  };
+
+  const handleLearnMore = () => {
+    scrollToId("heritage");
+  };
+
+  const handleViewAll = () => {
+    navigate("/catalog");
+  };
+
+  const handleViewDetails = (productId) => {
+    // Якщо у тебе інший роут деталей — просто зміни тут
+    navigate(`/catalog/${productId}`);
+  };
 
   return (
     <div className={css.page}>
@@ -42,10 +66,19 @@ const WelcomePage = () => {
           </p>
 
           <div className={css.heroActions}>
-            <button type="button" className={css.primaryBtn}>
+            <button
+              type="button"
+              className={css.primaryBtn}
+              onClick={handleShopCollection}
+            >
               Shop collection
             </button>
-            <button type="button" className={css.secondaryBtn}>
+
+            <button
+              type="button"
+              className={css.secondaryBtn}
+              onClick={handleLearnMore}
+            >
               Learn more
             </button>
           </div>
@@ -68,11 +101,10 @@ const WelcomePage = () => {
 
         <div className={css.heroImage}>
           <div className={css.heroImageInner}>
-            {/* TODO: replace with real image */}
             <div className={css.heroImagePlaceholder}>
               <img
                 src="https://storage.googleapis.com/uxpilot-auth.appspot.com/0e82f14940-ac7845b89357a66fa82e.png"
-                alt="Hero image"
+                alt="Authentic Ukrainian coral jewelry"
               />
             </div>
           </div>
@@ -88,7 +120,7 @@ const WelcomePage = () => {
       </section>
 
       {/* FEATURED COLLECTIONS */}
-      <section className={css.featured}>
+      <section className={css.featured} id="featured">
         <p className={css.sectionEyebrow}>Featured collections</p>
         <h2 className={css.sectionTitle}>Our favourite coral pieces</h2>
         <p className={css.sectionSubtitle}>
@@ -146,7 +178,12 @@ const WelcomePage = () => {
                     <span className={css.productPrice}>
                       {product.price != null ? `$${product.price}` : "—"}
                     </span>
-                    <button type="button" className={css.cardBtn}>
+
+                    <button
+                      type="button"
+                      className={css.cardBtn}
+                      onClick={() => handleViewDetails(product._id)}
+                    >
                       View details
                     </button>
                   </div>
@@ -161,14 +198,18 @@ const WelcomePage = () => {
         )}
 
         <div className={css.viewAllWrap}>
-          <button type="button" className={css.viewAllBtn}>
+          <button
+            type="button"
+            className={css.viewAllBtn}
+            onClick={handleViewAll}
+          >
             View all products
           </button>
         </div>
       </section>
 
       {/* HERITAGE SECTION */}
-      <section className={css.heritage}>
+      <section className={css.heritage} id="heritage">
         <div className={css.heritageText}>
           <p className={css.sectionEyebrow}>Preserving Ukrainian Heritage</p>
           <h2 className={css.sectionTitle}>
@@ -218,11 +259,10 @@ const WelcomePage = () => {
         </div>
 
         <div className={css.heritageImageWrap}>
-          {/* TODO: replace with real photo */}
           <div className={css.heritageImagePlaceholder}>
             <img
               src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7f9deb7d07-a976c3a50a3a1e38c218.png"
-              alt="Heritage image"
+              alt="Ukrainian coral jewelry heritage"
             />
           </div>
         </div>
