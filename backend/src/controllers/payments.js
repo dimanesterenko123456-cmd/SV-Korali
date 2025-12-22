@@ -2,23 +2,45 @@
 import createHttpError from 'http-errors';
 import mongoose from 'mongoose';
 
+import { CartCollection } from '../db/models/cart.js';
 import { ProductCollection } from '../db/models/product.js';
 import { findCartByUserId } from '../services/cart.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
+import { stripe } from '../utils/stripeClient.js';
 
-const stripeSecretKey = getEnvVar('STRIPE_SECRET_KEY');
 const clientBaseUrl = getEnvVar('FRONTEND_URL', 'http://localhost:5173');
+const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 const toCents = (price) => Math.max(0, Math.round(Number(price) * 100) || 0);
+const normalizeQty = (value) => Math.max(1, Number(value) || 1);
+
+const mapProductToLineItem = (product, quantity) => {
+  const unitAmount = toCents(product.price);
+
+  if (unitAmount <= 0 || quantity <= 0) return null;
+
+  return {
+    price_data: {
+      currency: 'usd',
+      unit_amount: unitAmount,
+      product_data: {
+        name: product.name,
+        description: product.description,
+        images: Array.isArray(product.images)
+          ? product.images.filter(Boolean).slice(0, 8)
+          : [],
+      },
+    },
+    quantity,
+  };
+};
 
 const buildLineItemsFromPayload = async (items = []) => {
   const validIds = items
     .map((item) => item?.productId)
     .filter((id) => mongoose.Types.ObjectId.isValid(id));
 
-  if (validIds.length === 0) {
-    return [];
-  }
+  if (validIds.length === 0) return [];
 
   const products = await ProductCollection.find({ _id: { $in: validIds } });
   const productMap = new Map(
@@ -30,60 +52,18 @@ const buildLineItemsFromPayload = async (items = []) => {
       const product = productMap.get(String(item.productId));
       if (!product) return null;
 
-      const quantity = Math.max(1, Number(item.quantity) || 1);
-      const unitAmount = toCents(product.price);
-
-      if (unitAmount <= 0) return null;
-
-      return {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: product.name,
-            description: product.description,
-          },
-          unit_amount: unitAmount,
-        },
-        quantity,
-      };
+      return mapProductToLineItem(product, normalizeQty(item.quantity));
     })
     .filter(Boolean);
 };
 
-const buildLineItemParams = (lineItems) => {
-  const params = new URLSearchParams();
-
-  params.append('mode', 'payment');
-  params.append('payment_method_types[0]', 'card');
-  params.append(
-    'success_url',
-    `${clientBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-  );
-  params.append('cancel_url', `${clientBaseUrl}/cart`);
-
-  lineItems.forEach((item, index) => {
-    params.append(`line_items[${index}][price_data][currency]`, 'usd');
-    params.append(
-      `line_items[${index}][price_data][unit_amount]`,
-      String(item.price_data.unit_amount),
-    );
-    params.append(
-      `line_items[${index}][price_data][product_data][name]`,
-      item.price_data.product_data.name,
-    );
-
-    if (item.price_data.product_data.description) {
-      params.append(
-        `line_items[${index}][price_data][product_data][description]`,
-        item.price_data.product_data.description,
-      );
-    }
-
-    params.append(`line_items[${index}][quantity]`, String(item.quantity));
-  });
-
-  return params;
-};
+const buildLineItemsFromCart = (cart) =>
+  cart.items
+    .filter((item) => item?.productId)
+    .map((item) =>
+      mapProductToLineItem(item.productId, normalizeQty(item.quantity)),
+    )
+    .filter(Boolean);
 
 export const createCheckoutSessionController = async (req, res) => {
   const payloadItems = Array.isArray(req.body?.items) ? req.body.items : [];
@@ -93,68 +73,117 @@ export const createCheckoutSessionController = async (req, res) => {
     throw createHttpError(400, 'Cart is empty');
   }
 
-  const cartLineItems = cart
-    ? cart.items
-        .filter((item) => item?.productId)
-        .map((item) => {
-          const unitAmount = toCents(item.productId.price);
-          const quantity = Number(item.quantity) || 0;
-
-          if (unitAmount <= 0 || quantity <= 0) {
-            return null;
-          }
-
-          return {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: item.productId.name,
-                description: item.productId.description,
-              },
-              unit_amount: unitAmount,
-            },
-            quantity,
-          };
-        })
-        .filter(Boolean)
-    : [];
-
+  const fallbackLineItems = cart ? buildLineItemsFromCart(cart) : [];
   const bodyLineItems = await buildLineItemsFromPayload(payloadItems);
-  const lineItems = bodyLineItems.length > 0 ? bodyLineItems : cartLineItems;
+  const lineItems =
+    bodyLineItems.length > 0 ? bodyLineItems : fallbackLineItems;
 
   if (lineItems.length === 0) {
     throw createHttpError(400, 'No purchasable items in cart');
   }
 
-  const params = buildLineItemParams(lineItems);
-  params.append('metadata[userId]', String(req.user._id));
-
-  if (cart?._id) {
-    params.append('metadata[cartId]', String(cart._id));
-  }
-
-  const stripeResponse = await fetch(
-    'https://api.stripe.com/v1/checkout/sessions',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${stripeSecretKey}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: params,
+  const session = await stripe.checkout.sessions.create({
+    mode: 'payment',
+    payment_method_types: ['card'],
+    line_items: lineItems,
+    allow_promotion_codes: true,
+    billing_address_collection: 'auto',
+    shipping_address_collection: {
+      allowed_countries: ['US', 'CA', 'GB', 'UA', 'PL', 'DE'],
     },
-  );
-
-  if (!stripeResponse.ok) {
-    const errorBody = await stripeResponse.text();
-    throw createHttpError(stripeResponse.status, errorBody || 'Stripe error');
-  }
-
-  const session = await stripeResponse.json();
+    customer_email: req.user?.email,
+    success_url: `${clientBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${clientBaseUrl}/cart`,
+    metadata: {
+      userId: String(req.user._id),
+      ...(cart?._id ? { cartId: String(cart._id) } : {}),
+    },
+  });
 
   res.status(201).json({
     status: 201,
     message: 'Stripe checkout session created',
     data: { id: session.id, url: session.url },
   });
+};
+
+export const getCheckoutSessionController = async (req, res) => {
+  const sessionId = req.query?.session_id;
+
+  if (!sessionId) {
+    throw createHttpError(400, 'Missing checkout session id');
+  }
+
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+  if (
+    session?.metadata?.userId &&
+    session.metadata.userId !== String(req.user._id)
+  ) {
+    throw createHttpError(
+      403,
+      'You are not allowed to view this checkout session',
+    );
+  }
+
+  const lineItems = await stripe.checkout.sessions.listLineItems(sessionId, {
+    limit: 50,
+  });
+
+  res.json({
+    status: 200,
+    message: 'Stripe checkout session details',
+    data: {
+      id: session.id,
+      paymentStatus: session.payment_status,
+      amountTotal: session.amount_total,
+      currency: session.currency,
+      customerEmail: session.customer_email || session.customer_details?.email,
+      items: lineItems.data.map((item) => ({
+        description: item.description,
+        quantity: item.quantity,
+        amountSubtotal: item.amount_subtotal,
+        amountTotal: item.amount_total,
+        currency: item.currency,
+      })),
+    },
+  });
+};
+
+export const handleStripeWebhookController = async (req, res) => {
+  if (!stripeWebhookSecret) {
+    res.status(204).end();
+    return;
+  }
+
+  const signature = req.headers['stripe-signature'];
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      stripeWebhookSecret,
+    );
+  } catch (err) {
+    throw createHttpError(
+      400,
+      `Stripe signature verification failed: ${err.message}`,
+    );
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const cartId = session?.metadata?.cartId;
+    const userId = session?.metadata?.userId;
+
+    if (cartId && userId && mongoose.Types.ObjectId.isValid(cartId)) {
+      await CartCollection.findOneAndUpdate(
+        { _id: cartId, userId: new mongoose.Types.ObjectId(userId) },
+        { $set: { items: [] } },
+      );
+    }
+  }
+
+  res.json({ received: true });
 };
