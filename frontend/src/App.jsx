@@ -23,6 +23,10 @@ const AdminProductUpdatePage = lazy(() =>
   import("./pages/Admin/AdminProductUpdatePage/AdminProductUpdatePage")
 );
 
+const CheckoutSuccess = lazy(() =>
+  import("./pages/CheckoutSuccess/CheckoutSuccess")
+);
+
 import "./App.css";
 import RestrictedRoute from "./routes/RestrictedRoute/RestrictedRoute";
 import PrivateRoute from "./routes/PrivateRoute/PrivateRoute";
@@ -67,6 +71,7 @@ function App() {
           <Route index element={<WelcomePage />} />
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="checkout/success" element={<CheckoutSuccess />} />
 
           {/* приватні сторінки для звичайного юзера */}
           <Route element={<PrivateRoute redirectTo="/auth/login" />}>
