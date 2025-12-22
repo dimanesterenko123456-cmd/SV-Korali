@@ -4,9 +4,9 @@ import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import css from "./Footer.module.css";
 
 const Footer = () => {
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-  };
+  // const handleSubscribe = (e) => {
+  //   e.preventDefault();
+  // };
 
   return (
     <footer className={css.footer}>
@@ -55,7 +55,7 @@ const Footer = () => {
             </div>
 
             {/* NEWSLETTER */}
-            <div className={css.col}>
+            {/* <div className={css.col}>
               <p className={css.heading}>Newsletter</p>
               <p className={css.note}>
                 Subscribe to get special offers and updates
@@ -77,7 +77,7 @@ const Footer = () => {
                   <FiArrowRight />
                 </button>
               </form>
-            </div>
+            </div> */}
           </div>
         </div>
 

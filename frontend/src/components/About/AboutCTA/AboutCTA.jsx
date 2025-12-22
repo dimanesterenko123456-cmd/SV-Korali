@@ -1,6 +1,19 @@
+import { useNavigate } from "react-router-dom";
 import css from "./AboutCTA.module.css";
 
 const AboutCTA = () => {
+  const navigate = useNavigate();
+
+  const goToCatalog = () => navigate("/catalog");
+
+  const openWorkshop = () => {
+    window.open(
+      "https://www.google.com/maps/search/?api=1&query=26-30+Six+Point+Rd,+Toronto+(Etobicoke)",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   return (
     <section className={css.section}>
       <div className={css.container}>
@@ -12,10 +25,14 @@ const AboutCTA = () => {
         </p>
 
         <div className={css.actions}>
-          <button type="button" className={css.primary}>
+          <button type="button" className={css.primary} onClick={goToCatalog}>
             Explore Collections
           </button>
-          <button type="button" className={css.secondary}>
+          <button
+            type="button"
+            className={css.secondary}
+            onClick={openWorkshop}
+          >
             Visit Our Workshop
           </button>
         </div>

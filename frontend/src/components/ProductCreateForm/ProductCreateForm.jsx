@@ -1,4 +1,3 @@
-// src/components/ProductCreateForm/ProductCreateForm.jsx
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -19,7 +18,9 @@ const validationSchema = Yup.object({
     .min(0, "Не може бути менше 0")
     .required("Обов'язкове поле"),
   category: Yup.string().required("Оберіть категорію"),
-  stock: Yup.number()
+
+  // ✅ було stock -> тепер countInStock
+  countInStock: Yup.number()
     .typeError("Має бути числом")
     .integer("Має бути цілим числом")
     .min(0, "Не може бути менше 0")
@@ -31,7 +32,8 @@ const initialValues = {
   description: "",
   price: "",
   category: "",
-  stock: "",
+  // ✅ було stock -> тепер countInStock
+  countInStock: "",
   image: null,
 };
 
@@ -46,7 +48,11 @@ const ProductCreateForm = () => {
       formData.append("description", values.description || "");
       formData.append("price", values.price);
       formData.append("category", values.category);
-      formData.append("stock", values.stock);
+
+      // ✅ бекенд очікує countInStock + (опційно) inStock
+      const count = Number(values.countInStock) || 0;
+      formData.append("countInStock", String(count));
+      formData.append("inStock", String(count > 0));
 
       if (values.image) {
         formData.append("image", values.image);
@@ -137,12 +143,12 @@ const ProductCreateForm = () => {
                 </div>
 
                 <div className={css.fieldGroup}>
-                  <label htmlFor="stock" className={css.label}>
+                  <label htmlFor="countInStock" className={css.label}>
                     Кількість на складі
                   </label>
                   <Field
-                    id="stock"
-                    name="stock"
+                    id="countInStock"
+                    name="countInStock"
                     type="number"
                     min="0"
                     step="1"
@@ -150,7 +156,7 @@ const ProductCreateForm = () => {
                     className={css.input}
                   />
                   <ErrorMessage
-                    name="stock"
+                    name="countInStock"
                     component="div"
                     className={css.error}
                   />
@@ -198,6 +204,7 @@ const ProductCreateForm = () => {
                     <span>Натисніть, щоб завантажити фото</span>
                   </span>
                 )}
+
                 <input
                   type="file"
                   accept="image/*"

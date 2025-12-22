@@ -14,9 +14,9 @@ const AboutPage = () => {
       <HeroAbout />
       <OurStory />
       <MissionValues />
-      <ArtisanTeam />
+      {/* <ArtisanTeam /> */}
       <CraftProcess />
-      <ImpactCommunity />
+      {/* <ImpactCommunity /> */}
       <AboutCTA />
     </div>
   );
