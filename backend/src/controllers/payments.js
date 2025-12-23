@@ -13,6 +13,42 @@ const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 const toCents = (price) => Math.max(0, Math.round(Number(price) * 100) || 0);
 const normalizeQty = (value) => Math.max(1, Number(value) || 1);
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const buildQtyMap = (items = []) => {
+  const map = new Map();
+
+  items.forEach((item) => {
+    const productId = item?.productId?._id ?? item?.productId;
+    const qty = normalizeQty(item?.quantity);
+
+    if (!isValidObjectId(productId)) return;
+
+    const key = String(productId);
+    map.set(key, (map.get(key) || 0) + qty);
+  });
+
+  return map;
+};
+
+const parseMetadataItems = (raw) => {
+  if (!raw || typeof raw !== 'string') return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .map((item) => ({
+        productId: item?.productId,
+        quantity: normalizeQty(item?.quantity),
+      }))
+      .filter((item) => isValidObjectId(item.productId));
+  } catch (error) {
+    if (error) return [];
+  }
+};
 
 const mapProductToLineItem = (product, quantity) => {
   const unitAmount = toCents(product.price);
@@ -38,7 +74,7 @@ const mapProductToLineItem = (product, quantity) => {
 const buildLineItemsFromPayload = async (items = []) => {
   const validIds = items
     .map((item) => item?.productId)
-    .filter((id) => mongoose.Types.ObjectId.isValid(id));
+    .filter((id) => isValidObjectId(id));
 
   if (validIds.length === 0) return [];
 
@@ -69,18 +105,45 @@ export const createCheckoutSessionController = async (req, res) => {
   const payloadItems = Array.isArray(req.body?.items) ? req.body.items : [];
   const cart = await findCartByUserId(req.user._id);
 
+  const normalizedPayloadItems = payloadItems
+    .map((item) => ({
+      productId: item?.productId,
+      quantity: normalizeQty(item?.quantity),
+    }))
+    .filter((item) => isValidObjectId(item.productId));
+
+  const normalizedCartItems = (cart?.items || [])
+    .map((item) => ({
+      productId: item?.productId?._id ?? item?.productId,
+      quantity: normalizeQty(item?.quantity),
+    }))
+    .filter((item) => isValidObjectId(item.productId));
+
   if ((!cart || cart.items.length === 0) && payloadItems.length === 0) {
     throw createHttpError(400, 'Cart is empty');
   }
 
   const fallbackLineItems = cart ? buildLineItemsFromCart(cart) : [];
-  const bodyLineItems = await buildLineItemsFromPayload(payloadItems);
-  const lineItems =
-    bodyLineItems.length > 0 ? bodyLineItems : fallbackLineItems;
+  const bodyLineItems = await buildLineItemsFromPayload(normalizedPayloadItems);
+  const usePayloadItems = bodyLineItems.length > 0;
+
+  const lineItems = usePayloadItems ? bodyLineItems : fallbackLineItems;
+
+  const metadataItems = usePayloadItems
+    ? normalizedPayloadItems
+    : normalizedCartItems;
 
   if (lineItems.length === 0) {
     throw createHttpError(400, 'No purchasable items in cart');
   }
+
+  const metadata = {
+    userId: String(req.user._id),
+    ...(cart?._id ? { cartId: String(cart._id) } : {}),
+    ...(metadataItems.length
+      ? { cartItems: JSON.stringify(metadataItems) }
+      : {}),
+  };
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
@@ -94,10 +157,7 @@ export const createCheckoutSessionController = async (req, res) => {
     customer_email: req.user?.email,
     success_url: `${clientBaseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${clientBaseUrl}/cart`,
-    metadata: {
-      userId: String(req.user._id),
-      ...(cart?._id ? { cartId: String(cart._id) } : {}),
-    },
+    metadata,
   });
 
   res.status(201).json({
@@ -171,15 +231,60 @@ export const handleStripeWebhookController = async (req, res) => {
       `Stripe signature verification failed: ${err.message}`,
     );
   }
+  const updateInventory = async (items) => {
+    const qtyMap = buildQtyMap(items);
+
+    if (qtyMap.size === 0) return;
+
+    const products = await ProductCollection.find({
+      _id: { $in: Array.from(qtyMap.keys()) },
+    });
+
+    await Promise.all(
+      products.map((product) => {
+        const qty = qtyMap.get(String(product._id));
+        const nextCount = Math.max(0, (product.countInStock || 0) - qty);
+
+        product.countInStock = nextCount;
+        product.inStock = nextCount > 0;
+
+        return product.save();
+      }),
+    );
+  };
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const cartId = session?.metadata?.cartId;
     const userId = session?.metadata?.userId;
+    const metadataItems = parseMetadataItems(session?.metadata?.cartItems);
+
+    let processedCart = false;
 
     if (cartId && userId && mongoose.Types.ObjectId.isValid(cartId)) {
+      const cart = await CartCollection.findOne({
+        _id: cartId,
+        userId: new mongoose.Types.ObjectId(userId),
+      }).populate('items.productId');
+
+      if (cart) {
+        await updateInventory(cart.items);
+
+        await CartCollection.findOneAndUpdate(
+          { _id: cartId, userId: new mongoose.Types.ObjectId(userId) },
+          { $set: { items: [] } },
+        );
+
+        processedCart = true;
+      }
+    }
+
+    if (!processedCart && metadataItems.length) {
+      await updateInventory(metadataItems);
+    }
+    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
       await CartCollection.findOneAndUpdate(
-        { _id: cartId, userId: new mongoose.Types.ObjectId(userId) },
+        { userId: new mongoose.Types.ObjectId(userId) },
         { $set: { items: [] } },
       );
     }

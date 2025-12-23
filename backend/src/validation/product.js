@@ -6,6 +6,8 @@ export const createProductSchema = Joi.object({
   description: Joi.string().allow('', null),
   price: Joi.number().positive().required(),
   category: Joi.string().allow('', null),
+  length: Joi.string().max(100).allow('', null),
+  beadSize: Joi.string().max(100).allow('', null),
   inStock: Joi.boolean().default(true),
   countInStock: Joi.number().integer().min(0).default(0),
 
@@ -19,6 +21,8 @@ export const updateProductSchema = Joi.object({
   description: Joi.string().allow('', null),
   price: Joi.number().positive(),
   category: Joi.string().allow('', null),
+  length: Joi.string().max(100).allow('', null),
+  beadSize: Joi.string().max(100).allow('', null),
   inStock: Joi.boolean(),
   countInStock: Joi.number().integer().min(0),
   images: Joi.alternatives()
