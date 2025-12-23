@@ -18,8 +18,9 @@ const validationSchema = Yup.object({
     .min(0, "Не може бути менше 0")
     .required("Обов'язкове поле"),
   category: Yup.string().required("Оберіть категорію"),
+  length: Yup.string().required("Вкажіть довжину виробу"),
+  beadSize: Yup.string().required("Вкажіть розмір намистин"),
 
-  // ✅ було stock -> тепер countInStock
   countInStock: Yup.number()
     .typeError("Має бути числом")
     .integer("Має бути цілим числом")
@@ -32,7 +33,8 @@ const initialValues = {
   description: "",
   price: "",
   category: "",
-  // ✅ було stock -> тепер countInStock
+  length: "",
+  beadSize: "",
   countInStock: "",
   image: null,
   images: [],
@@ -41,10 +43,18 @@ const initialValues = {
 const ProductCreateForm = () => {
   const dispatch = useDispatch();
   const [previewItems, setPreviewItems] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const previewRef = useRef([]);
 
   useEffect(() => {
     previewRef.current = previewItems;
+  }, [previewItems]);
+  useEffect(() => {
+    if (previewItems.length > 0) {
+      setPreviewUrl(previewItems[0].url);
+    } else {
+      setPreviewUrl(null);
+    }
   }, [previewItems]);
 
   useEffect(
@@ -61,6 +71,8 @@ const ProductCreateForm = () => {
       formData.append("description", values.description || "");
       formData.append("price", values.price);
       formData.append("category", values.category);
+      formData.append("length", values.length);
+      formData.append("beadSize", values.beadSize);
 
       // ✅ бекенд очікує countInStock + (опційно) inStock
       const count = Number(values.countInStock) || 0;
@@ -133,6 +145,10 @@ const ProductCreateForm = () => {
             setPreviewItems(nextItems);
             syncFiles(nextItems);
 
+            if (nextItems[0]) {
+              setPreviewUrl(nextItems[0].url);
+            }
+
             event.target.value = "";
           };
 
@@ -142,6 +158,12 @@ const ProductCreateForm = () => {
               const removed = prev.find((item) => item.id === id);
               if (removed) URL.revokeObjectURL(removed.url);
               syncFiles(next);
+              setPreviewUrl((current) => {
+                if (current === removed?.url) {
+                  return next[0]?.url || null;
+                }
+                return current;
+              });
               return next;
             });
           };
@@ -151,6 +173,7 @@ const ProductCreateForm = () => {
             setPreviewItems([]);
             setFieldValue("images", []);
             setFieldValue("image", null);
+            setPreviewUrl(null);
           };
 
           return (
@@ -259,26 +282,98 @@ const ProductCreateForm = () => {
                     className={css.error}
                   />
                 </div>
+                <div className={css.fieldRow}>
+                  <div className={css.fieldGroup}>
+                    <label htmlFor="length" className={css.label}>
+                      Довжина виробу
+                    </label>
+                    <Field
+                      id="length"
+                      name="length"
+                      placeholder="Наприклад: 18 см"
+                      className={css.input}
+                      autoComplete="off"
+                    />
+                    <ErrorMessage
+                      name="length"
+                      component="div"
+                      className={css.error}
+                    />
+                  </div>
+
+                  <div className={css.fieldGroup}>
+                    <label htmlFor="beadSize" className={css.label}>
+                      Розмір намистин
+                    </label>
+                    <Field
+                      id="beadSize"
+                      name="beadSize"
+                      placeholder="Наприклад: 6 мм"
+                      className={css.input}
+                      autoComplete="off"
+                    />
+                    <ErrorMessage
+                      name="beadSize"
+                      component="div"
+                      className={css.error}
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* права колонка */}
               <div className={css.sideSection}>
                 <h2 className={css.sectionTitle}>Фото товару</h2>
 
-                <label className={css.uploadBox}>
-                  {previewItems.length > 0 ? (
-                    <div className={css.previewGrid}>
+                <div className={css.previewFrame}>
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt={"Попередній перегляд"}
+                      className={css.imagePreview}
+                    />
+                  ) : (
+                    <div className={css.imagePlaceholder}>
+                      Додайте фото, щоб побачити превʼю
+                    </div>
+                  )}
+                </div>
+
+                {previewItems.length > 0 && (
+                  <div className={css.gallerySection}>
+                    <div className={css.galleryHeader}>
+                      <span>Обрані фото</span>
+                      <button
+                        type="button"
+                        className={css.clearBtn}
+                        onClick={clearAll}
+                      >
+                        Скинути
+                      </button>
+                    </div>
+
+                    <div className={css.thumbGrid}>
                       {previewItems.map((item, index) => (
-                        <div key={item.id} className={css.previewItem}>
-                          <img
-                            src={item.url}
-                            alt={`Превʼю ${index + 1}`}
-                            className={css.previewImage}
-                          />
-                          <span className={css.previewBadge}>#{index + 1}</span>
+                        <div key={item.id} className={css.thumbItem}>
                           <button
                             type="button"
-                            className={css.previewRemove}
+                            className={`${css.thumbBtn} ${
+                              previewUrl === item.url ? css.thumbActive : ""
+                            }`}
+                            onClick={() => setPreviewUrl(item.url)}
+                          >
+                            <span className={css.previewBadge}>
+                              #{index + 1}
+                            </span>
+                            <img
+                              src={item.url}
+                              alt={`Превʼю ${index + 1}`}
+                              className={css.thumbImg}
+                            />
+                          </button>
+                          <button
+                            type="button"
+                            className={css.thumbRemove}
                             onClick={() => handleRemoveImage(item.id)}
                             aria-label="Видалити фото"
                           >
@@ -287,15 +382,15 @@ const ProductCreateForm = () => {
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <span className={css.uploadPlaceholder}>
-                      <span className={css.uploadIcon}>+</span>
-                      <span>Натисніть, щоб завантажити фото</span>
-                      <span className={css.uploadHint}>
-                        Можна вибрати кілька файлів
-                      </span>
-                    </span>
-                  )}
+                  </div>
+                )}
+
+                <label className={css.imageUpload}>
+                  <div className={css.uploadCopy}>
+                    <span className={css.uploadIcon}>+</span>
+                    <span>Додати нові фото (можна кілька)</span>
+                  </div>
+
                   <input
                     type="file"
                     accept="image/*"
@@ -304,32 +399,6 @@ const ProductCreateForm = () => {
                     onChange={handleFilesSelected}
                   />
                 </label>
-
-                {previewItems.length > 0 && (
-                  <div className={css.fileChips}>
-                    {previewItems.map((item) => (
-                      <span key={item.id} className={css.fileChip}>
-                        {item.file.name}
-                        <button
-                          type="button"
-                          className={css.fileChipRemove}
-                          onClick={() => handleRemoveImage(item.id)}
-                          aria-label="Прибрати фото"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-
-                    <button
-                      type="button"
-                      className={css.resetUploads}
-                      onClick={clearAll}
-                    >
-                      Очистити вибір
-                    </button>
-                  </div>
-                )}
 
                 <button
                   type="submit"

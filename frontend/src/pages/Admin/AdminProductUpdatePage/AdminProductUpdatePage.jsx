@@ -49,6 +49,8 @@ const AdminProductUpdatePage = () => {
       description: product.description || "",
       price: product.price ?? "",
       category: product.category || "",
+      length: product.length || "",
+      beadSize: product.beadSize || "",
       countInStock:
         typeof product.countInStock === "number" ? product.countInStock : 0,
       inStock:
@@ -218,6 +220,12 @@ const AdminProductUpdatePage = () => {
       }
       formData.append("price", formValues.price);
       formData.append("category", formValues.category);
+      if (formValues.length) {
+        formData.append("length", formValues.length);
+      }
+      if (formValues.beadSize) {
+        formData.append("beadSize", formValues.beadSize);
+      }
       formData.append("countInStock", formValues.countInStock);
       formData.append("inStock", String(formValues.inStock));
 
@@ -351,6 +359,31 @@ const AdminProductUpdatePage = () => {
                     />
                     <span>Product available for purchase</span>
                   </label>
+                </div>
+              </div>
+              <div className={css.row2}>
+                <div className={css.field}>
+                  <label className={css.label}>Length</label>
+                  <input
+                    type="text"
+                    name="length"
+                    className={css.input}
+                    value={formValues.length}
+                    onChange={handleChange}
+                    placeholder="18 cm"
+                  />
+                </div>
+
+                <div className={css.field}>
+                  <label className={css.label}>Bead size</label>
+                  <input
+                    type="text"
+                    name="beadSize"
+                    className={css.input}
+                    value={formValues.beadSize}
+                    onChange={handleChange}
+                    placeholder="6 mm"
+                  />
                 </div>
               </div>
             </div>

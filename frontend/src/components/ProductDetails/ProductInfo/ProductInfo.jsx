@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaPaypal } from "react-icons/fa";
-import { FiHeart, FiMinus, FiPlus, FiShield } from "react-icons/fi";
+import { FiMinus, FiPlus, FiShield } from "react-icons/fi";
 
 import css from "./ProductInfo.module.css";
 import { addToCart } from "../../../redux/slices/cartSlice";
@@ -32,7 +32,9 @@ const ProductInfo = ({ product }) => {
   const compareAt = product?.compareAtPrice ?? product?.oldPrice ?? null;
   const compareAtNumber = Number(compareAt);
   const showCompareAt =
-    Number.isFinite(compareAtNumber) && compareAtNumber > priceNumber;
+    Number.isFinite(compareAtNumber) &&
+    Number.isFinite(priceNumber) &&
+    compareAtNumber > priceNumber;
 
   const discount = useMemo(() => {
     if (!showCompareAt) return null;
@@ -61,9 +63,24 @@ const ProductInfo = ({ product }) => {
   );
   const showReviewsCount = Number.isFinite(reviewsCount) && reviewsCount > 0;
 
-  const [length, setLength] = useState('18"');
-  const [beadSize, setBeadSize] = useState("Medium");
+  // ✅ ВАЖЛИВО: ініціалізуємо стейт один раз при mount (а remount робить key)
+  const [length, setLength] = useState(() => product?.length ?? '18"');
+  const [beadSize, setBeadSize] = useState(() => product?.beadSize ?? "Medium");
   const [qty, setQty] = useState(1);
+
+  const lengthOptions = useMemo(() => {
+    const base = ['18"', '20"', '22"'];
+    const extra = product?.length;
+    const list = extra ? [extra, ...base] : base;
+    return Array.from(new Set(list));
+  }, [product?.length]);
+
+  const beadSizeOptions = useMemo(() => {
+    const base = ["Small", "Medium", "Large"];
+    const extra = product?.beadSize;
+    const list = extra ? [extra, ...base] : base;
+    return Array.from(new Set(list));
+  }, [product?.beadSize]);
 
   const inc = () => {
     const max = typeof stockLeft === "number" ? Math.max(stockLeft, 1) : 99;
@@ -134,6 +151,7 @@ const ProductInfo = ({ product }) => {
         {discount ? (
           <span className={css.discount}>{discount}% OFF</span>
         ) : null}
+
         <span
           className={`${css.stock} ${inStock ? css.inStock : css.outStock}`}
         >
@@ -145,7 +163,7 @@ const ProductInfo = ({ product }) => {
         <div className={css.optionBlock}>
           <h3 className={css.optionTitle}>Length</h3>
           <div className={css.optionGrid}>
-            {['18"', '20"', '22"'].map((v) => (
+            {lengthOptions.map((v) => (
               <button
                 key={v}
                 type="button"
@@ -163,7 +181,7 @@ const ProductInfo = ({ product }) => {
         <div className={css.optionBlock}>
           <h3 className={css.optionTitle}>Bead Size</h3>
           <div className={css.optionGrid}>
-            {["Small", "Medium", "Large"].map((v) => (
+            {beadSizeOptions.map((v) => (
               <button
                 key={v}
                 type="button"
@@ -190,12 +208,14 @@ const ProductInfo = ({ product }) => {
               >
                 <FiMinus />
               </button>
+
               <input
                 className={css.qtyInput}
                 value={qty}
                 readOnly
                 aria-label="Quantity"
               />
+
               <button
                 type="button"
                 className={css.qtyBtn}
@@ -224,6 +244,7 @@ const ProductInfo = ({ product }) => {
         >
           Add to Cart
         </button>
+
         <button
           type="button"
           className={css.secondary}
