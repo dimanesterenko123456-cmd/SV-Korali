@@ -18,7 +18,7 @@ const ProductDetail = ({ product }) => {
 
       {categoryText && <p className={css.category}>{categoryText}</p>}
 
-      {!inStock && <span className={css.outOfStock}>Немає</span>}
+      {!inStock && <span className={css.outOfStock}>Out of stock</span>}
     </div>
   );
 };

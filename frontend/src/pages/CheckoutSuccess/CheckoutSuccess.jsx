@@ -12,9 +12,6 @@ const CheckoutSuccess = () => {
         </p>
 
         <div className={css.actions}>
-          <Link to="/orders" className={css.buttonPrimary}>
-            View my orders
-          </Link>
           <Link to="/catalog" className={css.buttonSecondary}>
             Continue shopping
           </Link>

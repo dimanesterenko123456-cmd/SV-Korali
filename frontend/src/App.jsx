@@ -26,6 +26,9 @@ const AdminProductUpdatePage = lazy(() =>
 const CheckoutSuccess = lazy(() =>
   import("./pages/CheckoutSuccess/CheckoutSuccess")
 );
+const ProductDetailsPage = lazy(() =>
+  import("./pages/ProductDetailsPage/ProductDetailsPage")
+);
 
 import "./App.css";
 import RestrictedRoute from "./routes/RestrictedRoute/RestrictedRoute";
@@ -70,6 +73,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<WelcomePage />} />
           <Route path="catalog" element={<CatalogPage />} />
+          <Route path="catalog/:productId" element={<ProductDetailsPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="checkout/success" element={<CheckoutSuccess />} />
 

@@ -14,6 +14,21 @@
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.09);
 }
 
+/* клікабельна частина картки */
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid #b63a2b;
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
 .imageWrap {
   position: relative;
   height: 170px;
