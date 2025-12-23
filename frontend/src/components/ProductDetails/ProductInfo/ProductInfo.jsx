@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaPaypal } from "react-icons/fa";
@@ -7,6 +7,24 @@ import { FiMinus, FiPlus, FiShield } from "react-icons/fi";
 import css from "./ProductInfo.module.css";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { selectAccessToken } from "../../../redux/selectors/authSelectors";
+
+const normalizeOptions = (value) => {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (typeof item === "string" ? item : String(item)))
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
 
 const ProductInfo = ({ product }) => {
   const dispatch = useDispatch();
@@ -63,24 +81,51 @@ const ProductInfo = ({ product }) => {
   );
   const showReviewsCount = Number.isFinite(reviewsCount) && reviewsCount > 0;
 
-  // ✅ ВАЖЛИВО: ініціалізуємо стейт один раз при mount (а remount робить key)
-  const [length, setLength] = useState(() => product?.length ?? '18"');
-  const [beadSize, setBeadSize] = useState(() => product?.beadSize ?? "Medium");
+  const descriptionText = useMemo(() => {
+    const raw = product?.description;
+    if (!raw) return [];
+
+    const parts = String(raw)
+      .split(/\n{2,}/g)
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    return parts.length ? parts : [String(raw).trim()];
+  }, [product?.description]);
+
+  const lengthOptions = useMemo(
+    () => normalizeOptions(product?.length),
+    [product?.length]
+  );
+
+  const beadSizeOptions = useMemo(
+    () => normalizeOptions(product?.beadSize),
+    [product?.beadSize]
+  );
+
+  const [length, setLength] = useState(() => lengthOptions[0] || "");
+  const [beadSize, setBeadSize] = useState(() => beadSizeOptions[0] || "");
   const [qty, setQty] = useState(1);
 
-  const lengthOptions = useMemo(() => {
-    const base = ['18"', '20"', '22"'];
-    const extra = product?.length;
-    const list = extra ? [extra, ...base] : base;
-    return Array.from(new Set(list));
-  }, [product?.length]);
+  useEffect(() => {
+    setLength((prev) =>
+      lengthOptions.length
+        ? lengthOptions.includes(prev)
+          ? prev
+          : lengthOptions[0]
+        : ""
+    );
+  }, [lengthOptions]);
 
-  const beadSizeOptions = useMemo(() => {
-    const base = ["Small", "Medium", "Large"];
-    const extra = product?.beadSize;
-    const list = extra ? [extra, ...base] : base;
-    return Array.from(new Set(list));
-  }, [product?.beadSize]);
+  useEffect(() => {
+    setBeadSize((prev) =>
+      beadSizeOptions.length
+        ? beadSizeOptions.includes(prev)
+          ? prev
+          : beadSizeOptions[0]
+        : ""
+    );
+  }, [beadSizeOptions]);
 
   const inc = () => {
     const max = typeof stockLeft === "number" ? Math.max(stockLeft, 1) : 99;
@@ -102,13 +147,19 @@ const ProductInfo = ({ product }) => {
   const handleAddToCart = () => {
     if (!requireAuth()) return;
     if (!inStock) return;
-    dispatch(addToCart({ ...product, quantity: qty, length, beadSize }));
+    const payload = { ...product, quantity: qty };
+    if (length) payload.length = length;
+    if (beadSize) payload.beadSize = beadSize;
+    dispatch(addToCart(payload));
   };
 
   const handleBuyNow = () => {
     if (!requireAuth()) return;
     if (!inStock) return;
-    dispatch(addToCart({ ...product, quantity: qty, length, beadSize }));
+    const payload = { ...product, quantity: qty };
+    if (length) payload.length = length;
+    if (beadSize) payload.beadSize = beadSize;
+    dispatch(addToCart(payload));
     navigate("/cart");
   };
 
@@ -158,43 +209,56 @@ const ProductInfo = ({ product }) => {
           {inStock ? "In stock" : "Out of stock"}
         </span>
       </div>
+      {descriptionText.length ? (
+        <div className={css.shortDesc}>
+          {descriptionText.map((text, idx) => (
+            <p key={idx} className={css.shortDescP}>
+              {text}
+            </p>
+          ))}
+        </div>
+      ) : null}
 
       <div className={css.options}>
-        <div className={css.optionBlock}>
-          <h3 className={css.optionTitle}>Length</h3>
-          <div className={css.optionGrid}>
-            {lengthOptions.map((v) => (
-              <button
-                key={v}
-                type="button"
-                className={`${css.optBtn} ${
-                  length === v ? css.optBtnActive : ""
-                }`}
-                onClick={() => setLength(v)}
-              >
-                {v}
-              </button>
-            ))}
+        {lengthOptions.length ? (
+          <div className={css.optionBlock}>
+            <h3 className={css.optionTitle}>Length</h3>
+            <div className={css.optionGrid}>
+              {lengthOptions.map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  className={`${css.optBtn} ${
+                    length === v ? css.optBtnActive : ""
+                  }`}
+                  onClick={() => setLength(v)}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
-        <div className={css.optionBlock}>
-          <h3 className={css.optionTitle}>Bead Size</h3>
-          <div className={css.optionGrid}>
-            {beadSizeOptions.map((v) => (
-              <button
-                key={v}
-                type="button"
-                className={`${css.optBtn} ${
-                  beadSize === v ? css.optBtnActive : ""
-                }`}
-                onClick={() => setBeadSize(v)}
-              >
-                {v}
-              </button>
-            ))}
+        {beadSizeOptions.length ? (
+          <div className={css.optionBlock}>
+            <h3 className={css.optionTitle}>Bead Size</h3>
+            <div className={css.optionGrid}>
+              {beadSizeOptions.map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  className={`${css.optBtn} ${
+                    beadSize === v ? css.optBtnActive : ""
+                  }`}
+                  onClick={() => setBeadSize(v)}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className={css.optionBlock}>
           <h3 className={css.optionTitle}>Quantity</h3>

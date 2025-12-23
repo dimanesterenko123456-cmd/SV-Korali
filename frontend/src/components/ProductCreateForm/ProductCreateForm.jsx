@@ -46,6 +46,14 @@ const ProductCreateForm = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const previewRef = useRef([]);
 
+  const splitValues = (value) => {
+    if (!value) return [];
+    return String(value)
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  };
+
   useEffect(() => {
     previewRef.current = previewItems;
   }, [previewItems]);
@@ -71,8 +79,19 @@ const ProductCreateForm = () => {
       formData.append("description", values.description || "");
       formData.append("price", values.price);
       formData.append("category", values.category);
-      formData.append("length", values.length);
-      formData.append("beadSize", values.beadSize);
+      const lengthValues = splitValues(values.length);
+      if (lengthValues.length) {
+        lengthValues.forEach((val) => formData.append("length", val));
+      } else {
+        formData.append("length", "");
+      }
+
+      const beadSizeValues = splitValues(values.beadSize);
+      if (beadSizeValues.length) {
+        beadSizeValues.forEach((val) => formData.append("beadSize", val));
+      } else {
+        formData.append("beadSize", "");
+      }
 
       // ✅ бекенд очікує countInStock + (опційно) inStock
       const count = Number(values.countInStock) || 0;
@@ -294,6 +313,9 @@ const ProductCreateForm = () => {
                       className={css.input}
                       autoComplete="off"
                     />
+                    <p className={css.fieldHint}>
+                      Вкажіть кілька довжин через кому або з нового рядка.
+                    </p>
                     <ErrorMessage
                       name="length"
                       component="div"
@@ -312,6 +334,9 @@ const ProductCreateForm = () => {
                       className={css.input}
                       autoComplete="off"
                     />
+                    <p className={css.fieldHint}>
+                      Вкажіть усі доступні розміри намистин через кому.
+                    </p>
                     <ErrorMessage
                       name="beadSize"
                       component="div"
