@@ -17,6 +17,24 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseProductFilterParams } from '../utils/parseProductFilterParams.js';
 import { parseSortParams } from '../utils/ParseSortPArams.js';
 
+const parseSizeField = (value) => {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (typeof item === 'string' ? item : String(item)))
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return undefined;
+};
+
 const collectImagesFromRequest = async (req) => {
   let images = [];
 
@@ -114,6 +132,14 @@ export const createProductController = async (req, res, next) => {
       payload.price = Number(payload.price);
     }
 
+    if (payload.length !== undefined) {
+      payload.length = parseSizeField(payload.length) ?? [];
+    }
+
+    if (payload.beadSize !== undefined) {
+      payload.beadSize = parseSizeField(payload.beadSize) ?? [];
+    }
+
     if (payload.countInStock !== undefined) {
       payload.countInStock = Number(payload.countInStock);
     }
@@ -173,6 +199,14 @@ export const patchProductController = async (req, res, next) => {
 
     if (payload.price !== undefined) {
       payload.price = Number(payload.price);
+    }
+
+    if (payload.length !== undefined) {
+      payload.length = parseSizeField(payload.length) ?? [];
+    }
+
+    if (payload.beadSize !== undefined) {
+      payload.beadSize = parseSizeField(payload.beadSize) ?? [];
     }
 
     if (payload.countInStock !== undefined) {
