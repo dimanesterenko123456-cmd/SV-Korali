@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -35,11 +35,24 @@ const initialValues = {
   // ✅ було stock -> тепер countInStock
   countInStock: "",
   image: null,
+  images: [],
 };
 
 const ProductCreateForm = () => {
   const dispatch = useDispatch();
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewItems, setPreviewItems] = useState([]);
+  const previewRef = useRef([]);
+
+  useEffect(() => {
+    previewRef.current = previewItems;
+  }, [previewItems]);
+
+  useEffect(
+    () => () => {
+      previewRef.current.forEach((item) => URL.revokeObjectURL(item.url));
+    },
+    []
+  );
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -54,15 +67,24 @@ const ProductCreateForm = () => {
       formData.append("countInStock", String(count));
       formData.append("inStock", String(count > 0));
 
-      if (values.image) {
+      if (Array.isArray(values.images) && values.images.length > 0) {
+        values.images.forEach((file) => {
+          if (file) formData.append("images", file);
+        });
+
+        if (values.images[0]) {
+          formData.append("image", values.images[0]);
+        }
+      } else if (values.image) {
         formData.append("image", values.image);
       }
 
       await dispatch(createProductThunk(formData)).unwrap();
 
       toast.success("Товар успішно створено");
+      previewItems.forEach((item) => URL.revokeObjectURL(item.url));
       resetForm();
-      setPreviewUrl(null);
+      setPreviewItems([]);
     } catch (error) {
       console.error("Create product error:", error);
       toast.error(error?.message || "Не вдалося створити товар");
@@ -78,161 +100,248 @@ const ProductCreateForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, setFieldValue }) => (
-          <Form className={css.form}>
-            {/* ліва колонка */}
-            <div className={css.generalSection}>
-              <h2 className={css.sectionTitle}>Загальна інформація</h2>
+        {({ isSubmitting, setFieldValue }) => {
+          const syncFiles = (items) => {
+            const filesToSubmit = items.map((item) => item.file);
+            setFieldValue("images", filesToSubmit);
+            setFieldValue("image", filesToSubmit[0] || null);
+          };
 
-              <div className={css.fieldGroup}>
-                <label htmlFor="name" className={css.label}>
-                  Назва товару
-                </label>
-                <Field
-                  id="name"
-                  name="name"
-                  placeholder="Введіть назву товару"
-                  className={css.input}
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className={css.error}
-                />
-              </div>
+          const handleFilesSelected = (event) => {
+            const files = Array.from(event.currentTarget.files || []);
+            if (!files.length) return;
 
-              <div className={css.fieldGroup}>
-                <label htmlFor="description" className={css.label}>
-                  Опис товару
-                </label>
-                <Field
-                  as="textarea"
-                  id="description"
-                  name="description"
-                  placeholder="Коротко опишіть товар"
-                  className={`${css.input} ${css.textarea}`}
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="description"
-                  component="div"
-                  className={css.error}
-                />
-              </div>
+            const incoming = files.map((file) => ({
+              id: `${file.name}-${file.lastModified}-${file.size}`,
+              file,
+              url: URL.createObjectURL(file),
+            }));
 
-              <div className={css.fieldRow}>
+            const mergedMap = new Map(
+              previewItems.map((item) => [item.id, item])
+            );
+
+            incoming.forEach((item) => {
+              if (mergedMap.has(item.id)) {
+                URL.revokeObjectURL(item.url);
+              } else {
+                mergedMap.set(item.id, item);
+              }
+            });
+
+            const nextItems = Array.from(mergedMap.values());
+            setPreviewItems(nextItems);
+            syncFiles(nextItems);
+
+            event.target.value = "";
+          };
+
+          const handleRemoveImage = (id) => {
+            setPreviewItems((prev) => {
+              const next = prev.filter((item) => item.id !== id);
+              const removed = prev.find((item) => item.id === id);
+              if (removed) URL.revokeObjectURL(removed.url);
+              syncFiles(next);
+              return next;
+            });
+          };
+
+          const clearAll = () => {
+            previewItems.forEach((item) => URL.revokeObjectURL(item.url));
+            setPreviewItems([]);
+            setFieldValue("images", []);
+            setFieldValue("image", null);
+          };
+
+          return (
+            <Form className={css.form}>
+              {/* ліва колонка */}
+              <div className={css.generalSection}>
+                <h2 className={css.sectionTitle}>Загальна інформація</h2>
                 <div className={css.fieldGroup}>
-                  <label htmlFor="price" className={css.label}>
-                    Ціна ($)
+                  <label htmlFor="name" className={css.label}>
+                    Назва товару
                   </label>
                   <Field
-                    id="price"
-                    name="price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
+                    id="name"
+                    name="name"
+                    placeholder="Введіть назву товару"
                     className={css.input}
+                    autoComplete="off"
                   />
                   <ErrorMessage
-                    name="price"
+                    name="name"
                     component="div"
                     className={css.error}
                   />
                 </div>
 
                 <div className={css.fieldGroup}>
-                  <label htmlFor="countInStock" className={css.label}>
-                    Кількість на складі
+                  <label htmlFor="description" className={css.label}>
+                    Опис товару
                   </label>
                   <Field
-                    id="countInStock"
-                    name="countInStock"
-                    type="number"
-                    min="0"
-                    step="1"
-                    placeholder="0"
-                    className={css.input}
+                    as="textarea"
+                    id="description"
+                    name="description"
+                    placeholder="Коротко опишіть товар"
+                    className={`${css.input} ${css.textarea}`}
+                    autoComplete="off"
                   />
                   <ErrorMessage
-                    name="countInStock"
+                    name="description"
+                    component="div"
+                    className={css.error}
+                  />
+                </div>
+
+                <div className={css.fieldRow}>
+                  <div className={css.fieldGroup}>
+                    <label htmlFor="price" className={css.label}>
+                      Ціна ($)
+                    </label>
+                    <Field
+                      id="price"
+                      name="price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      className={css.input}
+                    />
+                    <ErrorMessage
+                      name="price"
+                      component="div"
+                      className={css.error}
+                    />
+                  </div>
+
+                  <div className={css.fieldGroup}>
+                    <label htmlFor="countInStock" className={css.label}>
+                      Кількість на складі
+                    </label>
+                    <Field
+                      id="countInStock"
+                      name="countInStock"
+                      type="number"
+                      min="0"
+                      step="1"
+                      placeholder="0"
+                      className={css.input}
+                    />
+                    <ErrorMessage
+                      name="countInStock"
+                      component="div"
+                      className={css.error}
+                    />
+                  </div>
+                </div>
+
+                <div className={css.fieldGroup}>
+                  <label htmlFor="category" className={css.label}>
+                    Категорія
+                  </label>
+                  <Field
+                    as="select"
+                    id="category"
+                    name="category"
+                    className={css.input}
+                  >
+                    <option value="">Оберіть категорію</option>
+                    <option value="necklace">Намисто</option>
+                    <option value="bracelet">Браслети</option>
+                    <option value="earrings">Сережки</option>
+                    <option value="other">Інше</option>
+                  </Field>
+                  <ErrorMessage
+                    name="category"
                     component="div"
                     className={css.error}
                   />
                 </div>
               </div>
 
-              <div className={css.fieldGroup}>
-                <label htmlFor="category" className={css.label}>
-                  Категорія
-                </label>
-                <Field
-                  as="select"
-                  id="category"
-                  name="category"
-                  className={css.input}
-                >
-                  <option value="">Оберіть категорію</option>
-                  <option value="necklace">Намисто</option>
-                  <option value="bracelet">Браслети</option>
-                  <option value="earrings">Сережки</option>
-                  <option value="other">Інше</option>
-                </Field>
-                <ErrorMessage
-                  name="category"
-                  component="div"
-                  className={css.error}
-                />
-              </div>
-            </div>
+              {/* права колонка */}
+              <div className={css.sideSection}>
+                <h2 className={css.sectionTitle}>Фото товару</h2>
 
-            {/* права колонка */}
-            <div className={css.sideSection}>
-              <h2 className={css.sectionTitle}>Фото товару</h2>
-
-              <label className={css.uploadBox}>
-                {previewUrl ? (
-                  <img
-                    src={previewUrl}
-                    alt="Превʼю товару"
-                    className={css.previewImage}
+                <label className={css.uploadBox}>
+                  {previewItems.length > 0 ? (
+                    <div className={css.previewGrid}>
+                      {previewItems.map((item, index) => (
+                        <div key={item.id} className={css.previewItem}>
+                          <img
+                            src={item.url}
+                            alt={`Превʼю ${index + 1}`}
+                            className={css.previewImage}
+                          />
+                          <span className={css.previewBadge}>#{index + 1}</span>
+                          <button
+                            type="button"
+                            className={css.previewRemove}
+                            onClick={() => handleRemoveImage(item.id)}
+                            aria-label="Видалити фото"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className={css.uploadPlaceholder}>
+                      <span className={css.uploadIcon}>+</span>
+                      <span>Натисніть, щоб завантажити фото</span>
+                      <span className={css.uploadHint}>
+                        Можна вибрати кілька файлів
+                      </span>
+                    </span>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className={css.fileInput}
+                    onChange={handleFilesSelected}
                   />
-                ) : (
-                  <span className={css.uploadPlaceholder}>
-                    <span className={css.uploadIcon}>+</span>
-                    <span>Натисніть, щоб завантажити фото</span>
-                  </span>
+                </label>
+
+                {previewItems.length > 0 && (
+                  <div className={css.fileChips}>
+                    {previewItems.map((item) => (
+                      <span key={item.id} className={css.fileChip}>
+                        {item.file.name}
+                        <button
+                          type="button"
+                          className={css.fileChipRemove}
+                          onClick={() => handleRemoveImage(item.id)}
+                          aria-label="Прибрати фото"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+
+                    <button
+                      type="button"
+                      className={css.resetUploads}
+                      onClick={clearAll}
+                    >
+                      Очистити вибір
+                    </button>
+                  </div>
                 )}
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  className={css.fileInput}
-                  onChange={(event) => {
-                    const file = event.currentTarget.files?.[0] || null;
-                    setFieldValue("image", file);
-
-                    if (file) {
-                      const url = URL.createObjectURL(file);
-                      setPreviewUrl(url);
-                    } else {
-                      setPreviewUrl(null);
-                    }
-                  }}
-                />
-              </label>
-
-              <button
-                type="submit"
-                className={css.submitButton}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Збереження..." : "Опублікувати товар"}
-              </button>
-            </div>
-          </Form>
-        )}
+                <button
+                  type="submit"
+                  className={css.submitButton}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Збереження..." : "Опублікувати товар"}
+                </button>
+              </div>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );

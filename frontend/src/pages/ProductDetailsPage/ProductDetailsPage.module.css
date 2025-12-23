@@ -1,0 +1,117 @@
+.page {
+  width: 100%;
+  background: #f9fafb;
+  color: #111827;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 18px 16px 56px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.loaderWrap {
+  padding: 44px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.error {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #f1c4be;
+  background: #fff6f5;
+  color: #9a3412;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 18px;
+}
+
+.breadcrumbLink {
+  color: #6b7280;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #c53030;
+}
+
+.breadcrumbLinkMuted {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.breadcrumbDivider {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.breadcrumbCurrent {
+  color: #111827;
+  font-weight: 800;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  min-width: 0;
+}
+
+.leftCol,
+.rightCol {
+  min-width: 0;
+}
+
+.tabsRow {
+  margin-top: 26px;
+}
+
+.relatedRow {
+  margin-top: 52px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 22px 24px 64px;
+  }
+
+  .productGrid {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .productGrid {
+    grid-template-columns: 7fr 5fr;
+    gap: 44px;
+  }
+
+  .tabsRow {
+    margin-top: 40px;
+  }
+
+  .relatedRow {
+    margin-top: 70px;
+  }
+}

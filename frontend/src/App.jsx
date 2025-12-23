@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 const WelcomePage = lazy(() => import("./pages/WelcomePage/WelcomePage"));
 const AuthPage = lazy(() => import("./pages/AuthPage/AuthPage"));
-const OrderPage = lazy(() => import("./pages/OrderPage/OrderPage"));
-
 const CatalogPage = lazy(() => import("./pages/CatalogPage/CatalogPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage/AboutPage"));
 
@@ -25,6 +23,9 @@ const AdminProductUpdatePage = lazy(() =>
 
 const CheckoutSuccess = lazy(() =>
   import("./pages/CheckoutSuccess/CheckoutSuccess")
+);
+const ProductDetailsPage = lazy(() =>
+  import("./pages/ProductDetailsPage/ProductDetailsPage")
 );
 
 import "./App.css";
@@ -70,13 +71,13 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<WelcomePage />} />
           <Route path="catalog" element={<CatalogPage />} />
+          <Route path="catalog/:productId" element={<ProductDetailsPage />} />
           <Route path="about" element={<AboutPage />} />
-          <Route path="checkout/success" element={<CheckoutSuccess />} />
 
           {/* приватні сторінки для звичайного юзера */}
           <Route element={<PrivateRoute redirectTo="/auth/login" />}>
             <Route path="cart" element={<CartPage />} />
-            <Route path="orders" element={<OrderPage />} />
+            <Route path="checkout/success" element={<CheckoutSuccess />} />
           </Route>
 
           {/* auth тільки для гостей */}
