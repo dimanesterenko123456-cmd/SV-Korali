@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../../redux/slices/cartSlice";
 import css from "./CheckoutSuccess.module.css";
 
 const CheckoutSuccess = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(clearCart());
+  }, [dispatch]);
+
   return (
     <section className={css.section}>
       <div className={css.card}>
