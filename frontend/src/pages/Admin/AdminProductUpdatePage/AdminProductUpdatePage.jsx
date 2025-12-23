@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -27,8 +27,11 @@ const AdminProductUpdatePage = () => {
 
   const [formValues, setFormValues] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [newPreviewUrls, setNewPreviewUrls] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
   const [saving, setSaving] = useState(false);
+  const newPreviewRef = useRef([]);
 
   // завантажуємо продукт
   useEffect(() => {
@@ -54,14 +57,34 @@ const AdminProductUpdatePage = () => {
           : (product.countInStock || 0) > 0,
     });
 
-    const mainImage =
-      product.image ||
-      (Array.isArray(product.images) && product.images.length > 0
-        ? product.images[0]
-        : null);
+    const gallery = [];
 
-    setPreviewUrl(mainImage);
+    if (product.image) {
+      gallery.push(product.image);
+    }
+
+    if (Array.isArray(product.images)) {
+      gallery.push(...product.images);
+    }
+
+    const uniqueGallery = Array.from(new Set(gallery.filter(Boolean)));
+
+    setImageFiles([]);
+    setNewPreviewUrls([]);
+    setExistingImages(uniqueGallery);
+    setPreviewUrl(uniqueGallery[0] || null);
   }, [product]);
+
+  useEffect(() => {
+    newPreviewRef.current = newPreviewUrls;
+  }, [newPreviewUrls]);
+
+  useEffect(
+    () => () => {
+      newPreviewRef.current.forEach((url) => URL.revokeObjectURL(url));
+    },
+    []
+  );
 
   if (isLoading && !product) {
     return (
@@ -105,13 +128,80 @@ const AdminProductUpdatePage = () => {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
-    setImageFile(file || null);
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+    const nextFiles = [...imageFiles];
+    const nextUrls = [...newPreviewUrls];
+
+    files.forEach((file) => {
+      const exists = nextFiles.some(
+        (item) =>
+          item.name === file.name &&
+          item.size === file.size &&
+          item.lastModified === file.lastModified
+      );
+
+      if (!exists) {
+        nextFiles.push(file);
+        nextUrls.push(URL.createObjectURL(file));
+      }
+    });
+
+    setImageFiles(nextFiles);
+    setNewPreviewUrls(nextUrls);
+
+    if (nextUrls[0]) {
+      setPreviewUrl(nextUrls[0]);
+    } else if (existingImages[0]) {
+      setPreviewUrl(existingImages[0]);
     }
+
+    e.target.value = "";
+  };
+  const removeExistingImage = (img) => {
+    setExistingImages((prev) => {
+      const next = prev.filter((item) => item !== img);
+      setPreviewUrl((current) => {
+        if (current === img) {
+          return next[0] || newPreviewUrls[0] || null;
+        }
+        return current;
+      });
+      return next;
+    });
+  };
+
+  const removeNewImage = (index) => {
+    setNewPreviewUrls((prevUrls) => {
+      const removedUrl = prevUrls[index];
+      if (removedUrl) {
+        URL.revokeObjectURL(removedUrl);
+      }
+
+      const nextUrls = prevUrls.filter((_, i) => i !== index);
+      setImageFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+      setPreviewUrl((current) => {
+        if (current === removedUrl) {
+          return nextUrls[0] || existingImages[0] || null;
+        }
+
+        if (!current) {
+          return nextUrls[0] || existingImages[0] || null;
+        }
+
+        return current;
+      });
+
+      return nextUrls;
+    });
+  };
+
+  const clearNewImages = () => {
+    newPreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+    setImageFiles([]);
+    setNewPreviewUrls([]);
+    setPreviewUrl(existingImages[0] || null);
   };
 
   const handleSubmit = async (e) => {
@@ -131,9 +221,15 @@ const AdminProductUpdatePage = () => {
       formData.append("countInStock", formValues.countInStock);
       formData.append("inStock", String(formValues.inStock));
 
-      if (imageFile) {
-        // бек приймає або req.file, або req.files; назву поля можеш змінити
-        formData.append("image", imageFile);
+      const galleryToKeep = existingImages.filter(Boolean);
+
+      galleryToKeep.forEach((img) => formData.append("images", img));
+
+      if (imageFiles.length) {
+        imageFiles.forEach((file) => formData.append("images", file));
+        formData.append("image", imageFiles[0]);
+      } else if (galleryToKeep[0]) {
+        formData.append("image", galleryToKeep[0]);
       }
 
       await dispatch(
@@ -298,9 +394,9 @@ const AdminProductUpdatePage = () => {
           {/* RIGHT COLUMN */}
           <div className={css.rightCol}>
             <div className={css.card}>
-              <h2 className={css.cardTitle}>Product image</h2>
+              <h2 className={css.cardTitle}>Product images</h2>
 
-              <label className={css.imageUpload}>
+              <div className={css.previewFrame}>
                 {previewUrl ? (
                   <img
                     src={previewUrl}
@@ -308,18 +404,96 @@ const AdminProductUpdatePage = () => {
                     className={css.imagePreview}
                   />
                 ) : (
-                  <span className={css.imagePlaceholder}>
-                    Click to upload image
-                  </span>
+                  <div className={css.imagePlaceholder}>No image selected</div>
                 )}
+              </div>
+
+              {existingImages.length > 0 && (
+                <div className={css.gallerySection}>
+                  <div className={css.galleryHeader}>
+                    <span>Поточні фото</span>
+                    <span className={css.badge}>{existingImages.length}</span>
+                  </div>
+
+                  <div className={css.thumbGrid}>
+                    {existingImages.map((img) => (
+                      <div key={img} className={css.thumbItem}>
+                        <button
+                          type="button"
+                          className={`${css.thumbBtn} ${
+                            previewUrl === img ? css.thumbActive : ""
+                          }`}
+                          onClick={() => setPreviewUrl(img)}
+                        >
+                          <img
+                            src={img}
+                            alt="gallery"
+                            className={css.thumbImg}
+                          />
+                        </button>
+
+                        <button
+                          type="button"
+                          className={css.thumbRemove}
+                          onClick={() => removeExistingImage(img)}
+                          aria-label="Прибрати фото"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <label className={css.imageUpload}>
+                <div className={css.uploadCopy}>
+                  <span className={css.uploadIcon}>+</span>
+                  <span>Додати нові фото (можна кілька)</span>
+                </div>
+
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   className={css.fileInput}
                   onChange={handleImageChange}
                 />
               </label>
+              {newPreviewUrls.length > 0 && (
+                <div className={css.newUploads}>
+                  <div className={css.galleryHeader}>
+                    <span>Нові фото</span>
+                    <button
+                      type="button"
+                      className={css.clearBtn}
+                      onClick={clearNewImages}
+                    >
+                      Скинути
+                    </button>
+                  </div>
 
+                  <div className={css.thumbGrid}>
+                    {newPreviewUrls.map((url, idx) => (
+                      <div key={url} className={css.thumbItem}>
+                        <div className={css.thumbBtn}>
+                          <span className={css.previewBadge}>#{idx + 1}</span>
+                          <img src={url} alt="new" className={css.thumbImg} />
+                        </div>
+
+                        <button
+                          type="button"
+                          className={css.thumbRemove}
+                          onClick={() => removeNewImage(idx)}
+                          aria-label="Видалити фото"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <p className={css.hint}>Recommended: 800×800px, JPG or PNG.</p>
             </div>
 
