@@ -75,12 +75,11 @@ function App() {
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="catalog/:productId" element={<ProductDetailsPage />} />
           <Route path="about" element={<AboutPage />} />
-          <Route path="checkout/success" element={<CheckoutSuccess />} />
 
           {/* приватні сторінки для звичайного юзера */}
           <Route element={<PrivateRoute redirectTo="/auth/login" />}>
             <Route path="cart" element={<CartPage />} />
-            <Route path="orders" element={<OrderPage />} />
+            <Route path="checkout/success" element={<CheckoutSuccess />} />
           </Route>
 
           {/* auth тільки для гостей */}
