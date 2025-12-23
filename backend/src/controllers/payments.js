@@ -125,8 +125,17 @@ export const createCheckoutSessionController = async (req, res) => {
 
   const fallbackLineItems = cart ? buildLineItemsFromCart(cart) : [];
   const bodyLineItems = await buildLineItemsFromPayload(normalizedPayloadItems);
-  const lineItems =
-    bodyLineItems.length > 0 ? bodyLineItems : fallbackLineItems;
+  const usePayloadItems = bodyLineItems.length > 0;
+
+  const lineItems = usePayloadItems ? bodyLineItems : fallbackLineItems;
+
+  const metadataItems = usePayloadItems
+    ? normalizedPayloadItems
+    : normalizedCartItems;
+
+  if (lineItems.length === 0) {
+    throw createHttpError(400, 'No purchasable items in cart');
+  }
 
   const metadata = {
     userId: String(req.user._id),
@@ -135,13 +144,6 @@ export const createCheckoutSessionController = async (req, res) => {
       ? { cartItems: JSON.stringify(metadataItems) }
       : {}),
   };
-
-  const metadataItems =
-    bodyLineItems.length > 0 ? normalizedPayloadItems : normalizedCartItems;
-
-  if (lineItems.length === 0) {
-    throw createHttpError(400, 'No purchasable items in cart');
-  }
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
