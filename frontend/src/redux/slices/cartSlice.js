@@ -38,6 +38,12 @@ const saveCartItems = (userKey, items) => {
 const countItems = (items) =>
   items.reduce((acc, item) => acc + (Number(item?.quantity) || 1), 0);
 
+const normalizeQuantity = (value) => {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 1;
+  return Math.floor(num);
+};
+
 const mergeItems = (baseItems, incomingItems) => {
   const mergedMap = new Map();
 
@@ -74,13 +80,13 @@ const cartSlice = createSlice({
     addToCart(state, { payload }) {
       const id = getItemId(payload);
       if (!id) return state;
-
+      const incomingQty = normalizeQuantity(payload?.quantity);
       const existing = state.items.find((item) => getItemId(item) === id);
 
       if (existing) {
-        existing.quantity = (Number(existing.quantity) || 1) + 1;
+        existing.quantity = (Number(existing.quantity) || 1) + incomingQty;
       } else {
-        state.items.push({ ...payload, quantity: 1 });
+        state.items.push({ ...payload, quantity: incomingQty });
       }
 
       state.itemsCount = countItems(state.items);

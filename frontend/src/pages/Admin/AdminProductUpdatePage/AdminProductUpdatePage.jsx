@@ -33,6 +33,22 @@ const AdminProductUpdatePage = () => {
   const [saving, setSaving] = useState(false);
   const newPreviewRef = useRef([]);
 
+  const joinValues = (value) => {
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+
+    return value || "";
+  };
+
+  const splitValues = (value) => {
+    if (!value) return [];
+    return String(value)
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  };
+
   // завантажуємо продукт
   useEffect(() => {
     if (productId) {
@@ -49,8 +65,8 @@ const AdminProductUpdatePage = () => {
       description: product.description || "",
       price: product.price ?? "",
       category: product.category || "",
-      length: product.length || "",
-      beadSize: product.beadSize || "",
+      length: joinValues(product.length),
+      beadSize: joinValues(product.beadSize),
       countInStock:
         typeof product.countInStock === "number" ? product.countInStock : 0,
       inStock:
@@ -220,12 +236,19 @@ const AdminProductUpdatePage = () => {
       }
       formData.append("price", formValues.price);
       formData.append("category", formValues.category);
-      if (formValues.length) {
-        formData.append("length", formValues.length);
+      const lengthValues = splitValues(formValues.length);
+      if (lengthValues.length) {
+        lengthValues.forEach((val) => formData.append("length", val));
+      } else {
+        formData.append("length", "");
       }
-      if (formValues.beadSize) {
-        formData.append("beadSize", formValues.beadSize);
+      const beadSizeValues = splitValues(formValues.beadSize);
+      if (beadSizeValues.length) {
+        beadSizeValues.forEach((val) => formData.append("beadSize", val));
+      } else {
+        formData.append("beadSize", "");
       }
+
       formData.append("countInStock", formValues.countInStock);
       formData.append("inStock", String(formValues.inStock));
 
@@ -372,6 +395,9 @@ const AdminProductUpdatePage = () => {
                     onChange={handleChange}
                     placeholder="18 cm"
                   />
+                  <p className={css.hint}>
+                    Додайте кілька довжин через кому або з нового рядка.
+                  </p>
                 </div>
 
                 <div className={css.field}>
@@ -384,6 +410,9 @@ const AdminProductUpdatePage = () => {
                     onChange={handleChange}
                     placeholder="6 mm"
                   />
+                  <p className={css.hint}>
+                    Перерахуйте всі доступні розміри намистин через кому.
+                  </p>
                 </div>
               </div>
             </div>

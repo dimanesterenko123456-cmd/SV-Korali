@@ -53,6 +53,18 @@
   color: #111827;
   overflow-wrap: anywhere;
 }
+.shortDesc {
+  margin-top: 12px;
+  color: #4b5563;
+  font-size: 15px;
+  line-height: 1.6;
+  display: grid;
+  gap: 8px;
+}
+
+.shortDescP {
+  margin: 0;
+}
 
 .ratingRow {
   margin-top: 10px;
