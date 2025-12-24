@@ -87,7 +87,7 @@ const Footer = () => {
           <div className={css.social}>
             <a
               className={css.iconBtn}
-              href="https://www.facebook.com/svitlana.vasylivna.868030/"
+              href="https://www.facebook.com/share/1DGWGvw2hV/?mibextid=wwXIfr"
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook"
