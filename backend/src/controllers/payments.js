@@ -8,7 +8,7 @@ import { findCartByUserId } from '../services/cart.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { stripe } from '../utils/stripeClient.js';
 
-const clientBaseUrl = getEnvVar('FRONTEND_URL', 'http://localhost:5173');
+const clientBaseUrl = getEnvVar('FRONTEND_PROD_URL');
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 const toCents = (price) => Math.max(0, Math.round(Number(price) * 100) || 0);
