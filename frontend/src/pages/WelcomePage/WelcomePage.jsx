@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import koraliImg from "../../assets/Korali.png";
 
 import css from "./WelcomePage.module.css";
 import {
@@ -102,10 +103,7 @@ const WelcomePage = () => {
         <div className={css.heroImage}>
           <div className={css.heroImageInner}>
             <div className={css.heroImagePlaceholder}>
-              <img
-                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/0e82f14940-ac7845b89357a66fa82e.png"
-                alt="Authentic Ukrainian coral jewelry"
-              />
+              <img src={koraliImg} alt="Authentic Ukrainian coral jewelry" />
             </div>
           </div>
 
