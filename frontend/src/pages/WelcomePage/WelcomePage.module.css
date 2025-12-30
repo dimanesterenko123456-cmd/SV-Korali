@@ -122,27 +122,34 @@
   justify-self: stretch;
 }
 
+/* ТУТ фон прибираємо, щоб не тягнувся на всю ширину */
 .heroImageInner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* невеликий відступ щоб не прилипало до країв */
+  padding: clamp(10px, 2vw, 18px);
+  box-sizing: border-box;
+}
+
+/* Фон + радіус + тінь тепер тут — він стане розміром як у фото */
+.heroImagePlaceholder {
   border-radius: 26px;
   overflow: hidden;
   background: radial-gradient(circle at top, #ffede1, #ffcbb5 55%, #f7a489);
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.18);
 
-  width: 100%;
-  aspect-ratio: 16 / 10; /* адаптивна висота */
-}
-
-.heroImagePlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
+  /* ширина під фото, але не більше контейнера */
+  width: min(100%, 520px);
 }
 
 .heroImagePlaceholder img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
-  object-fit: cover;
+  object-fit: cover; /* можна contain, якщо треба без кропу */
 }
 
 .heroBadge {
