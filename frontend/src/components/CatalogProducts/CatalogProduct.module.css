@@ -135,7 +135,6 @@
   cursor: not-allowed;
 }
 
-/* НА МОБІЛЦІ pageNumbers НЕ розпирають контейнер — а скроляться */
 .pageNumbers {
   display: flex;
   gap: 8px;
