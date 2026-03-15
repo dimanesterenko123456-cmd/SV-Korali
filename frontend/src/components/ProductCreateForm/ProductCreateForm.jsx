@@ -20,7 +20,6 @@ const validationSchema = Yup.object({
   category: Yup.string().required("Оберіть категорію"),
   length: Yup.string().required("Вкажіть довжину виробу"),
   beadSize: Yup.string().required("Вкажіть розмір намистин"),
-
   countInStock: Yup.number()
     .typeError("Має бути числом")
     .integer("Має бути цілим числом")
@@ -36,8 +35,16 @@ const initialValues = {
   length: "",
   beadSize: "",
   countInStock: "",
-  image: null,
   images: [],
+};
+
+const splitValues = (value) => {
+  if (!value) return [];
+
+  return String(value)
+    .split(/[,\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 };
 
 const ProductCreateForm = () => {
@@ -46,76 +53,52 @@ const ProductCreateForm = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const previewRef = useRef([]);
 
-  const splitValues = (value) => {
-    if (!value) return [];
-    return String(value)
-      .split(/[,\n]/)
-      .map((item) => item.trim())
-      .filter(Boolean);
-  };
-
   useEffect(() => {
     previewRef.current = previewItems;
   }, [previewItems]);
+
   useEffect(() => {
-    if (previewItems.length > 0) {
-      setPreviewUrl(previewItems[0].url);
-    } else {
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(previewItems[0]?.url || null);
   }, [previewItems]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       previewRef.current.forEach((item) => URL.revokeObjectURL(item.url));
-    },
-    []
-  );
+    };
+  }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       const formData = new FormData();
+
       formData.append("name", values.name);
       formData.append("description", values.description || "");
-      formData.append("price", values.price);
+      formData.append("price", String(values.price));
       formData.append("category", values.category);
+
       const lengthValues = splitValues(values.length);
-      if (lengthValues.length) {
-        lengthValues.forEach((val) => formData.append("length", val));
-      } else {
-        formData.append("length", "");
-      }
+      lengthValues.forEach((value) => formData.append("length", value));
 
       const beadSizeValues = splitValues(values.beadSize);
-      if (beadSizeValues.length) {
-        beadSizeValues.forEach((val) => formData.append("beadSize", val));
-      } else {
-        formData.append("beadSize", "");
-      }
+      beadSizeValues.forEach((value) => formData.append("beadSize", value));
 
-      // ✅ бекенд очікує countInStock + (опційно) inStock
       const count = Number(values.countInStock) || 0;
       formData.append("countInStock", String(count));
       formData.append("inStock", String(count > 0));
 
       if (Array.isArray(values.images) && values.images.length > 0) {
         values.images.forEach((file) => {
-          if (file) formData.append("images", file);
+          formData.append("images", file);
         });
-
-        if (values.images[0]) {
-          formData.append("image", values.images[0]);
-        }
-      } else if (values.image) {
-        formData.append("image", values.image);
       }
 
       await dispatch(createProductThunk(formData)).unwrap();
 
       toast.success("Товар успішно створено");
-      previewItems.forEach((item) => URL.revokeObjectURL(item.url));
-      resetForm();
+
+      previewRef.current.forEach((item) => URL.revokeObjectURL(item.url));
       setPreviewItems([]);
+      resetForm();
     } catch (error) {
       console.error("Create product error:", error);
       toast.error(error?.message || "Не вдалося створити товар");
@@ -133,73 +116,65 @@ const ProductCreateForm = () => {
       >
         {({ isSubmitting, setFieldValue }) => {
           const syncFiles = (items) => {
-            const filesToSubmit = items.map((item) => item.file);
-            setFieldValue("images", filesToSubmit);
-            setFieldValue("image", filesToSubmit[0] || null);
+            const files = items.map((item) => item.file);
+            setFieldValue("images", files);
           };
 
           const handleFilesSelected = (event) => {
             const files = Array.from(event.currentTarget.files || []);
             if (!files.length) return;
 
-            const incoming = files.map((file) => ({
+            const newItems = files.map((file) => ({
               id: `${file.name}-${file.lastModified}-${file.size}`,
               file,
               url: URL.createObjectURL(file),
             }));
 
-            const mergedMap = new Map(
-              previewItems.map((item) => [item.id, item])
-            );
+            setPreviewItems((prev) => {
+              const mergedMap = new Map(prev.map((item) => [item.id, item]));
 
-            incoming.forEach((item) => {
-              if (mergedMap.has(item.id)) {
-                URL.revokeObjectURL(item.url);
-              } else {
-                mergedMap.set(item.id, item);
-              }
+              newItems.forEach((item) => {
+                if (mergedMap.has(item.id)) {
+                  URL.revokeObjectURL(item.url);
+                } else {
+                  mergedMap.set(item.id, item);
+                }
+              });
+
+              const nextItems = Array.from(mergedMap.values());
+              syncFiles(nextItems);
+              return nextItems;
             });
-
-            const nextItems = Array.from(mergedMap.values());
-            setPreviewItems(nextItems);
-            syncFiles(nextItems);
-
-            if (nextItems[0]) {
-              setPreviewUrl(nextItems[0].url);
-            }
 
             event.target.value = "";
           };
 
           const handleRemoveImage = (id) => {
             setPreviewItems((prev) => {
-              const next = prev.filter((item) => item.id !== id);
-              const removed = prev.find((item) => item.id === id);
-              if (removed) URL.revokeObjectURL(removed.url);
-              syncFiles(next);
-              setPreviewUrl((current) => {
-                if (current === removed?.url) {
-                  return next[0]?.url || null;
-                }
-                return current;
-              });
-              return next;
+              const removedItem = prev.find((item) => item.id === id);
+              const nextItems = prev.filter((item) => item.id !== id);
+
+              if (removedItem) {
+                URL.revokeObjectURL(removedItem.url);
+              }
+
+              syncFiles(nextItems);
+              return nextItems;
             });
           };
 
           const clearAll = () => {
-            previewItems.forEach((item) => URL.revokeObjectURL(item.url));
+            previewRef.current.forEach((item) => URL.revokeObjectURL(item.url));
             setPreviewItems([]);
             setFieldValue("images", []);
-            setFieldValue("image", null);
             setPreviewUrl(null);
           };
 
           return (
             <Form className={css.form}>
-              {/* ліва колонка */}
               <div className={css.generalSection}>
                 <h2 className={css.sectionTitle}>Загальна інформація</h2>
+
                 <div className={css.fieldGroup}>
                   <label htmlFor="name" className={css.label}>
                     Назва товару
@@ -301,6 +276,7 @@ const ProductCreateForm = () => {
                     className={css.error}
                   />
                 </div>
+
                 <div className={css.fieldRow}>
                   <div className={css.fieldGroup}>
                     <label htmlFor="length" className={css.label}>
@@ -346,7 +322,6 @@ const ProductCreateForm = () => {
                 </div>
               </div>
 
-              {/* права колонка */}
               <div className={css.sideSection}>
                 <h2 className={css.sectionTitle}>Фото товару</h2>
 
@@ -354,7 +329,7 @@ const ProductCreateForm = () => {
                   {previewUrl ? (
                     <img
                       src={previewUrl}
-                      alt={"Попередній перегляд"}
+                      alt="Попередній перегляд"
                       className={css.imagePreview}
                     />
                   ) : (
@@ -396,6 +371,7 @@ const ProductCreateForm = () => {
                               className={css.thumbImg}
                             />
                           </button>
+
                           <button
                             type="button"
                             className={css.thumbRemove}
