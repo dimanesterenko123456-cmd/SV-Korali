@@ -8,7 +8,7 @@ const OurStory = () => {
           <div className={css.imageWrap}>
             <img
               className={css.image}
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d21f195269-966a24853a01994160e0.png"
+              src="https://res.cloudinary.com/dtbdyhluo/image/upload/v1773595928/mainPhoto_cekhdk.png"
               alt="Ukrainian family workshop crafting traditional coral jewelry"
               loading="lazy"
             />
