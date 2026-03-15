@@ -34,7 +34,7 @@ const AuthPage = () => {
             className={`${css.tab} ${current === "login" ? css.tabActive : ""}`}
             onClick={() => handleTabClick("login")}
           >
-            Вхід
+            Sign in
           </button>
           <button
             type="button"
@@ -43,7 +43,7 @@ const AuthPage = () => {
             }`}
             onClick={() => handleTabClick("register")}
           >
-            Реєстрація
+            Registration
           </button>
         </div>
 
