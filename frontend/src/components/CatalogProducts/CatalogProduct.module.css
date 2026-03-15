@@ -18,7 +18,6 @@
   box-sizing: border-box;
 }
 
-/* reset для UL (саме це часто робить “виїзд” за контейнер) */
 .grid,
 .list {
   width: 100%;
