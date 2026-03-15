@@ -67,7 +67,7 @@ const LoginForm = () => {
 
             <div className={css.fieldGroup}>
               <label htmlFor="password" className={css.label}>
-                Пароль
+                Password
               </label>
               <Field
                 id="password"
@@ -95,9 +95,9 @@ const LoginForm = () => {
       </Formik>
 
       <div className={css.registerwrapp}>
-        <p className={css.registerwrapp_text}>Ще не маєте акаунта?</p>
+        <p className={css.registerwrapp_text}>Still don't have an account?</p>
         <Link to="/auth/register" className={css.registerwrapp_link}>
-          Зареєструватися
+          Register
         </Link>
       </div>
     </div>
