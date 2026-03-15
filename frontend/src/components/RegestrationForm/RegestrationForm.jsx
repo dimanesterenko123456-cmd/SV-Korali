@@ -9,11 +9,11 @@ import css from "./RegestrationForm.module.css";
 import { registerUserThunk } from "../../redux/operations/authOperations";
 
 const validationSchema = Yup.object({
-  name: Yup.string().required("Імʼя обовʼязкове"),
-  email: Yup.string().email("Некоректний email").required("Email обовʼязковий"),
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("invalid email").required("Email is required"),
   password: Yup.string()
-    .min(6, "Мінімум 6 символів")
-    .required("Пароль обовʼязковий"),
+    .min(6, "min 6 symbols")
+    .required("Password is required"),
 });
 
 const RegistrationForm = () => {
@@ -28,14 +28,14 @@ const RegistrationForm = () => {
           name: values.name,
           email: values.email,
           password: values.password,
-        })
+        }),
       ).unwrap();
 
-      toast.success("Реєстрація успішна! Тепер увійдіть.");
+      toast.success("Registration successful! Now log in.");
       navigate("/auth/login");
     } catch (error) {
       console.error("Register error:", error);
-      toast.error(error || "Помилка реєстрації");
+      toast.error(error || "Registration error");
     } finally {
       setSubmitting(false);
     }
@@ -43,8 +43,8 @@ const RegistrationForm = () => {
 
   return (
     <div className={css.formContainer}>
-      <h2 className={css.title}>Реєстрація</h2>
-      <p className={css.subtitle}>Створіть акаунт для покупок</p>
+      <h2 className={css.title}>Registration</h2>
+      <p className={css.subtitle}>Create an account for shopping</p>
 
       <Formik
         initialValues={{ name: "", email: "", password: "" }}
@@ -55,12 +55,12 @@ const RegistrationForm = () => {
           <Form className={css.form}>
             <div className={css.fieldGroup}>
               <label htmlFor="name" className={css.label}>
-                Ім&apos;я
+                Name
               </label>
               <Field
                 id="name"
                 name="name"
-                placeholder="Ваше імʼя"
+                placeholder="Your name"
                 className={css.input}
               />
               <ErrorMessage name="name" component="div" className={css.error} />
@@ -86,13 +86,13 @@ const RegistrationForm = () => {
 
             <div className={css.fieldGroup}>
               <label htmlFor="password" className={css.label}>
-                Пароль
+                Password
               </label>
               <Field
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Пароль"
+                placeholder="Password"
                 className={css.input}
               />
               <ErrorMessage
@@ -105,20 +105,20 @@ const RegistrationForm = () => {
             <button
               type="submit"
               className={css.button}
-              // 👇 лишаємо тільки isSubmitting,
+              // лишаємо тільки isSubmitting,
               // щоб сабміт завжди спрацьовував
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Реєстрація..." : "Зареєструватися"}
+              {isSubmitting ? "Registration..." : "Register"}
             </button>
           </Form>
         )}
       </Formik>
 
       <div className={css.registerwrapp}>
-        <p className={css.registerwrapp_text}>Вже маєте акаунт?</p>
+        <p className={css.registerwrapp_text}>Already have an account?</p>
         <Link to="/auth/login" className={css.registerwrapp_link}>
-          Увійти
+          Sign in
         </Link>
       </div>
     </div>

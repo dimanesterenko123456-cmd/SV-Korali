@@ -23,11 +23,11 @@ const LoginForm = () => {
     try {
       await dispatch(loginUserThunk(values)).unwrap();
       await dispatch(fetchCurrentUserThunk()).unwrap();
-      toast.success("Успішний вхід!");
+      toast.success("successful login!");
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("Невірний email або пароль");
+      toast.error("Invalid login details");
     } finally {
       setSubmitting(false);
     }
@@ -35,11 +35,6 @@ const LoginForm = () => {
 
   return (
     <div className={css.formContainer}>
-      <h2 className={css.title}>Вхід</h2>
-      <p className={css.subtitle}>
-        Ласкаво просимо! Введіть ваші дані для входу.
-      </p>
-
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={validationSchema}
@@ -67,13 +62,13 @@ const LoginForm = () => {
 
             <div className={css.fieldGroup}>
               <label htmlFor="password" className={css.label}>
-                Пароль
+                Password
               </label>
               <Field
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Пароль"
+                placeholder="password"
                 className={css.input}
               />
               <ErrorMessage
@@ -88,16 +83,16 @@ const LoginForm = () => {
               className={css.button}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Вхід..." : "Увійти"}
+              {isSubmitting ? "Logining..." : "Login"}
             </button>
           </Form>
         )}
       </Formik>
 
       <div className={css.registerwrapp}>
-        <p className={css.registerwrapp_text}>Ще не маєте акаунта?</p>
+        <p className={css.registerwrapp_text}>Still don't have an account?</p>
         <Link to="/auth/register" className={css.registerwrapp_link}>
-          Зареєструватися
+          Register
         </Link>
       </div>
     </div>
