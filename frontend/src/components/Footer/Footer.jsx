@@ -50,7 +50,10 @@ const Footer = () => {
                     sv.korali@gmail.com
                   </a>
                 </li>
-                <li className={css.contactText}>Mon-Fri 9 AM - 6 PM EST</li>
+                <li className={css.contactText}>
+                  Closed Monday, Tuesday to Friday and Sunday from 11-16,
+                  Saturday from 11-18
+                </li>
               </ul>
             </div>
 
