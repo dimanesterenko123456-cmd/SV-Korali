@@ -94,14 +94,15 @@ const Navigation = () => {
           {cartCount > 0 && <span className={css.cartBadge}>{cartCount}</span>}
         </NavLink>
 
-        <NavLink
-          to="/auth/login"
-          className={`${css.iconButton} ${css.profileButton}`}
-          aria-label="Profile"
-        >
-          <FiUser className={css.icon} />
-        </NavLink>
-
+        {!isLoggedIn && (
+          <NavLink
+            to="/auth/login"
+            className={`${css.iconButton} ${css.profileButton}`}
+            aria-label="Profile"
+          >
+            <FiUser className={css.icon} />
+          </NavLink>
+        )}
         {isLoggedIn && (
           <button
             type="button"

@@ -6,6 +6,20 @@ import css from "./RelatedProducts.module.css";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { selectAccessToken } from "../../../redux/selectors/authSelectors";
 
+const getMainImage = (product) =>
+  product?.image ||
+  (Array.isArray(product?.images) && product.images.length > 0
+    ? product.images[0]
+    : "");
+
+const formatPrice = (value) => {
+  const num = Number(value);
+
+  if (!Number.isFinite(num)) return "—";
+
+  return Number.isInteger(num) ? `$${num}` : `$${num.toFixed(2)}`;
+};
+
 const RelatedProducts = ({ products = [], currentId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -14,24 +28,27 @@ const RelatedProducts = ({ products = [], currentId }) => {
   const isLoggedIn = Boolean(accessToken);
 
   const visible = products
-    .filter((p) => (p._id || p.id) !== currentId)
+    .filter((p) => (p?._id || p?.id) !== currentId)
     .slice(0, 4);
 
-  if (!visible.length) {
-    return null;
-  }
+  if (!visible.length) return null;
 
   const handleOpen = (id) => {
-    navigate(`/catalog/${id}`);
+    navigate(`/catalog/${id}`, {
+      state: { from: location.pathname + location.search },
+    });
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (event, product) => {
+    event.stopPropagation();
+
     if (!isLoggedIn) {
       navigate("/auth/login", {
         state: { from: location.pathname + location.search },
       });
       return;
     }
+
     dispatch(addToCart(product));
   };
 
@@ -46,55 +63,59 @@ const RelatedProducts = ({ products = [], currentId }) => {
 
       <ul className={css.list}>
         {visible.map((product) => {
-          const id = product._id || product.id;
-          const image =
-            product.image ||
-            (Array.isArray(product.images) && product.images.length > 0
-              ? product.images[0]
-              : "");
-          const name = product.name || "Product";
-          const rawPrice = product.price;
-          const numPrice = Number(rawPrice);
-          const price =
-            rawPrice != null && rawPrice !== ""
-              ? Number.isFinite(numPrice)
-                ? `$${numPrice.toFixed(2)}`
-                : `$${rawPrice}`
-              : "—";
+          const id = product?._id || product?.id;
+          const image = getMainImage(product);
+          const name = product?.name || "Product";
+          const category =
+            product?.collection || product?.category || "Collection";
+          const price = formatPrice(product?.price);
 
           return (
-            <li key={id} className={css.card}>
-              <button
-                type="button"
-                className={css.cardInner}
+            <li key={id} className={css.item}>
+              <article
+                className={css.card}
                 onClick={() => handleOpen(id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleOpen(id);
+                  }
+                }}
               >
-                <div className={css.thumbWrap}>
-                  {image ? (
-                    <img
-                      src={image}
-                      alt={name}
-                      className={css.thumb}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className={css.thumbPlaceholder} />
-                  )}
+                <div className={css.media}>
+                  <div className={css.thumbWrap}>
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={name}
+                        className={css.thumb}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className={css.thumbPlaceholder} />
+                    )}
+                  </div>
                 </div>
 
                 <div className={css.content}>
+                  <p className={css.meta}>{category}</p>
                   <h3 className={css.name}>{name}</h3>
-                  <span className={css.price}>{price}</span>
-                </div>
-              </button>
 
-              <button
-                type="button"
-                className={css.cartBtn}
-                onClick={() => handleAddToCart(product)}
-              >
-                Add to cart
-              </button>
+                  <div className={css.bottom}>
+                    <span className={css.price}>{price}</span>
+
+                    <button
+                      type="button"
+                      className={css.cartBtn}
+                      onClick={(event) => handleAddToCart(event, product)}
+                    >
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </article>
             </li>
           );
         })}
