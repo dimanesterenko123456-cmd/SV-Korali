@@ -33,21 +33,21 @@ const AdminProductUpdatePage = () => {
   const [saving, setSaving] = useState(false);
   const newPreviewRef = useRef([]);
 
-  const joinValues = (value) => {
-    if (Array.isArray(value)) {
-      return value.join(", ");
-    }
+  // const joinValues = (value) => {
+  //   if (Array.isArray(value)) {
+  //     return value.join(", ");
+  //   }
 
-    return value || "";
-  };
+  //   return value || "";
+  // };
 
-  const splitValues = (value) => {
-    if (!value) return [];
-    return String(value)
-      .split(/[,\n]/)
-      .map((item) => item.trim())
-      .filter(Boolean);
-  };
+  // const splitValues = (value) => {
+  //   if (!value) return [];
+  //   return String(value)
+  //     .split(/[,\n]/)
+  //     .map((item) => item.trim())
+  //     .filter(Boolean);
+  // };
 
   // завантажуємо продукт
   useEffect(() => {
@@ -65,8 +65,8 @@ const AdminProductUpdatePage = () => {
       description: product.description || "",
       price: product.price ?? "",
       category: product.category || "",
-      length: joinValues(product.length),
-      beadSize: joinValues(product.beadSize),
+      // length: joinValues(product.length),
+      // beadSize: joinValues(product.beadSize),
       countInStock:
         typeof product.countInStock === "number" ? product.countInStock : 0,
       inStock:
@@ -101,7 +101,7 @@ const AdminProductUpdatePage = () => {
     () => () => {
       newPreviewRef.current.forEach((url) => URL.revokeObjectURL(url));
     },
-    []
+    [],
   );
 
   if (isLoading && !product) {
@@ -140,8 +140,8 @@ const AdminProductUpdatePage = () => {
         type === "checkbox"
           ? checked
           : name === "price" || name === "countInStock"
-          ? value
-          : value,
+            ? value
+            : value,
     }));
   };
 
@@ -157,7 +157,7 @@ const AdminProductUpdatePage = () => {
         (item) =>
           item.name === file.name &&
           item.size === file.size &&
-          item.lastModified === file.lastModified
+          item.lastModified === file.lastModified,
       );
 
       if (!exists) {
@@ -236,18 +236,18 @@ const AdminProductUpdatePage = () => {
       }
       formData.append("price", formValues.price);
       formData.append("category", formValues.category);
-      const lengthValues = splitValues(formValues.length);
-      if (lengthValues.length) {
-        lengthValues.forEach((val) => formData.append("length", val));
-      } else {
-        formData.append("length", "");
-      }
-      const beadSizeValues = splitValues(formValues.beadSize);
-      if (beadSizeValues.length) {
-        beadSizeValues.forEach((val) => formData.append("beadSize", val));
-      } else {
-        formData.append("beadSize", "");
-      }
+      // const lengthValues = splitValues(formValues.length);
+      // if (lengthValues.length) {
+      //   lengthValues.forEach((val) => formData.append("length", val));
+      // } else {
+      //   formData.append("length", "");
+      // }
+      // const beadSizeValues = splitValues(formValues.beadSize);
+      // if (beadSizeValues.length) {
+      //   beadSizeValues.forEach((val) => formData.append("beadSize", val));
+      // } else {
+      //   formData.append("beadSize", "");
+      // }
 
       formData.append("countInStock", formValues.countInStock);
       formData.append("inStock", String(formValues.inStock));
@@ -264,7 +264,7 @@ const AdminProductUpdatePage = () => {
       }
 
       await dispatch(
-        updateProductThunk({ id: productId, payload: formData })
+        updateProductThunk({ id: productId, payload: formData }),
       ).unwrap();
 
       // після оновлення вертаємось до списку
@@ -384,7 +384,7 @@ const AdminProductUpdatePage = () => {
                   </label>
                 </div>
               </div>
-              <div className={css.row2}>
+              {/* <div className={css.row2}>
                 <div className={css.field}>
                   <label className={css.label}>Length</label>
                   <input
@@ -414,7 +414,7 @@ const AdminProductUpdatePage = () => {
                     Перерахуйте всі доступні розміри намистин через кому.
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Pricing & stock */}

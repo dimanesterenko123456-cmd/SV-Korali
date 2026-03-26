@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaPaypal } from "react-icons/fa";
@@ -8,23 +8,23 @@ import css from "./ProductInfo.module.css";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { selectAccessToken } from "../../../redux/selectors/authSelectors";
 
-const normalizeOptions = (value) => {
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => (typeof item === "string" ? item : String(item)))
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
+// const normalizeOptions = (value) => {
+//   if (Array.isArray(value)) {
+//     return value
+//       .map((item) => (typeof item === "string" ? item : String(item)))
+//       .map((item) => item.trim())
+//       .filter(Boolean);
+//   }
 
-  if (typeof value === "string") {
-    return value
-      .split(/[,\n]/)
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
+//   if (typeof value === "string") {
+//     return value
+//       .split(/[,\n]/)
+//       .map((item) => item.trim())
+//       .filter(Boolean);
+//   }
 
-  return [];
-};
+//   return [];
+// };
 
 const ProductInfo = ({ product }) => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const ProductInfo = ({ product }) => {
   const discount = useMemo(() => {
     if (!showCompareAt) return null;
     const pct = Math.round(
-      ((compareAtNumber - priceNumber) / compareAtNumber) * 100
+      ((compareAtNumber - priceNumber) / compareAtNumber) * 100,
     );
     return Number.isFinite(pct) ? pct : null;
   }, [showCompareAt, compareAtNumber, priceNumber]);
@@ -72,12 +72,12 @@ const ProductInfo = ({ product }) => {
     typeof product?.countInStock === "number" ? product.countInStock : null;
 
   const ratingValue = Number(
-    product?.rating ?? product?.avgRating ?? product?.averageRating ?? 0
+    product?.rating ?? product?.avgRating ?? product?.averageRating ?? 0,
   );
   const showRating = Number.isFinite(ratingValue) && ratingValue > 0;
 
   const reviewsCount = Number(
-    product?.reviewsCount ?? product?.numReviews ?? 0
+    product?.reviewsCount ?? product?.numReviews ?? 0,
   );
   const showReviewsCount = Number.isFinite(reviewsCount) && reviewsCount > 0;
 
@@ -93,39 +93,39 @@ const ProductInfo = ({ product }) => {
     return parts.length ? parts : [String(raw).trim()];
   }, [product?.description]);
 
-  const lengthOptions = useMemo(
-    () => normalizeOptions(product?.length),
-    [product?.length]
-  );
+  // const lengthOptions = useMemo(
+  //   () => normalizeOptions(product?.length),
+  //   [product?.length]
+  // );
 
-  const beadSizeOptions = useMemo(
-    () => normalizeOptions(product?.beadSize),
-    [product?.beadSize]
-  );
+  // const beadSizeOptions = useMemo(
+  //   () => normalizeOptions(product?.beadSize),
+  //   [product?.beadSize]
+  // );
 
-  const [length, setLength] = useState(() => lengthOptions[0] || "");
-  const [beadSize, setBeadSize] = useState(() => beadSizeOptions[0] || "");
+  // const [length, setLength] = useState(() => lengthOptions[0] || "");
+  // const [beadSize, setBeadSize] = useState(() => beadSizeOptions[0] || "");
   const [qty, setQty] = useState(1);
 
-  useEffect(() => {
-    setLength((prev) =>
-      lengthOptions.length
-        ? lengthOptions.includes(prev)
-          ? prev
-          : lengthOptions[0]
-        : ""
-    );
-  }, [lengthOptions]);
+  // useEffect(() => {
+  //   setLength((prev) =>
+  //     lengthOptions.length
+  //       ? lengthOptions.includes(prev)
+  //         ? prev
+  //         : lengthOptions[0]
+  //       : ""
+  //   );
+  // }, [lengthOptions]);
 
-  useEffect(() => {
-    setBeadSize((prev) =>
-      beadSizeOptions.length
-        ? beadSizeOptions.includes(prev)
-          ? prev
-          : beadSizeOptions[0]
-        : ""
-    );
-  }, [beadSizeOptions]);
+  // useEffect(() => {
+  //   setBeadSize((prev) =>
+  //     beadSizeOptions.length
+  //       ? beadSizeOptions.includes(prev)
+  //         ? prev
+  //         : beadSizeOptions[0]
+  //       : ""
+  //   );
+  // }, [beadSizeOptions]);
 
   const inc = () => {
     const max = typeof stockLeft === "number" ? Math.max(stockLeft, 1) : 99;
@@ -148,8 +148,8 @@ const ProductInfo = ({ product }) => {
     if (!requireAuth()) return;
     if (!inStock) return;
     const payload = { ...product, quantity: qty };
-    if (length) payload.length = length;
-    if (beadSize) payload.beadSize = beadSize;
+    // if (length) payload.length = length;
+    // if (beadSize) payload.beadSize = beadSize;
     dispatch(addToCart(payload));
   };
 
@@ -157,8 +157,8 @@ const ProductInfo = ({ product }) => {
     if (!requireAuth()) return;
     if (!inStock) return;
     const payload = { ...product, quantity: qty };
-    if (length) payload.length = length;
-    if (beadSize) payload.beadSize = beadSize;
+    // if (length) payload.length = length;
+    // if (beadSize) payload.beadSize = beadSize;
     dispatch(addToCart(payload));
     navigate("/cart");
   };
@@ -220,7 +220,7 @@ const ProductInfo = ({ product }) => {
       ) : null}
 
       <div className={css.options}>
-        {lengthOptions.length ? (
+        {/* {lengthOptions.length ? (
           <div className={css.optionBlock}>
             <h3 className={css.optionTitle}>Length</h3>
             <div className={css.optionGrid}>
@@ -258,7 +258,7 @@ const ProductInfo = ({ product }) => {
               ))}
             </div>
           </div>
-        ) : null}
+        ) : null} */}
 
         <div className={css.optionBlock}>
           <h3 className={css.optionTitle}>Quantity</h3>
