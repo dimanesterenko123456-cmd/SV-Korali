@@ -70,6 +70,7 @@ const LoginForm = () => {
                 type="password"
                 placeholder="password"
                 className={css.input}
+                autoComplete="current-password"
               />
               <ErrorMessage
                 name="password"

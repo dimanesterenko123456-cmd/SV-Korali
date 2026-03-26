@@ -18,8 +18,8 @@ const validationSchema = Yup.object({
     .min(0, "Не може бути менше 0")
     .required("Обов'язкове поле"),
   category: Yup.string().required("Оберіть категорію"),
-  length: Yup.string().required("Вкажіть довжину виробу"),
-  beadSize: Yup.string().required("Вкажіть розмір намистин"),
+  // length: Yup.string().required("Вкажіть довжину виробу"),
+  // beadSize: Yup.string().required("Вкажіть розмір намистин"),
   countInStock: Yup.number()
     .typeError("Має бути числом")
     .integer("Має бути цілим числом")
@@ -32,20 +32,20 @@ const initialValues = {
   description: "",
   price: "",
   category: "",
-  length: "",
-  beadSize: "",
+  // length: "",
+  // beadSize: "",
   countInStock: "",
   images: [],
 };
 
-const splitValues = (value) => {
-  if (!value) return [];
+// const splitValues = (value) => {
+//   if (!value) return [];
 
-  return String(value)
-    .split(/[,\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-};
+//   return String(value)
+//     .split(/[,\n]/)
+//     .map((item) => item.trim())
+//     .filter(Boolean);
+// };
 
 const ProductCreateForm = () => {
   const dispatch = useDispatch();
@@ -76,11 +76,11 @@ const ProductCreateForm = () => {
       formData.append("price", String(values.price));
       formData.append("category", values.category);
 
-      const lengthValues = splitValues(values.length);
-      lengthValues.forEach((value) => formData.append("length", value));
+      // const lengthValues = splitValues(values.length);
+      // lengthValues.forEach((value) => formData.append("length", value));
 
-      const beadSizeValues = splitValues(values.beadSize);
-      beadSizeValues.forEach((value) => formData.append("beadSize", value));
+      // const beadSizeValues = splitValues(values.beadSize);
+      // beadSizeValues.forEach((value) => formData.append("beadSize", value));
 
       const count = Number(values.countInStock) || 0;
       formData.append("countInStock", String(count));
@@ -276,7 +276,7 @@ const ProductCreateForm = () => {
                     className={css.error}
                   />
                 </div>
-
+                {/* 
                 <div className={css.fieldRow}>
                   <div className={css.fieldGroup}>
                     <label htmlFor="length" className={css.label}>
@@ -319,7 +319,7 @@ const ProductCreateForm = () => {
                       className={css.error}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
 
               <div className={css.sideSection}>

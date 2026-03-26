@@ -94,6 +94,7 @@ const RegistrationForm = () => {
                 type="password"
                 placeholder="Password"
                 className={css.input}
+                autoComplete="new-password"
               />
               <ErrorMessage
                 name="password"
