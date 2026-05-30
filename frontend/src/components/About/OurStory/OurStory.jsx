@@ -62,7 +62,7 @@ const OurStory = () => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  26–30 Six Point Rd., Toronto (Etobicoke)
+                  26 Six Point Rd., Toronto (Etobicoke)
                 </a>{" "}
                 or shopping online at{" "}
                 <a
@@ -97,7 +97,7 @@ const OurStory = () => {
               >
                 <div className={css.infoLabel}>Showroom</div>
                 <div className={css.infoValue}>
-                  26–30 Six Point Rd., Toronto (Etobicoke)
+                  26 Six Point Rd., Toronto (Etobicoke)
                 </div>
               </a>
 
