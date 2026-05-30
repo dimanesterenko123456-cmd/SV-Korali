@@ -259,7 +259,7 @@ const WelcomePage = () => {
         <div className={css.heritageImageWrap}>
           <div className={css.heritageImagePlaceholder}>
             <img
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7f9deb7d07-a976c3a50a3a1e38c218.png"
+              src="https://res.cloudinary.com/dtbdyhluo/image/upload/v1780161864/IMG_20260530_115213_nufkpn.jpg"
               alt="Ukrainian coral jewelry heritage"
             />
           </div>
