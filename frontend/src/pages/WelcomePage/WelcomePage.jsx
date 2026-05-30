@@ -300,7 +300,7 @@ const WelcomePage = () => {
               “Exceptional quality and authentic design. The attention to detail
               is remarkable and the necklace is absolutely stunning.”
             </p>
-            <p className={css.testimonialAuthor}>Sofia Ivanets</p>
+            <p className={css.testimonialAuthor}>Sofia Ivanet</p>
             <p className={css.testimonialMeta}>London, UK</p>
           </article>
         </div>
