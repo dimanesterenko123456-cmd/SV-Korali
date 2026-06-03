@@ -39,13 +39,13 @@
   max-width: 100%;
 }
 
-/* images всередині карток */
+/* images всередині карток
 .panelWelcome img,
 .panelDefault img {
   max-width: 100%;
   height: auto;
   display: block;
-}
+} */
 
 /* ========== GRID (welcome) ========== */
 

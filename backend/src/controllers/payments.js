@@ -57,7 +57,7 @@ const mapProductToLineItem = (product, quantity) => {
 
   return {
     price_data: {
-      currency: 'usd',
+      currency: 'cad',
       unit_amount: unitAmount,
       product_data: {
         name: product.name,
