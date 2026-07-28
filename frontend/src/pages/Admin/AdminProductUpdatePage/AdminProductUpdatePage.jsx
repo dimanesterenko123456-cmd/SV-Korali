@@ -73,6 +73,7 @@ const AdminProductUpdatePage = () => {
         typeof product.inStock === "boolean"
           ? product.inStock
           : (product.countInStock || 0) > 0,
+      availableToOrder: Boolean(product.availableToOrder),
     });
 
     const gallery = [];
@@ -251,6 +252,10 @@ const AdminProductUpdatePage = () => {
 
       formData.append("countInStock", formValues.countInStock);
       formData.append("inStock", String(formValues.inStock));
+      formData.append(
+        "availableToOrder",
+        String(formValues.availableToOrder),
+      );
 
       const galleryToKeep = existingImages.filter(Boolean);
 
@@ -449,6 +454,22 @@ const AdminProductUpdatePage = () => {
                     required
                   />
                 </div>
+              </div>
+
+              <div className={css.fieldCheckbox}>
+                <label className={css.label}>Made to order</label>
+                <label className={css.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="availableToOrder"
+                    checked={formValues.availableToOrder}
+                    onChange={handleChange}
+                  />
+                  <span>
+                    Show that this product can be made to order when out of
+                    stock
+                  </span>
+                </label>
               </div>
             </div>
           </div>

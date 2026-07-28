@@ -12,6 +12,7 @@ const productSchema = new mongoose.Schema(
     // beadSize: { type: [String] },
     inStock: { type: Boolean, default: true },
     countInStock: { type: Number, default: 0 },
+    availableToOrder: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
