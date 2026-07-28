@@ -7,6 +7,19 @@ import { toast } from "react-toastify";
 import css from "./ProductCreateForm.module.css";
 import { createProductThunk } from "../../redux/operations/productOperations";
 
+const MATERIAL_OPTIONS = [
+  { value: "coral", label: "Корал" },
+  { value: "seed-beads", label: "Бісер" },
+  { value: "glass", label: "Скло" },
+  { value: "ceramic", label: "Кераміка" },
+  { value: "natural-stone", label: "Натуральний камінь" },
+  { value: "pearl", label: "Перли" },
+  { value: "wood", label: "Дерево" },
+  { value: "metal", label: "Метал" },
+  { value: "mixed", label: "Змішані матеріали" },
+  { value: "other", label: "Інше" },
+];
+
 const validationSchema = Yup.object({
   name: Yup.string()
     .min(2, "Мінімум 2 символи")
@@ -18,6 +31,9 @@ const validationSchema = Yup.object({
     .min(0, "Не може бути менше 0")
     .required("Обов'язкове поле"),
   category: Yup.string().required("Оберіть категорію"),
+  materials: Yup.array()
+    .min(1, "Оберіть хоча б один матеріал")
+    .required("Оберіть матеріал"),
   // length: Yup.string().required("Вкажіть довжину виробу"),
   // beadSize: Yup.string().required("Вкажіть розмір намистин"),
   countInStock: Yup.number()
@@ -32,6 +48,7 @@ const initialValues = {
   description: "",
   price: "",
   category: "",
+  materials: [],
   // length: "",
   // beadSize: "",
   countInStock: "",
@@ -75,6 +92,9 @@ const ProductCreateForm = () => {
       formData.append("description", values.description || "");
       formData.append("price", String(values.price));
       formData.append("category", values.category);
+      values.materials.forEach((material) => {
+        formData.append("materials", material);
+      });
 
       // const lengthValues = splitValues(values.length);
       // lengthValues.forEach((value) => formData.append("length", value));
@@ -272,6 +292,35 @@ const ProductCreateForm = () => {
                   </Field>
                   <ErrorMessage
                     name="category"
+                    component="div"
+                    className={css.error}
+                  />
+                </div>
+
+                <div className={css.fieldGroup}>
+                  <span className={css.label}>Матеріали</span>
+                  <div
+                    className={css.materialGrid}
+                    role="group"
+                    aria-label="Матеріали товару"
+                  >
+                    {MATERIAL_OPTIONS.map((material) => (
+                      <label key={material.value} className={css.materialOption}>
+                        <Field
+                          type="checkbox"
+                          name="materials"
+                          value={material.value}
+                          className={css.materialCheckbox}
+                        />
+                        <span>{material.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className={css.fieldHint}>
+                    Можна обрати кілька матеріалів.
+                  </p>
+                  <ErrorMessage
+                    name="materials"
                     component="div"
                     className={css.error}
                   />

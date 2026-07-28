@@ -1,6 +1,19 @@
 import { useEffect, useState } from "react";
 import css from "./CatalogFilters.module.css";
 
+const MATERIAL_OPTIONS = [
+  { value: "coral", label: "Coral" },
+  { value: "seed-beads", label: "Seed beads" },
+  { value: "glass", label: "Glass" },
+  { value: "ceramic", label: "Ceramic" },
+  { value: "natural-stone", label: "Natural stone" },
+  { value: "pearl", label: "Pearl" },
+  { value: "wood", label: "Wood" },
+  { value: "metal", label: "Metal" },
+  { value: "mixed", label: "Mixed" },
+  { value: "other", label: "Other" },
+];
+
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
 const toSafeInt = (v) => {
@@ -121,6 +134,17 @@ const CatalogFilters = ({
     applyMaxNumber(raw);
   };
 
+  const toggleMaterial = (material) => {
+    const current = Array.isArray(filtersDraft.materials)
+      ? filtersDraft.materials
+      : [];
+    const next = current.includes(material)
+      ? current.filter((item) => item !== material)
+      : [...current, material];
+
+    onDraftChange("materials", next);
+  };
+
   return (
     <div
       className={`${css.card} ${variant === "mobile" ? css.cardMobile : ""}`}
@@ -180,6 +204,25 @@ const CatalogFilters = ({
             />
             <span>Other</span>
           </label>
+        </div>
+      </div>
+
+      <div className={`${css.block} ${css.borderTop}`}>
+        <p className={css.label}>Material</p>
+
+        <div className={css.group}>
+          {MATERIAL_OPTIONS.map((material) => (
+            <label key={material.value} className={css.row}>
+              <input
+                type="checkbox"
+                checked={Boolean(
+                  filtersDraft.materials?.includes(material.value),
+                )}
+                onChange={() => toggleMaterial(material.value)}
+              />
+              <span>{material.label}</span>
+            </label>
+          ))}
         </div>
       </div>
 

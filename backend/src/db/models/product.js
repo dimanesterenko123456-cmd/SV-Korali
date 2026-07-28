@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     images: [{ type: String }],
     category: { type: String },
+    materials: [{ type: String, trim: true }],
     // length: { type: [String] },
     // beadSize: { type: [String] },
     inStock: { type: Boolean, default: true },

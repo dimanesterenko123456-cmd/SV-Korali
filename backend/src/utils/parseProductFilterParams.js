@@ -25,7 +25,7 @@ const parseBoolean = (value) => {
 };
 
 export const parseProductFilterParams = (query) => {
-  const { category, minPrice, maxPrice, inStock, search } = query;
+  const { category, materials, minPrice, maxPrice, inStock, search } = query;
 
   const filter = {};
 
@@ -40,6 +40,20 @@ export const parseProductFilterParams = (query) => {
       filter.category = categories[0];
     } else if (categories.length > 1) {
       filter.category = { $in: categories };
+    }
+  }
+
+  // materials: ?materials=coral або ?materials=coral,glass
+  if (materials) {
+    const materialValues = String(materials)
+      .split(',')
+      .map((material) => material.trim())
+      .filter(Boolean);
+
+    if (materialValues.length === 1) {
+      filter.materials = materialValues[0];
+    } else if (materialValues.length > 1) {
+      filter.materials = { $in: materialValues };
     }
   }
 
