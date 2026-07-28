@@ -16,6 +16,34 @@ import {
   updateProductThunk,
 } from "../../../redux/operations/productOperations";
 
+const MATERIAL_OPTIONS = [
+  { value: "coral", label: "Coral" },
+  { value: "seed-beads", label: "Seed beads" },
+  { value: "glass", label: "Glass" },
+  { value: "ceramic", label: "Ceramic" },
+  { value: "natural-stone", label: "Natural stone" },
+  { value: "pearl", label: "Mother of Pearl" },
+  { value: "wood", label: "Wood" },
+  { value: "metal", label: "Metal" },
+  { value: "mixed", label: "Mixed" },
+  { value: "other", label: "Other" },
+];
+
+const normalizeMaterials = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(String).map((item) => item.trim()).filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
 const AdminProductUpdatePage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
@@ -65,6 +93,7 @@ const AdminProductUpdatePage = () => {
       description: product.description || "",
       price: product.price ?? "",
       category: product.category || "",
+      materials: normalizeMaterials(product.materials),
       // length: joinValues(product.length),
       // beadSize: joinValues(product.beadSize),
       countInStock:
@@ -144,6 +173,19 @@ const AdminProductUpdatePage = () => {
             ? value
             : value,
     }));
+  };
+
+  const handleMaterialChange = (e) => {
+    const { value, checked } = e.target;
+
+    setFormValues((prev) => {
+      const current = Array.isArray(prev.materials) ? prev.materials : [];
+      const materials = checked
+        ? Array.from(new Set([...current, value]))
+        : current.filter((material) => material !== value);
+
+      return { ...prev, materials };
+    });
   };
 
   const handleImageChange = (e) => {
@@ -237,6 +279,13 @@ const AdminProductUpdatePage = () => {
       }
       formData.append("price", formValues.price);
       formData.append("category", formValues.category);
+      if (formValues.materials.length > 0) {
+        formValues.materials.forEach((material) => {
+          formData.append("materials", material);
+        });
+      } else {
+        formData.append("materials", "");
+      }
       // const lengthValues = splitValues(formValues.length);
       // if (lengthValues.length) {
       //   lengthValues.forEach((val) => formData.append("length", val));
@@ -389,6 +438,36 @@ const AdminProductUpdatePage = () => {
                   </label>
                 </div>
               </div>
+
+              <div className={css.field}>
+                <label className={css.label}>Materials</label>
+                <div
+                  className={css.materialGrid}
+                  role="group"
+                  aria-label="Product materials"
+                >
+                  {MATERIAL_OPTIONS.map((material) => (
+                    <label
+                      key={material.value}
+                      className={css.materialOption}
+                    >
+                      <input
+                        type="checkbox"
+                        name="materials"
+                        value={material.value}
+                        checked={formValues.materials.includes(material.value)}
+                        onChange={handleMaterialChange}
+                        className={css.materialCheckbox}
+                      />
+                      <span>{material.label}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className={css.hint}>
+                  Select one or more materials, then save the product.
+                </p>
+              </div>
+
               {/* <div className={css.row2}>
                 <div className={css.field}>
                   <label className={css.label}>Length</label>
