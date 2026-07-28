@@ -20,6 +20,9 @@ const AddProductPage = lazy(() =>
 const AdminProductUpdatePage = lazy(() =>
   import("./pages/Admin/AdminProductUpdatePage/AdminProductUpdatePage")
 );
+const AdminCouponsPage = lazy(() =>
+  import("./pages/Admin/AdminCouponsPage/AdminCouponsPage")
+);
 
 const CheckoutSuccess = lazy(() =>
   import("./pages/CheckoutSuccess/CheckoutSuccess")
@@ -107,6 +110,8 @@ function App() {
 
           {/* /admin/products/new – створення товару (твій AddProductPage всередині адмін-лейаута) */}
           <Route path="products/new" element={<AddProductPage />} />
+
+          <Route path="coupons" element={<AdminCouponsPage />} />
 
           {/* /admin/products/:productId – сторінка update з того html-макету */}
           <Route

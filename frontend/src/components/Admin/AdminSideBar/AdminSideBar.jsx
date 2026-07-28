@@ -8,6 +8,7 @@ import {
   FaTags,
   FaCog,
   FaRegPlusSquare,
+  FaTicketAlt,
 } from "react-icons/fa";
 
 import { GiHeartNecklace } from "react-icons/gi";
@@ -53,6 +54,16 @@ const AdminSidebar = () => {
         >
           <FaRegPlusSquare className={css.icon} />
           <span>Add new</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/coupons"
+          className={({ isActive }) =>
+            `${css.link} ${isActive ? css.linkActive : ""}`
+          }
+        >
+          <FaTicketAlt className={css.icon} />
+          <span>Coupons</span>
         </NavLink>
 
         {/* <NavLink

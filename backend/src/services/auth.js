@@ -14,6 +14,7 @@ import { SessionsCollection } from '../db/models/session.js';
 import { FIFTEEN_MINUTES, ONE_DAY, SMTP } from '../constans/index.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { sendEmail } from '../utils/sendMail.js';
+import { createWelcomeCoupon } from './coupon.js';
 import {
   getFullNameFromGoogleTokenPayload,
   validateCode,
@@ -25,12 +26,20 @@ export const registerUser = async (payload) => {
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
-  return await UsersCollection.create({
+  const newUser = await UsersCollection.create({
     name: payload.name,
     email: payload.email,
     password: encryptedPassword,
     role: USER_ROLES.CLIENT,
   });
+
+  try {
+    const coupon = await createWelcomeCoupon(newUser);
+    return { user: newUser, coupon };
+  } catch (error) {
+    await UsersCollection.deleteOne({ _id: newUser._id });
+    throw error;
+  }
 };
 
 export const loginUser = async (payload) => {
