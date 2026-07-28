@@ -48,6 +48,7 @@ const CatalogPage = () => {
   // ✅ priceMax: null => "до максимуму"
   const [filtersDraft, setFiltersDraft] = useState({
     category: "",
+    materials: [],
     priceMin: 0,
     priceMax: null, // ✅
     inStockOnly: false,
@@ -76,6 +77,9 @@ const CatalogPage = () => {
       const f = filtersOverride || filters;
 
       if (f.category) params.category = f.category;
+      if (Array.isArray(f.materials) && f.materials.length > 0) {
+        params.materials = f.materials.join(",");
+      }
       if (f.inStockOnly) params.inStock = true;
 
       // ✅ minPrice шлемо лише якщо > 0
@@ -171,6 +175,7 @@ const CatalogPage = () => {
   const handleClearFilters = () => {
     const cleared = {
       category: "",
+      materials: [],
       priceMin: 0,
       priceMax: null, // ✅
       inStockOnly: false,
@@ -248,7 +253,7 @@ const CatalogPage = () => {
                 </button>
 
                 <p className={css.filtersHint}>
-                  Tap to adjust category, price & availability
+                  Tap to adjust category, material, price & availability
                 </p>
               </div>
 

@@ -6,6 +6,9 @@ export const createProductSchema = Joi.object({
   description: Joi.string().allow('', null),
   price: Joi.number().positive().required(),
   category: Joi.string().allow('', null),
+  materials: Joi.alternatives()
+    .try(Joi.array().items(Joi.string().max(50)), Joi.string().max(50))
+    .allow('', null),
   // length: Joi.alternatives()
   //   .try(Joi.array().items(Joi.string().max(100)), Joi.string().max(100))
   //   .allow('', null),
@@ -25,6 +28,9 @@ export const updateProductSchema = Joi.object({
   description: Joi.string().allow('', null),
   price: Joi.number().positive(),
   category: Joi.string().allow('', null),
+  materials: Joi.alternatives()
+    .try(Joi.array().items(Joi.string().max(50)), Joi.string().max(50))
+    .allow('', null),
   // length: Joi.alternatives()
   //   .try(Joi.array().items(Joi.string().max(100)), Joi.string().max(100))
   //   .allow('', null),
