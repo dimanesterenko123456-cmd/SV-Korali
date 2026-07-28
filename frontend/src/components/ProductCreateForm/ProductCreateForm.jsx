@@ -13,7 +13,7 @@ const MATERIAL_OPTIONS = [
   { value: "glass", label: "Скло" },
   { value: "ceramic", label: "Кераміка" },
   { value: "natural-stone", label: "Натуральний камінь" },
-  { value: "pearl", label: "Перли" },
+  { value: "pearl", label: "Mother of Pearl" },
   { value: "wood", label: "Дерево" },
   { value: "metal", label: "Метал" },
   { value: "mixed", label: "Змішані матеріали" },
@@ -49,6 +49,7 @@ const initialValues = {
   price: "",
   category: "",
   materials: [],
+  availableToOrder: false,
   // length: "",
   // beadSize: "",
   countInStock: "",
@@ -105,6 +106,10 @@ const ProductCreateForm = () => {
       const count = Number(values.countInStock) || 0;
       formData.append("countInStock", String(count));
       formData.append("inStock", String(count > 0));
+      formData.append(
+        "availableToOrder",
+        String(values.availableToOrder),
+      );
 
       if (Array.isArray(values.images) && values.images.length > 0) {
         values.images.forEach((file) => {
@@ -324,6 +329,25 @@ const ProductCreateForm = () => {
                     component="div"
                     className={css.error}
                   />
+                </div>
+
+                <div className={css.fieldGroup}>
+                  <span className={css.label}>Виготовлення на замовлення</span>
+                  <label className={css.materialOption}>
+                    <Field
+                      type="checkbox"
+                      name="availableToOrder"
+                      className={css.materialCheckbox}
+                    />
+                    <span>
+                      Можна виготовити на замовлення, якщо товару немає в
+                      наявності
+                    </span>
+                  </label>
+                  <p className={css.fieldHint}>
+                    На сторінці товару з’явиться окреме повідомлення для
+                    покупця.
+                  </p>
                 </div>
                 {/* 
                 <div className={css.fieldRow}>

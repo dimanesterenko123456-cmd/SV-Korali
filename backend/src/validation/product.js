@@ -17,6 +17,7 @@ export const createProductSchema = Joi.object({
   //   .allow('', null),
   inStock: Joi.boolean().default(true),
   countInStock: Joi.number().integer().min(0).default(0),
+  availableToOrder: Joi.boolean().default(false),
 
   images: Joi.alternatives()
     .try(Joi.array().items(Joi.string().uri()), Joi.string().uri())
@@ -39,6 +40,7 @@ export const updateProductSchema = Joi.object({
   //   .allow('', null),
   inStock: Joi.boolean(),
   countInStock: Joi.number().integer().min(0),
+  availableToOrder: Joi.boolean(),
   images: Joi.alternatives()
     .try(Joi.array().items(Joi.string().uri()), Joi.string().uri())
     .optional(),

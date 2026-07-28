@@ -8,6 +8,35 @@ import css from "./ProductInfo.module.css";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { selectAccessToken } from "../../../redux/selectors/authSelectors";
 
+const MATERIAL_LABELS = {
+  coral: "Coral",
+  "seed-beads": "Seed beads",
+  glass: "Glass",
+  ceramic: "Ceramic",
+  "natural-stone": "Natural stone",
+  pearl: "Mother of Pearl",
+  "mother-of-pearl": "Mother of Pearl",
+  wood: "Wood",
+  metal: "Metal",
+  mixed: "Mixed",
+  other: "Other",
+};
+
+const formatMaterials = (value) => {
+  const materials = Array.isArray(value)
+    ? value
+    : typeof value === "string"
+      ? value.split(",")
+      : [];
+
+  const labels = materials
+    .map((material) => String(material).trim())
+    .filter(Boolean)
+    .map((material) => MATERIAL_LABELS[material] || material);
+
+  return labels.length ? labels.join(", ") : "Natural coral";
+};
+
 // const normalizeOptions = (value) => {
 //   if (Array.isArray(value)) {
 //     return value
@@ -70,6 +99,8 @@ const ProductInfo = ({ product }) => {
 
   const stockLeft =
     typeof product?.countInStock === "number" ? product.countInStock : null;
+  const availableToOrder = Boolean(product?.availableToOrder);
+  const materialsText = formatMaterials(product?.materials);
 
   const ratingValue = Number(
     product?.rating ?? product?.avgRating ?? product?.averageRating ?? 0,
@@ -209,6 +240,17 @@ const ProductInfo = ({ product }) => {
           {inStock ? "In stock" : "Out of stock"}
         </span>
       </div>
+
+      {!inStock && availableToOrder ? (
+        <div className={css.orderNotice}>
+          <span className={css.orderNoticeTitle}>Available by special order</span>
+          <span className={css.orderNoticeText}>
+            This piece can be made to order even though it is currently out of
+            stock.
+          </span>
+        </div>
+      ) : null}
+
       {descriptionText.length ? (
         <div className={css.shortDesc}>
           {descriptionText.map((text, idx) => (
@@ -338,9 +380,7 @@ const ProductInfo = ({ product }) => {
 
           <div className={css.detailItem}>
             <span className={css.detailLabel}>Material:</span>
-            <span className={css.detailValue}>
-              {product?.materials || "Natural coral"}
-            </span>
+            <span className={css.detailValue}>{materialsText}</span>
           </div>
 
           <div className={css.detailItem}>

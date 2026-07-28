@@ -154,6 +154,13 @@ export const createProductController = async (req, res, next) => {
       }
     }
 
+    if (
+      payload.availableToOrder !== undefined &&
+      typeof payload.availableToOrder === 'string'
+    ) {
+      payload.availableToOrder = payload.availableToOrder === 'true';
+    }
+
     if (images.length) {
       payload.images = images;
       payload.image = images[0];
@@ -225,6 +232,13 @@ export const patchProductController = async (req, res, next) => {
       if (typeof payload.inStock === 'string') {
         payload.inStock = payload.inStock === 'true';
       }
+    }
+
+    if (
+      payload.availableToOrder !== undefined &&
+      typeof payload.availableToOrder === 'string'
+    ) {
+      payload.availableToOrder = payload.availableToOrder === 'true';
     }
 
     if (images.length) {

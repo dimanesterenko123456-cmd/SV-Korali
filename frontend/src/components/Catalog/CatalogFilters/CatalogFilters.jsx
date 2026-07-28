@@ -7,7 +7,7 @@ const MATERIAL_OPTIONS = [
   { value: "glass", label: "Glass" },
   { value: "ceramic", label: "Ceramic" },
   { value: "natural-stone", label: "Natural stone" },
-  { value: "pearl", label: "Pearl" },
+  { value: "pearl", label: "Mother of Pearl" },
   { value: "wood", label: "Wood" },
   { value: "metal", label: "Metal" },
   { value: "mixed", label: "Mixed" },
