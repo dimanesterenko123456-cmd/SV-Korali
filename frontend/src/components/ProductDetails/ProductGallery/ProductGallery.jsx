@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FiAward, FiTruck, FiRefreshCcw, FiShield } from "react-icons/fi";
+import { FiTruck, FiRefreshCcw, FiShield } from "react-icons/fi";
 import css from "./ProductGallery.module.css";
 
 const ProductGallery = ({ images = [] }) => {
@@ -15,11 +15,6 @@ const ProductGallery = ({ images = [] }) => {
     "https://via.placeholder.com/900x1100?text=SV.Korali";
 
   const highlights = [
-    {
-      icon: <FiAward />,
-      title: "Authentic Materials",
-      text: "100% genuine coral",
-    },
     {
       icon: <FiShield />,
       title: "Handcrafted",
