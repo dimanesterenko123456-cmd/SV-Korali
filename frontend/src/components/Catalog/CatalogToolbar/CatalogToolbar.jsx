@@ -24,7 +24,7 @@ const CatalogToolbar = ({
           <option value="popular">Sort by: Featured</option>
           <option value="price_asc">Price: Low to High</option>
           <option value="price_desc">Price: High to Low</option>
-          <option value="newest">Newest First</option>
+          <option value="in_stock">Available in Stock</option>
         </select>
 
         <div className={css.searchWrap}>

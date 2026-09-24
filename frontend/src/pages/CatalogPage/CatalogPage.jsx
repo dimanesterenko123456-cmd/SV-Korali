@@ -106,9 +106,8 @@ const CatalogPage = () => {
           params.sortBy = "price";
           params.sortOrder = "desc";
           break;
-        case "newest":
-          params.sortBy = "createdAt";
-          params.sortOrder = "desc";
+        case "in_stock":
+          params.inStock = true;
           break;
         default:
           break;
