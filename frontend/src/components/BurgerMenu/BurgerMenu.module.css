@@ -119,6 +119,12 @@
   text-align: left;
 }
 
+@media (min-width: 768px) {
+  .mobileOnly {
+    display: none;
+  }
+}
+
 .actionIcon {
   font-size: 18px;
   color: #4b5563;

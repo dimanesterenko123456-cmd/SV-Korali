@@ -148,3 +148,38 @@
 .cartBtn:hover {
   filter: brightness(0.95);
 }
+
+@media (max-width: 767px) {
+  .card {
+    border-radius: 12px;
+  }
+
+  .imageWrap {
+    aspect-ratio: 4 / 5;
+    padding: 6px;
+  }
+
+  .content {
+    padding: 10px 9px 9px;
+    gap: 8px;
+  }
+
+  .price {
+    font-size: 12px;
+  }
+
+  .rating {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .star {
+    font-size: 11px;
+  }
+
+  .cartBtn {
+    height: 32px;
+    border-radius: 9px;
+    font-size: 11px;
+  }
+}

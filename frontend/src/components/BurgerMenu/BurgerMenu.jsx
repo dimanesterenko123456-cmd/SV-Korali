@@ -141,8 +141,8 @@ const BurgerMenu = ({
                   to="/cart"
                   className={({ isActive }) =>
                     isActive
-                      ? `${css.actionLink} ${css.linkActive}`
-                      : css.actionLink
+                      ? `${css.actionLink} ${css.mobileOnly} ${css.linkActive}`
+                      : `${css.actionLink} ${css.mobileOnly}`
                   }
                   onClick={close}
                 >
@@ -157,8 +157,8 @@ const BurgerMenu = ({
                   to="/auth/login"
                   className={({ isActive }) =>
                     isActive
-                      ? `${css.actionLink} ${css.linkActive}`
-                      : css.actionLink
+                      ? `${css.actionLink} ${css.mobileOnly} ${css.linkActive}`
+                      : `${css.actionLink} ${css.mobileOnly}`
                   }
                   onClick={close}
                 >
@@ -169,7 +169,7 @@ const BurgerMenu = ({
                 {isLoggedIn && (
                   <button
                     type="button"
-                    className={css.actionButton}
+                    className={`${css.actionButton} ${css.mobileOnly}`}
                     onClick={handleLogoutClick}
                   >
                     <FiLogOut className={css.actionIcon} />
