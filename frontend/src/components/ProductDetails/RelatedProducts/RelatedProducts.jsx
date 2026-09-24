@@ -69,6 +69,12 @@ const RelatedProducts = ({ products = [], currentId }) => {
           const category =
             product?.collection || product?.category || "Collection";
           const price = formatPrice(product?.price);
+          const inStock =
+            product?.inStock ??
+            (typeof product?.countInStock === "number"
+              ? product.countInStock > 0
+              : true);
+          const isMadeToOrder = Boolean(product?.availableToOrder && !inStock);
 
           return (
             <li key={id} className={css.item}>
@@ -111,7 +117,7 @@ const RelatedProducts = ({ products = [], currentId }) => {
                       className={css.cartBtn}
                       onClick={(event) => handleAddToCart(event, product)}
                     >
-                      Add to cart
+                      {isMadeToOrder ? "Made to order" : "Add to cart"}
                     </button>
                   </div>
                 </div>

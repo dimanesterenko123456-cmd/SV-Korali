@@ -33,6 +33,12 @@ const CatalogItem = ({ product }) => {
   );
   const showRating = Number.isFinite(ratingValue) && ratingValue > 0;
   const rounded = Math.round(ratingValue);
+  const inStock =
+    product?.inStock ??
+    (typeof product?.countInStock === "number"
+      ? product.countInStock > 0
+      : true);
+  const isMadeToOrder = Boolean(product?.availableToOrder && !inStock);
 
   const handleAddToCart = () => {
     if (!isLoggedIn) {
@@ -98,7 +104,7 @@ const CatalogItem = ({ product }) => {
 
       {/* окрема кнопка, яка не веде на деталі, тільки додає в кошик */}
       <button type="button" className={css.cartBtn} onClick={handleAddToCart}>
-        Add to cart
+        {isMadeToOrder ? "Made to order" : "Add to cart"}
       </button>
     </li>
   );

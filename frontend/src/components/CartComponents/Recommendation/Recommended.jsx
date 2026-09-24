@@ -64,6 +64,12 @@ const Recommended = ({ products = [] }) => {
             const category =
               product?.collection || product?.category || "Collection";
             const price = formatPrice(product?.price);
+            const inStock =
+              product?.inStock ??
+              (typeof product?.countInStock === "number"
+                ? product.countInStock > 0
+                : true);
+            const isMadeToOrder = Boolean(product?.availableToOrder && !inStock);
 
             return (
               <article
@@ -105,7 +111,7 @@ const Recommended = ({ products = [] }) => {
                       className={css.btn}
                       onClick={(event) => handleAdd(event, product)}
                     >
-                      Add to cart
+                      {isMadeToOrder ? "Made to order" : "Add to cart"}
                     </button>
                   </div>
                 </div>

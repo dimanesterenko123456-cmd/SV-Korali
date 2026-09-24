@@ -100,6 +100,7 @@ const ProductInfo = ({ product }) => {
   const stockLeft =
     typeof product?.countInStock === "number" ? product.countInStock : null;
   const availableToOrder = Boolean(product?.availableToOrder);
+  const isMadeToOrder = !inStock && availableToOrder;
   const materialsText = formatMaterials(product?.materials);
 
   const ratingValue = Number(
@@ -177,7 +178,7 @@ const ProductInfo = ({ product }) => {
 
   const handleAddToCart = () => {
     if (!requireAuth()) return;
-    if (!inStock) return;
+    if (!inStock && !availableToOrder) return;
     const payload = { ...product, quantity: qty };
     // if (length) payload.length = length;
     // if (beadSize) payload.beadSize = beadSize;
@@ -186,7 +187,7 @@ const ProductInfo = ({ product }) => {
 
   const handleBuyNow = () => {
     if (!requireAuth()) return;
-    if (!inStock) return;
+    if (!inStock && !availableToOrder) return;
     const payload = { ...product, quantity: qty };
     // if (length) payload.length = length;
     // if (beadSize) payload.beadSize = beadSize;
@@ -346,18 +347,18 @@ const ProductInfo = ({ product }) => {
           type="button"
           className={css.primary}
           onClick={handleAddToCart}
-          disabled={!inStock}
+          disabled={!inStock && !availableToOrder}
         >
-          Add to Cart
+          {isMadeToOrder ? "Made to Order" : "Add to Cart"}
         </button>
 
         <button
           type="button"
           className={css.secondary}
           onClick={handleBuyNow}
-          disabled={!inStock}
+          disabled={!inStock && !availableToOrder}
         >
-          Buy Now
+          {isMadeToOrder ? "Order Now" : "Buy Now"}
         </button>
       </div>
 
