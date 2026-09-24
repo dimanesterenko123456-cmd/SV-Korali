@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import css from "./AdminProductsPage.module.css";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   selectProducts,
   selectProductsCount,
@@ -26,6 +26,8 @@ const PER_PAGE = 12;
 const AdminProductsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnToList = location.state?.returnToList;
 
   const products = useSelector(selectProducts);
   const totalCount = useSelector(selectProductsCount);
@@ -34,10 +36,16 @@ const AdminProductsPage = () => {
   const totalPagesFromStore = useSelector(selectProductsTotalPages);
 
   // локальний стан фільтрів та пагінації
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
-  const [stockFilter, setStockFilter] = useState("");
+  const [page, setPage] = useState(() => returnToList?.page || 1);
+  const [searchTerm, setSearchTerm] = useState(
+    () => returnToList?.searchTerm || "",
+  );
+  const [categoryFilter, setCategoryFilter] = useState(
+    () => returnToList?.categoryFilter || "",
+  );
+  const [stockFilter, setStockFilter] = useState(
+    () => returnToList?.stockFilter || "",
+  );
 
   // формуємо параметри запиту для бекенда
   const buildParams = useCallback(() => {
@@ -86,7 +94,16 @@ const AdminProductsPage = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/products/${id}`);
+    navigate(`/admin/products/${id}`, {
+      state: {
+        returnToList: {
+          page,
+          searchTerm,
+          categoryFilter,
+          stockFilter,
+        },
+      },
+    });
   };
 
   const handleDelete = (id) => {

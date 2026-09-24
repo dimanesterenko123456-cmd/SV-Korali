@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import css from "./AdminProductUpdatePage.module.css";
 
@@ -47,7 +47,9 @@ const normalizeMaterials = (value) => {
 const AdminProductUpdatePage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
+  const returnToList = location.state?.returnToList;
 
   const product = useSelector(selectCurrentProduct);
   const isLoading = useSelector(selectProductsLoading);
@@ -59,6 +61,7 @@ const AdminProductUpdatePage = () => {
   const [newPreviewUrls, setNewPreviewUrls] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const newPreviewRef = useRef([]);
 
   // const joinValues = (value) => {
@@ -270,6 +273,7 @@ const AdminProductUpdatePage = () => {
 
     try {
       setSaving(true);
+      setSaveError("");
 
       const formData = new FormData();
 
@@ -321,11 +325,17 @@ const AdminProductUpdatePage = () => {
         updateProductThunk({ id: productId, payload: formData }),
       ).unwrap();
 
-      // після оновлення вертаємось до списку
-      navigate("/admin/products");
+      navigate("/admin/products", {
+        replace: true,
+        state: { returnToList },
+      });
     } catch (err) {
       console.error("Update product error:", err);
-      // тут можна додати toast
+      setSaveError(
+        typeof err === "string"
+          ? err
+          : err?.message || "Не вдалося оновити товар. Спробуйте ще раз.",
+      );
     } finally {
       setSaving(false);
     }
@@ -684,6 +694,7 @@ const AdminProductUpdatePage = () => {
             </div>
 
             <div className={css.actionsCard}>
+              {saveError && <p className={css.error}>{saveError}</p>}
               <button
                 type="button"
                 className={css.btnGhost}

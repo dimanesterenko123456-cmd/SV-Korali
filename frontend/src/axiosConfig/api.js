@@ -36,3 +36,60 @@ API.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+let refreshPromise = null;
+
+const refreshAccessToken = async () => {
+  if (!refreshPromise) {
+    refreshPromise = API.post("/auth/refresh")
+      .then(({ data }) => {
+        const accessToken = data?.data?.accessToken;
+
+        if (!accessToken) {
+          throw new Error("Unable to refresh the session");
+        }
+
+        setAuthHeader(accessToken);
+        return accessToken;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+};
+
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error?.config;
+    const requestUrl = originalRequest?.url || "";
+
+    const shouldRefresh =
+      error?.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !requestUrl.includes("/auth/refresh") &&
+      !requestUrl.includes("/auth/login") &&
+      !requestUrl.includes("/auth/register") &&
+      !requestUrl.includes("/auth/logout");
+
+    if (!shouldRefresh) {
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
+
+    try {
+      const accessToken = await refreshAccessToken();
+      originalRequest.headers = originalRequest.headers || {};
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+      return API(originalRequest);
+    } catch (refreshError) {
+      clearAuthHeader();
+      return Promise.reject(refreshError);
+    }
+  },
+);
