@@ -5,6 +5,7 @@ const WelcomePage = lazy(() => import("./pages/WelcomePage/WelcomePage"));
 const AuthPage = lazy(() => import("./pages/AuthPage/AuthPage"));
 const CatalogPage = lazy(() => import("./pages/CatalogPage/CatalogPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage/AboutPage"));
+const PolicyPage = lazy(() => import("./pages/PolicyPage/PolicyPage"));
 
 const AdminLayout = lazy(() => import("./pages/Admin/AdminLayout/AdminLayout"));
 const AdminDashboardPage = lazy(() =>
@@ -76,6 +77,7 @@ function App() {
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="catalog/:productId" element={<ProductDetailsPage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="policy" element={<PolicyPage />} />
 
           {/* приватні сторінки для звичайного юзера */}
           <Route element={<PrivateRoute redirectTo="/auth/login" />}>

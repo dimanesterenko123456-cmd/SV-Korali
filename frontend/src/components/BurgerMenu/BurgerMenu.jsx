@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
-import { FiMenu, FiX, FiUser, FiLogOut, FiPlusSquare } from "react-icons/fi";
+import {
+  FiMenu,
+  FiX,
+  FiUser,
+  FiLogOut,
+  FiPlusSquare,
+} from "react-icons/fi";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 
 import css from "./BurgerMenu.module.css";
@@ -53,6 +59,8 @@ const BurgerMenu = ({
         type="button"
         className={buttonClassName ?? css.burgerButton}
         aria-label="Open menu"
+        aria-expanded={isOpen}
+        aria-controls="site-navigation-menu"
         onClick={open}
       >
         <FiMenu className={css.burgerIcon} />
@@ -61,6 +69,7 @@ const BurgerMenu = ({
       {isOpen &&
         createPortal(
           <div
+            id="site-navigation-menu"
             className={css.overlay}
             role="dialog"
             aria-modal="true"
@@ -99,6 +108,16 @@ const BurgerMenu = ({
                   onClick={close}
                 >
                   About
+                </NavLink>
+
+                <NavLink
+                  to="/policy"
+                  className={({ isActive }) =>
+                    isActive ? `${css.link} ${css.linkActive}` : css.link
+                  }
+                  onClick={close}
+                >
+                  Policy
                 </NavLink>
               </div>
 

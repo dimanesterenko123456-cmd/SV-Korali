@@ -46,26 +46,6 @@ const Navigation = () => {
           buttonClassName={css.burgerButton}
         />
 
-        <div className={css.navLinks}>
-          <NavLink
-            to="/catalog"
-            end
-            className={({ isActive }) =>
-              isActive ? `${css.navLink} ${css.navLinkActive}` : css.navLink
-            }
-          >
-            Catalog
-          </NavLink>
-
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              isActive ? `${css.navLink} ${css.navLinkActive}` : css.navLink
-            }
-          >
-            About
-          </NavLink>
-        </div>
       </div>
 
       {/* CENTER */}

@@ -34,6 +34,11 @@ const Footer = () => {
                     Collections
                   </Link>
                 </li>
+                <li>
+                  <Link className={css.link} to="/policy">
+                    Policy
+                  </Link>
+                </li>
               </ul>
             </div>
 

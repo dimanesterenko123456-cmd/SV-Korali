@@ -1,8 +1,7 @@
 #root {
+  width: 100%;
+  min-height: 100vh;
   padding-top: 0;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  text-align: center;
   background-color: #ffffff;
 }
 

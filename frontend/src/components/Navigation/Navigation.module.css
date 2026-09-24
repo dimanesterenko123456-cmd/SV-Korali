@@ -62,48 +62,6 @@
   outline-offset: 2px;
 }
 
-/* текстові лінки біля бургера */
-.navLinks {
-  display: none; /* mobile-first */
-  align-items: center;
-  gap: 18px;
-}
-
-.navLink {
-  position: relative;
-  font-size: 15px; /* зробив трохи більшим (було 14px) */
-  font-weight: 600;
-  color: #4b5563;
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  padding-bottom: 4px;
-  transition: color 0.2s ease;
-}
-
-.navLink::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 2px;
-  border-radius: 999px;
-  background: #b91c1c;
-  transition: width 0.22s ease;
-}
-
-.navLink:hover {
-  color: #111827;
-}
-
-.navLinkActive {
-  color: #111827;
-}
-
-.navLinkActive::after {
-  width: 100%;
-}
-
 /* CENTER: logo fixed in the middle of header */
 .center {
   position: absolute;
@@ -212,26 +170,12 @@
 .logoutButton {
 } */
 
-/* ===== BREAKPOINTS ===== */
-
-/* Tablet 768+ */
+/* Keep one navigation pattern across phones, tablets, and desktops. */
 @media (min-width: 768px) {
   .nav {
     padding: 14px 24px;
     min-height: 72px;
     gap: 16px;
-  }
-
-  .burgerButton {
-    display: none; /* на планшеті/десктопі бургер ховаємо */
-  }
-
-  .navLinks {
-    display: flex;
-  }
-
-  .navLink {
-    font-size: 16px; /* на планшеті ще трохи більші */
   }
 
   .actions {
@@ -255,19 +199,10 @@
   }
 }
 
-/* Desktop 1440+ */
 @media (min-width: 1440px) {
   .nav {
     padding: 16px 56px;
     gap: 24px;
-  }
-
-  .navLinks {
-    gap: 22px;
-  }
-
-  .navLink {
-    font-size: 16px;
   }
 
   .actions {
@@ -275,10 +210,7 @@
   }
 }
 
-/* Mobile only (<=767) */
 @media (max-width: 767px) {
-  /* на мобілці лишаємо справа тільки кошик (щоб не ламалось на 320px),
-     а всі інші дії будуть в BurgerMenu */
   .adminButton,
   .profileButton,
   .logoutButton {
