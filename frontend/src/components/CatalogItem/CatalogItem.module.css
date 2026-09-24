@@ -155,13 +155,8 @@
   }
 
   .imageWrap {
-    height: clamp(170px, 48vw, 220px);
-    aspect-ratio: auto;
+    aspect-ratio: 4 / 5;
     padding: 6px;
-  }
-
-  .image {
-    max-height: 100%;
   }
 
   .content {

@@ -19,10 +19,15 @@
   box-sizing: border-box;
 }
 body {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
     sans-serif;
 }
 html {
+  width: 100%;
+  min-width: 100%;
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
 }

@@ -1,5 +1,6 @@
 .footer {
   width: 100%;
+  min-width: 0;
   color: #e5e7eb;
   background: radial-gradient(
       1200px 420px at 10% 0%,
