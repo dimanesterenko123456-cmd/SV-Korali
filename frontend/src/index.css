@@ -21,7 +21,6 @@
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
     sans-serif;
-  overflow-x: hidden;
 }
 html {
   scrollbar-gutter: stable;
