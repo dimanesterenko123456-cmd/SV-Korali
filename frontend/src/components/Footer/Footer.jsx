@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import css from "./Footer.module.css";
+import {
+  GOOGLE_MAPS_URL,
+  STORE_ADDRESS,
+  STORE_HOURS,
+} from "../../constants/store";
 
 const Footer = () => {
   // const handleSubscribe = (e) => {
@@ -55,9 +60,22 @@ const Footer = () => {
                     sv.korali@gmail.com
                   </a>
                 </li>
+                <li>
+                  <a
+                    className={css.link}
+                    href={GOOGLE_MAPS_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {STORE_ADDRESS}
+                  </a>
+                </li>
                 <li className={css.contactText}>
-                  Closed Monday, Tuesday to Friday and Sunday from 11-16,
-                  Saturday from 11-18
+                  Monday: {STORE_HOURS.monday}
+                  <br />
+                  Tuesday–Saturday: {STORE_HOURS.tuesdayToSaturday}
+                  <br />
+                  Sunday: {STORE_HOURS.sunday}
                 </li>
               </ul>
             </div>

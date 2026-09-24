@@ -1,4 +1,5 @@
 import css from "./OurStory.module.css";
+import { GOOGLE_MAPS_URL, STORE_ADDRESS } from "../../../constants/store";
 
 const OurStory = () => {
   return (
@@ -58,11 +59,11 @@ const OurStory = () => {
                 By visiting our Ukrainian showroom at{" "}
                 <a
                   className={css.inlineLink}
-                  href="https://www.google.com/maps/search/?api=1&query=26-30+Six+Point+Rd,+Toronto+(Etobicoke)"
+                  href={GOOGLE_MAPS_URL}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  26 Six Point Rd., Toronto (Etobicoke)
+                  {STORE_ADDRESS}
                 </a>{" "}
                 or shopping online at{" "}
                 <a
@@ -91,14 +92,12 @@ const OurStory = () => {
             <div className={css.infoGrid}>
               <a
                 className={css.infoCard}
-                href="https://www.google.com/maps/search/?api=1&query=26-30+Six+Point+Rd,+Toronto+(Etobicoke)"
+                href={GOOGLE_MAPS_URL}
                 target="_blank"
                 rel="noreferrer"
               >
                 <div className={css.infoLabel}>Showroom</div>
-                <div className={css.infoValue}>
-                  26 Six Point Rd., Toronto (Etobicoke)
-                </div>
+                <div className={css.infoValue}>{STORE_ADDRESS}</div>
               </a>
 
               <a

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 import css from "./RegestrationForm.module.css";
 import { registerUserThunk } from "../../redux/operations/authOperations";
+import { STORE_ADDRESS } from "../../constants/store";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -171,7 +172,7 @@ const RegistrationForm = () => {
 
             <div className={css.storeDetails}>
               <strong>SV.Korali</strong>
-              <span>26-30 Six Point Rd, Toronto (Etobicoke)</span>
+              <span>{STORE_ADDRESS}</span>
               <span>Show this code or a screenshot before checkout.</span>
             </div>
 

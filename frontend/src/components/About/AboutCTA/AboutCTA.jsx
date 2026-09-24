@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import css from "./AboutCTA.module.css";
+import { GOOGLE_MAPS_URL } from "../../../constants/store";
 
 const AboutCTA = () => {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ const AboutCTA = () => {
 
   const openWorkshop = () => {
     window.open(
-      "https://www.google.com/maps/search/?api=1&query=26-30+Six+Point+Rd,+Toronto+(Etobicoke)",
+      GOOGLE_MAPS_URL,
       "_blank",
       "noopener,noreferrer"
     );
