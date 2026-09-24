@@ -155,7 +155,8 @@
   }
 
   .imageWrap {
-    aspect-ratio: 4 / 5;
+    height: clamp(120px, 42vw, 160px);
+    aspect-ratio: auto;
     padding: 6px;
   }
 
@@ -181,5 +182,20 @@
     height: 32px;
     border-radius: 9px;
     font-size: 11px;
+  }
+}
+
+@media (max-width: 380px) {
+  .imageWrap {
+    height: clamp(112px, 39vw, 140px);
+  }
+
+  .content {
+    padding: 8px 7px 8px;
+  }
+
+  .cartBtn {
+    height: 30px;
+    font-size: 10px;
   }
 }
